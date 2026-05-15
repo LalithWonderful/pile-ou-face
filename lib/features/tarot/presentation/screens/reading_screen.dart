@@ -9,15 +9,25 @@ import '../../services/daily_share_text_builder.dart';
 import '../widgets/card_art_placeholder.dart';
 import '../widgets/drawn_card_view.dart';
 
+typedef DailyShareInvoker = Future<void> Function(String text);
+
+Future<void> _defaultShareInvoker(String text) =>
+    SharePlus.instance.share(ShareParams(text: text));
+
 class ReadingScreen extends StatefulWidget {
   const ReadingScreen({
     super.key,
     this.spread = TarotSpread.single,
     this.isDaily = false,
+    this.shareInvoker,
   });
 
   final TarotSpread spread;
   final bool isDaily;
+
+  /// Injection point used in tests to bypass the native share sheet.
+  /// In production the platform implementation is used.
+  final DailyShareInvoker? shareInvoker;
 
   @override
   State<ReadingScreen> createState() => _ReadingScreenState();
@@ -46,6 +56,7 @@ class _ReadingScreenState extends State<ReadingScreen> {
       : 'Prends un instant, puis révèle ton tirage.';
 
   Future<void> _reveal() async {
+    if (_loading) return;
     setState(() {
       _loading = true;
       _error = null;
@@ -122,6 +133,7 @@ class _ReadingScreenState extends State<ReadingScreen> {
       drawn: result,
       isDaily: widget.isDaily,
       onRedraw: _redraw,
+      shareInvoker: widget.shareInvoker ?? _defaultShareInvoker,
     );
   }
 }
@@ -214,12 +226,14 @@ class _RevealedState extends StatelessWidget {
     required this.drawn,
     required this.isDaily,
     required this.onRedraw,
+    required this.shareInvoker,
   });
 
   final TarotSpread spread;
   final List<DrawnCard> drawn;
   final bool isDaily;
   final VoidCallback onRedraw;
+  final DailyShareInvoker shareInvoker;
 
   @override
   Widget build(BuildContext context) {
@@ -248,7 +262,10 @@ class _RevealedState extends StatelessWidget {
                     icon: const Icon(Icons.refresh),
                     label: const Text('Faire un autre tirage'),
                   )
-                : _DailyFooter(drawn: drawn.first),
+                : _DailyFooter(
+                    drawn: drawn.first,
+                    shareInvoker: shareInvoker,
+                  ),
           ),
         );
       },
@@ -256,14 +273,39 @@ class _RevealedState extends StatelessWidget {
   }
 }
 
-class _DailyFooter extends StatelessWidget {
-  const _DailyFooter({required this.drawn});
+class _DailyFooter extends StatefulWidget {
+  const _DailyFooter({
+    required this.drawn,
+    required this.shareInvoker,
+  });
 
   final DrawnCard drawn;
+  final DailyShareInvoker shareInvoker;
+
+  @override
+  State<_DailyFooter> createState() => _DailyFooterState();
+}
+
+class _DailyFooterState extends State<_DailyFooter> {
+  bool _sharing = false;
 
   Future<void> _share() async {
-    final text = buildDailyShareText(drawn);
-    await SharePlus.instance.share(ShareParams(text: text));
+    if (_sharing) return;
+    setState(() => _sharing = true);
+    try {
+      final text = buildDailyShareText(widget.drawn);
+      await widget.shareInvoker(text);
+    } catch (_) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Le partage n’a pas pu se lancer.'),
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+    } finally {
+      if (mounted) setState(() => _sharing = false);
+    }
   }
 
   @override
@@ -272,9 +314,18 @@ class _DailyFooter extends StatelessWidget {
     return Column(
       children: [
         OutlinedButton.icon(
-          onPressed: _share,
-          icon: const Icon(Icons.ios_share),
-          label: const Text('Partager ce message'),
+          onPressed: _sharing ? null : _share,
+          icon: _sharing
+              ? const SizedBox(
+                  width: 16,
+                  height: 16,
+                  child: CircularProgressIndicator(
+                    strokeWidth: 2,
+                    color: AppColors.deepGreen,
+                  ),
+                )
+              : const Icon(Icons.ios_share),
+          label: Text(_sharing ? 'Un instant…' : 'Partager ce message'),
         ),
         const SizedBox(height: 14),
         Text(
