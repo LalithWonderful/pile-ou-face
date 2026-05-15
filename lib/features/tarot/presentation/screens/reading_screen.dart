@@ -342,11 +342,13 @@ class _RevealedState extends StatelessWidget {
       separatorBuilder: (_, _) => const SizedBox(height: 16),
       itemBuilder: (context, index) {
         if (index < drawn.length) {
+          final multi = spread.cardCount > 1;
           return _StaggeredReveal(
             index: index,
             child: DrawnCardView(
               drawnCard: drawn[index],
-              position: spread.cardCount > 1 ? spread.positions[index] : null,
+              position: multi ? spread.positions[index] : null,
+              positionIndex: multi ? index : null,
               intent: intent,
             ),
           );

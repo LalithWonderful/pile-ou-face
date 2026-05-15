@@ -54,5 +54,42 @@ void main() {
         expect(c.tags, isNotEmpty, reason: '${c.id}.tags');
       }
     });
+
+    test('every editorially-validated card carries spread_meanings', () {
+      // Lot 13 ships the first eight major arcana with validated
+      // position-specific readings. The other 14 will follow card by
+      // card; their spread_meanings field is allowed to be null.
+      const validatedIds = <String>[
+        'le_mat',
+        'le_bateleur',
+        'la_papesse',
+        'l_imperatrice',
+        'l_empereur',
+        'le_pape',
+        'les_amoureux',
+        'le_chariot',
+      ];
+      for (final c in cards) {
+        if (validatedIds.contains(c.id)) {
+          expect(c.spreadMeanings, isNotNull,
+              reason: '${c.id} must carry spread_meanings (Lot 13)');
+        }
+      }
+    });
+
+    test(
+        'when spread_meanings is present, all three position fields are '
+        'non-empty', () {
+      for (final c in cards) {
+        final meanings = c.spreadMeanings;
+        if (meanings == null) continue;
+        expect(meanings.whereYouAre.trim(), isNotEmpty,
+            reason: '${c.id}.spread_meanings.where_you_are');
+        expect(meanings.currentEnergy.trim(), isNotEmpty,
+            reason: '${c.id}.spread_meanings.current_energy');
+        expect(meanings.advice.trim(), isNotEmpty,
+            reason: '${c.id}.spread_meanings.advice');
+      }
+    });
   });
 }

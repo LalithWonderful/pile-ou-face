@@ -53,6 +53,11 @@ const _threeCardsFixture = '''
     "warning": "Avertissement A.",
     "short_message": "Court A.",
     "share_message": "Partage A.",
+    "spread_meanings": {
+      "where_you_are": "Position 1 de la carte A.",
+      "current_energy": "Position 2 de la carte A.",
+      "advice": "Position 3 de la carte A."
+    },
     "tags": ["tag-a"]
   },
   {
@@ -71,6 +76,11 @@ const _threeCardsFixture = '''
     "warning": "Avertissement B.",
     "short_message": "Court B.",
     "share_message": "Partage B.",
+    "spread_meanings": {
+      "where_you_are": "Position 1 de la carte B.",
+      "current_energy": "Position 2 de la carte B.",
+      "advice": "Position 3 de la carte B."
+    },
     "tags": ["tag-b"]
   },
   {
@@ -89,6 +99,11 @@ const _threeCardsFixture = '''
     "warning": "Avertissement C.",
     "short_message": "Court C.",
     "share_message": "Partage C.",
+    "spread_meanings": {
+      "where_you_are": "Position 1 de la carte C.",
+      "current_energy": "Position 2 de la carte C.",
+      "advice": "Position 3 de la carte C."
+    },
     "tags": ["tag-c"]
   }
 ]
@@ -459,8 +474,9 @@ void main() {
   });
 
   group('ReadingScreen (intent-based)', () {
-    testWidgets('love intent shows the card\'s love body, not meaning',
-        (tester) async {
+    testWidgets(
+        'love intent uses spread_meanings as main body and surfaces the '
+        'EN AMOUR domain complement', (tester) async {
       final repo =
           TarotRepository(loader: (_) async => _threeCardsFixture);
       final drawService =
@@ -480,11 +496,45 @@ void main() {
       await tester.tap(find.text('Révéler le tirage'));
       await tester.pumpAndSettle();
 
-      // First card's body comes from love field, not meaning_upright.
-      expect(find.textContaining('Amour'), findsAtLeastNWidgets(1));
-      // The general meaning ("Sens droit") of card A must not be shown
-      // as the body text in this mode.
+      // Main body now comes from spread_meanings.where_you_are
+      // (validated card in slot 0). The general meaning must not be
+      // the main body in this mode.
+      expect(find.textContaining('Position 1 de la carte'),
+          findsAtLeastNWidgets(1));
       expect(find.text('Sens droit A.'), findsNothing);
+
+      // The love body is preserved as the domain complement, with the
+      // "EN AMOUR" small-caps label introduced for the validated card.
+      expect(find.text('EN AMOUR'), findsAtLeastNWidgets(1));
+      expect(find.textContaining('Amour'), findsAtLeastNWidgets(1));
+    });
+
+    testWidgets(
+        'general intent on a validated card renders spread_meanings as '
+        'main body, without domain complement', (tester) async {
+      final repo =
+          TarotRepository(loader: (_) async => _threeCardsFixture);
+      final drawService =
+          TarotDrawService(repository: repo, random: Random(0));
+      final dailyService = DailyReadingService(repository: repo);
+
+      await tester.pumpWidget(_wrap(
+        child: const ReadingScreen(intent: ReadingIntent.general),
+        repository: repo,
+        drawService: drawService,
+        dailyService: dailyService,
+      ));
+
+      await tester.tap(find.text('Révéler le tirage'));
+      await tester.pumpAndSettle();
+
+      // Position-specific body is rendered.
+      expect(find.textContaining('Position 1 de la carte'),
+          findsAtLeastNWidgets(1));
+      // No domain complement label appears in general mode.
+      expect(find.text('EN AMOUR'), findsNothing);
+      expect(find.text('AU TRAVAIL'), findsNothing);
+      expect(find.text('CÔTÉ ARGENT'), findsNothing);
     });
 
     testWidgets('money intent renders the financial-advice footer',

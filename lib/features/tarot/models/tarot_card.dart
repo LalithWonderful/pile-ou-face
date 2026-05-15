@@ -1,5 +1,7 @@
 import 'package:flutter/foundation.dart';
 
+import 'tarot_spread_meanings.dart';
+
 @immutable
 class TarotCard {
   const TarotCard({
@@ -19,6 +21,7 @@ class TarotCard {
     required this.shortMessage,
     required this.shareMessage,
     required this.tags,
+    this.spreadMeanings,
   });
 
   factory TarotCard.fromJson(Map<String, dynamic> json) {
@@ -26,6 +29,8 @@ class TarotCard {
         (json[key] as List<dynamic>? ?? const <dynamic>[])
             .map((e) => e as String)
             .toList(growable: false);
+
+    final spread = json['spread_meanings'];
 
     return TarotCard(
       id: json['id'] as String,
@@ -44,6 +49,9 @@ class TarotCard {
       shortMessage: json['short_message'] as String,
       shareMessage: json['share_message'] as String,
       tags: readStringList('tags'),
+      spreadMeanings: spread is Map<String, dynamic>
+          ? TarotSpreadMeanings.fromJson(spread)
+          : null,
     );
   }
 
@@ -63,6 +71,11 @@ class TarotCard {
   final String shortMessage;
   final String shareMessage;
   final List<String> tags;
+
+  /// Optional 3-card position-specific reading. Only present on cards
+  /// that have been editorially validated; rendering code must fall
+  /// back when null.
+  final TarotSpreadMeanings? spreadMeanings;
 
   @override
   bool operator ==(Object other) =>

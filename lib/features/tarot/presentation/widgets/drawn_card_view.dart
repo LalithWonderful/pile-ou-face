@@ -11,20 +11,42 @@ class DrawnCardView extends StatelessWidget {
     super.key,
     required this.drawnCard,
     this.position,
+    this.positionIndex,
     this.intent,
   });
 
   final DrawnCard drawnCard;
   final String? position;
 
+  /// 0 → "Là où tu en es", 1 → "L'énergie du moment", 2 → "Le conseil".
+  /// When present together with [drawnCard.card.spreadMeanings], the
+  /// matching position-specific text becomes the main body.
+  final int? positionIndex;
+
   /// Drives which body text is shown for the card. When null or
-  /// [ReadingIntent.general], the orientation-aware
-  /// [DrawnCard.meaning] is used (daily and general questions). For
-  /// love / work / money, the matching domain field of the card is
-  /// shown — those are orientation-agnostic by design.
+  /// [ReadingIntent.general], and no position-specific reading is
+  /// available, the orientation-aware [DrawnCard.meaning] is used
+  /// (daily and general questions). For love / work / money, the
+  /// matching domain field of the card is shown if no validated
+  /// position reading exists.
   final ReadingIntent? intent;
 
-  String _bodyFor(ReadingIntent? i) {
+  String? _positionBody() {
+    final meanings = drawnCard.card.spreadMeanings;
+    if (meanings == null || positionIndex == null) return null;
+    switch (positionIndex!) {
+      case 0:
+        return meanings.whereYouAre;
+      case 1:
+        return meanings.currentEnergy;
+      case 2:
+        return meanings.advice;
+      default:
+        return null;
+    }
+  }
+
+  String _fallbackBody(ReadingIntent? i) {
     switch (i) {
       case ReadingIntent.love:
         return drawnCard.card.love;
@@ -35,6 +57,24 @@ class DrawnCardView extends StatelessWidget {
       case ReadingIntent.general:
       case null:
         return drawnCard.meaning;
+    }
+  }
+
+  /// Domain complement (love/work/money body) shown **below** the
+  /// position-specific body when both exist and are different.
+  String? _domainComplement(ReadingIntent? i) {
+    final position = _positionBody();
+    if (position == null) return null;
+    switch (i) {
+      case ReadingIntent.love:
+        return drawnCard.card.love;
+      case ReadingIntent.work:
+        return drawnCard.card.work;
+      case ReadingIntent.money:
+        return drawnCard.card.money;
+      case ReadingIntent.general:
+      case null:
+        return null;
     }
   }
 
@@ -124,9 +164,17 @@ class DrawnCardView extends StatelessWidget {
           _ShortMessage(text: card.shortMessage),
           const SizedBox(height: 12),
           Text(
-            _bodyFor(intent),
+            _positionBody() ?? _fallbackBody(intent),
             style: textTheme.bodyMedium?.copyWith(height: 1.5),
           ),
+          if (_domainComplement(intent) != null &&
+              intent?.domainLabel != null) ...[
+            const SizedBox(height: 14),
+            _DomainComplement(
+              label: intent!.domainLabel!,
+              body: _domainComplement(intent)!,
+            ),
+          ],
           const SizedBox(height: 14),
           AccentPanel(
             label: 'LE PETIT MOT',
@@ -187,6 +235,39 @@ class _ShortMessage extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+}
+
+class _DomainComplement extends StatelessWidget {
+  const _DomainComplement({required this.label, required this.body});
+
+  final String label;
+  final String body;
+
+  @override
+  Widget build(BuildContext context) {
+    final textTheme = Theme.of(context).textTheme;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          label,
+          style: textTheme.labelSmall?.copyWith(
+            color: AppColors.deepGreen.withValues(alpha: 0.75),
+            letterSpacing: 1.2,
+            fontWeight: FontWeight.w700,
+          ),
+        ),
+        const SizedBox(height: 4),
+        Text(
+          body,
+          style: textTheme.bodyMedium?.copyWith(
+            color: AppColors.charcoal,
+            height: 1.45,
+          ),
+        ),
+      ],
     );
   }
 }

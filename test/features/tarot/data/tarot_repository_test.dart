@@ -19,6 +19,11 @@ const _fixture = '''
     "warning": "Ne pas confondre élan et fuite.",
     "short_message": "Un pas neuf.",
     "share_message": "J'ai tiré Le Mat.",
+    "spread_meanings": {
+      "where_you_are": "Tu cherches plus de légèreté.",
+      "current_energy": "L'énergie pousse au lâcher-prise.",
+      "advice": "Autorise-toi un pas plus libre."
+    },
     "tags": ["commencement", "liberté"]
   },
   {
@@ -66,6 +71,18 @@ void main() {
       expect(mat.shortMessage, 'Un pas neuf.');
       expect(mat.shareMessage, "J'ai tiré Le Mat.");
       expect(mat.tags, ['commencement', 'liberté']);
+
+      // spread_meanings parsed when present.
+      expect(mat.spreadMeanings, isNotNull);
+      expect(
+          mat.spreadMeanings!.whereYouAre, 'Tu cherches plus de légèreté.');
+      expect(mat.spreadMeanings!.currentEnergy,
+          "L'énergie pousse au lâcher-prise.");
+      expect(
+          mat.spreadMeanings!.advice, "Autorise-toi un pas plus libre.");
+
+      // Absent on Le Bateleur in this fixture → null fallback.
+      expect(cards[1].spreadMeanings, isNull);
     });
 
     test('caches results after first load', () async {
