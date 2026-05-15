@@ -55,35 +55,11 @@ void main() {
       }
     });
 
-    test('every editorially-validated card carries spread_meanings', () {
-      // Lot 13 shipped the first eight; Lot 14 adds eight more. The
-      // remaining six cards will follow card by card and are allowed
-      // to keep spread_meanings == null until then.
-      const validatedIds = <String>[
-        // Lot 13
-        'le_mat',
-        'le_bateleur',
-        'la_papesse',
-        'l_imperatrice',
-        'l_empereur',
-        'le_pape',
-        'les_amoureux',
-        'le_chariot',
-        // Lot 14
-        'la_justice',
-        'l_ermite',
-        'la_roue_de_fortune',
-        'la_force',
-        'le_pendu',
-        'la_mort',
-        'la_temperance',
-        'le_diable',
-      ];
+    test('all 22 major arcana now carry spread_meanings (Lot 15: 22/22)',
+        () {
       for (final c in cards) {
-        if (validatedIds.contains(c.id)) {
-          expect(c.spreadMeanings, isNotNull,
-              reason: '${c.id} must carry spread_meanings (Lots 13-14)');
-        }
+        expect(c.spreadMeanings, isNotNull,
+            reason: '${c.id} must carry spread_meanings');
       }
     });
 
