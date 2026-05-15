@@ -32,6 +32,62 @@ const _singleCardFixture = '''
 ]
 ''';
 
+const _threeCardsFixture = '''
+[
+  {
+    "id": "carte_a",
+    "number": 0,
+    "name": "Carte A",
+    "image_path": null,
+    "keywords_upright": ["a"],
+    "keywords_reversed": ["a-inv"],
+    "meaning_upright": "Sens droit A.",
+    "meaning_reversed": "Sens inversé A.",
+    "love": "Amour A.",
+    "work": "Travail A.",
+    "advice": "Conseil A.",
+    "warning": "Avertissement A.",
+    "short_message": "Court A.",
+    "share_message": "Partage A.",
+    "tags": ["tag-a"]
+  },
+  {
+    "id": "carte_b",
+    "number": 1,
+    "name": "Carte B",
+    "image_path": null,
+    "keywords_upright": ["b"],
+    "keywords_reversed": ["b-inv"],
+    "meaning_upright": "Sens droit B.",
+    "meaning_reversed": "Sens inversé B.",
+    "love": "Amour B.",
+    "work": "Travail B.",
+    "advice": "Conseil B.",
+    "warning": "Avertissement B.",
+    "short_message": "Court B.",
+    "share_message": "Partage B.",
+    "tags": ["tag-b"]
+  },
+  {
+    "id": "carte_c",
+    "number": 2,
+    "name": "Carte C",
+    "image_path": null,
+    "keywords_upright": ["c"],
+    "keywords_reversed": ["c-inv"],
+    "meaning_upright": "Sens droit C.",
+    "meaning_reversed": "Sens inversé C.",
+    "love": "Amour C.",
+    "work": "Travail C.",
+    "advice": "Conseil C.",
+    "warning": "Avertissement C.",
+    "short_message": "Court C.",
+    "share_message": "Partage C.",
+    "tags": ["tag-c"]
+  }
+]
+''';
+
 Widget _wrap({
   required Widget child,
   required TarotRepository repository,
@@ -97,6 +153,27 @@ void main() {
       expect(find.text('Le Mat'), findsOneWidget);
       expect(find.text('Un pas neuf.'), findsOneWidget);
     });
+
+    testWidgets('three-card spread does not expose the share button',
+        (tester) async {
+      final repo =
+          TarotRepository(loader: (_) async => _threeCardsFixture);
+      final drawService =
+          TarotDrawService(repository: repo, random: Random(0));
+      final dailyService = DailyReadingService(repository: repo);
+
+      await tester.pumpWidget(_wrap(
+        child: const ReadingScreen(spread: TarotSpread.threeCards),
+        repository: repo,
+        drawService: drawService,
+        dailyService: dailyService,
+      ));
+
+      await tester.tap(find.text('Révéler le tirage'));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Partager ce message'), findsNothing);
+    });
   });
 
   group('ReadingScreen (daily mode)', () {
@@ -121,6 +198,7 @@ void main() {
       expect(find.text('Mon message du jour'), findsOneWidget);
       expect(find.text('Révéler mon message'), findsOneWidget);
       expect(find.text('Libre à toi de l’interpréter.'), findsOneWidget);
+      expect(find.text('Partager ce message'), findsNothing);
     });
 
     testWidgets('reveals the daily card via DailyReadingService',
@@ -151,6 +229,36 @@ void main() {
       final prefs = await SharedPreferences.getInstance();
       expect(prefs.getString(DailyReadingService.dateKey), '2026-05-15');
       expect(prefs.getString(DailyReadingService.cardIdKey), 'le_mat');
+    });
+
+    testWidgets('exposes the share button once the message is revealed',
+        (tester) async {
+      final repo =
+          TarotRepository(loader: (_) async => _singleCardFixture);
+      final drawService = TarotDrawService(repository: repo);
+      final dailyService = DailyReadingService(
+        repository: repo,
+        random: Random(0),
+        clock: () => DateTime(2026, 5, 15),
+      );
+
+      await tester.pumpWidget(_wrap(
+        child: const ReadingScreen(isDaily: true),
+        repository: repo,
+        drawService: drawService,
+        dailyService: dailyService,
+      ));
+
+      await tester.tap(find.text('Révéler mon message'));
+      await tester.pumpAndSettle();
+
+      await tester.scrollUntilVisible(
+        find.text('Partager ce message'),
+        200,
+        scrollable: find.byType(Scrollable).first,
+      );
+
+      expect(find.text('Partager ce message'), findsOneWidget);
     });
   });
 }

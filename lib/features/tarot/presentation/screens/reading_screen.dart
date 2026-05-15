@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:share_plus/share_plus.dart';
 
 import '../../../../app/app_theme.dart';
 import '../../../../app/tarot_scope.dart';
 import '../../models/drawn_card.dart';
 import '../../models/tarot_spread.dart';
+import '../../services/daily_share_text_builder.dart';
 import '../widgets/card_art_placeholder.dart';
 import '../widgets/drawn_card_view.dart';
 
@@ -246,7 +248,7 @@ class _RevealedState extends StatelessWidget {
                     icon: const Icon(Icons.refresh),
                     label: const Text('Faire un autre tirage'),
                   )
-                : const _DailyFooter(),
+                : _DailyFooter(drawn: drawn.first),
           ),
         );
       },
@@ -255,13 +257,26 @@ class _RevealedState extends StatelessWidget {
 }
 
 class _DailyFooter extends StatelessWidget {
-  const _DailyFooter();
+  const _DailyFooter({required this.drawn});
+
+  final DrawnCard drawn;
+
+  Future<void> _share() async {
+    final text = buildDailyShareText(drawn);
+    await SharePlus.instance.share(ShareParams(text: text));
+  }
 
   @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
     return Column(
       children: [
+        OutlinedButton.icon(
+          onPressed: _share,
+          icon: const Icon(Icons.ios_share),
+          label: const Text('Partager ce message'),
+        ),
+        const SizedBox(height: 14),
         Text(
           'Libre à toi de l’interpréter.',
           textAlign: TextAlign.center,
