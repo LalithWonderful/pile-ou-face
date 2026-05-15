@@ -44,7 +44,7 @@ void main() {
     expect(find.text('Éclairer une situation'), findsNothing);
     expect(find.text('Faire un tirage 3 cartes'), findsNothing);
 
-    expect(find.text('Libre à toi de l’interpréter.'), findsOneWidget);
+    expect(find.text('À toi d’interpréter.'), findsOneWidget);
     expect(
       find.text('Application de divertissement et d’introspection.'),
       findsOneWidget,

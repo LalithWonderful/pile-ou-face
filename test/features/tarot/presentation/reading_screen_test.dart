@@ -218,7 +218,7 @@ void main() {
 
       expect(find.text('Mon message du jour'), findsOneWidget);
       expect(find.text('Révéler mon message'), findsOneWidget);
-      expect(find.text('Libre à toi de l’interpréter.'), findsOneWidget);
+      expect(find.text('À toi d’interpréter.'), findsOneWidget);
       expect(find.text('Partager ce message'), findsNothing);
     });
 

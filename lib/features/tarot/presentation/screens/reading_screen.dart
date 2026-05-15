@@ -73,7 +73,7 @@ class _ReadingScreenState extends State<ReadingScreen> {
       widget.isDaily ? 'Révéler mon message' : 'Révéler le tirage';
 
   String get _idleHint => widget.isDaily
-      ? 'Libre à toi de l’interpréter.'
+      ? 'À toi d’interpréter.'
       : 'Prends un instant, puis révèle ton tirage.';
 
   Future<void> _reveal() async {
@@ -446,7 +446,7 @@ class _DailyFooterState extends State<_DailyFooter> {
         ),
         const SizedBox(height: 14),
         Text(
-          'Libre à toi de l’interpréter.',
+          'À toi d’interpréter.',
           textAlign: TextAlign.center,
           style: textTheme.bodyMedium?.copyWith(
             color: AppColors.deepGreen,

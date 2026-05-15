@@ -91,7 +91,7 @@ class HomeScreen extends StatelessWidget {
                       _IntentButtonsGrid(onTap: (i) => _openIntent(context, i)),
                       const Spacer(flex: 3),
                       Text(
-                        'Libre à toi de l’interpréter.',
+                        'À toi d’interpréter.',
                         textAlign: TextAlign.center,
                         style: textTheme.bodyMedium?.copyWith(
                           color: AppColors.deepGreen,
