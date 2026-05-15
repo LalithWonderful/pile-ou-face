@@ -51,17 +51,33 @@ void main() {
         final cardName = (cardMap['name'] as String?) ??
             (cardMap['id'] as String? ?? 'unknown');
 
+        // Flat editorial fields, plus the nested spread_meanings subkeys
+        // (Lot 14 extension). Each entry is "human-readable field
+        // name" → "string value".
+        final scanTargets = <String, String>{};
         for (final field in editorialFields) {
           final value = cardMap[field];
-          if (value == null || value is! String) continue;
+          if (value is String) scanTargets[field] = value;
+        }
+        final spread = cardMap['spread_meanings'];
+        if (spread is Map<String, dynamic>) {
+          for (final entry in spread.entries) {
+            final value = entry.value;
+            if (value is String) {
+              scanTargets['spread_meanings.${entry.key}'] = value;
+            }
+          }
+        }
 
+        for (final target in scanTargets.entries) {
+          final value = target.value;
           final normalized = value.toLowerCase().replaceAll('’', "'");
 
           for (final pattern in forbiddenPatterns) {
             final regex = RegExp(pattern.regex, caseSensitive: false);
             if (regex.hasMatch(normalized)) {
               failures.add(
-                '${cardMap['id']} ($cardName) → field "$field"\n'
+                '${cardMap['id']} ($cardName) → field "${target.key}"\n'
                 '  Forbidden expression: "${pattern.label}"\n'
                 '  Text: "$value"',
               );
