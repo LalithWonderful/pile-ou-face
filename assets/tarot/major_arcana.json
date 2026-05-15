@@ -1,0 +1,178 @@
+[
+  {
+    "id": "le_mat",
+    "number": 0,
+    "name": "Le Mat",
+    "keywords": ["liberté", "commencement", "spontanéité"],
+    "uprightMeaning": "Un nouveau départ, libre et spontané.",
+    "reversedMeaning": "Imprudence ou refus de s’engager."
+  },
+  {
+    "id": "le_bateleur",
+    "number": 1,
+    "name": "Le Bateleur",
+    "keywords": ["initiative", "habileté", "potentiel"],
+    "uprightMeaning": "Capacité à passer à l’action avec ses propres ressources.",
+    "reversedMeaning": "Hésitation, dispersion ou ruse mal placée."
+  },
+  {
+    "id": "la_papesse",
+    "number": 2,
+    "name": "La Papesse",
+    "keywords": ["intuition", "savoir", "intériorité"],
+    "uprightMeaning": "Un temps d’écoute intérieure et de patience.",
+    "reversedMeaning": "Secrets, doutes ou repli excessif."
+  },
+  {
+    "id": "l_imperatrice",
+    "number": 3,
+    "name": "L’Impératrice",
+    "keywords": ["créativité", "abondance", "féminin"],
+    "uprightMeaning": "Une énergie créative et nourrissante prend forme.",
+    "reversedMeaning": "Blocage créatif ou dépendance affective."
+  },
+  {
+    "id": "l_empereur",
+    "number": 4,
+    "name": "L’Empereur",
+    "keywords": ["structure", "autorité", "stabilité"],
+    "uprightMeaning": "Cadre solide et décisions assumées.",
+    "reversedMeaning": "Rigidité, autoritarisme ou perte de repères."
+  },
+  {
+    "id": "le_pape",
+    "number": 5,
+    "name": "Le Pape",
+    "keywords": ["transmission", "guidance", "valeurs"],
+    "uprightMeaning": "Un enseignement ou un conseil fait sens.",
+    "reversedMeaning": "Dogmatisme ou conformisme étouffant."
+  },
+  {
+    "id": "les_amoureux",
+    "number": 6,
+    "name": "Les Amoureux",
+    "keywords": ["choix", "lien", "alignement"],
+    "uprightMeaning": "Un choix du cœur aligné avec ses valeurs.",
+    "reversedMeaning": "Hésitation, lien déséquilibré ou tentation."
+  },
+  {
+    "id": "le_chariot",
+    "number": 7,
+    "name": "Le Chariot",
+    "keywords": ["élan", "victoire", "direction"],
+    "uprightMeaning": "Avancée déterminée vers un objectif clair.",
+    "reversedMeaning": "Course en avant ou direction mal choisie."
+  },
+  {
+    "id": "la_justice",
+    "number": 8,
+    "name": "La Justice",
+    "keywords": ["équilibre", "vérité", "responsabilité"],
+    "uprightMeaning": "Une décision juste et un retour à l’équilibre.",
+    "reversedMeaning": "Déséquilibre, jugement biaisé ou évitement."
+  },
+  {
+    "id": "l_ermite",
+    "number": 9,
+    "name": "L’Ermite",
+    "keywords": ["recul", "sagesse", "introspection"],
+    "uprightMeaning": "Prendre du recul pour clarifier sa voie.",
+    "reversedMeaning": "Isolement ou refus de regarder en soi."
+  },
+  {
+    "id": "la_roue_de_fortune",
+    "number": 10,
+    "name": "La Roue de Fortune",
+    "keywords": ["cycle", "tournant", "destin"],
+    "uprightMeaning": "Un cycle se renouvelle, une opportunité se présente.",
+    "reversedMeaning": "Stagnation ou résistance au changement."
+  },
+  {
+    "id": "la_force",
+    "number": 11,
+    "name": "La Force",
+    "keywords": ["courage", "douceur", "maîtrise"],
+    "uprightMeaning": "Force tranquille qui apprivoise les obstacles.",
+    "reversedMeaning": "Doute, peur ou agressivité mal canalisée."
+  },
+  {
+    "id": "le_pendu",
+    "number": 12,
+    "name": "Le Pendu",
+    "keywords": ["pause", "lâcher-prise", "perspective"],
+    "uprightMeaning": "Un temps suspendu offre un nouveau point de vue.",
+    "reversedMeaning": "Blocage prolongé ou sacrifice inutile."
+  },
+  {
+    "id": "la_mort",
+    "number": 13,
+    "name": "La Mort",
+    "keywords": ["fin", "transformation", "renouveau"],
+    "uprightMeaning": "Une étape se termine pour laisser place au neuf.",
+    "reversedMeaning": "Résistance au changement ou deuil non fait."
+  },
+  {
+    "id": "la_temperance",
+    "number": 14,
+    "name": "La Tempérance",
+    "keywords": ["harmonie", "fluidité", "modération"],
+    "uprightMeaning": "Un équilibre fluide entre les contraires.",
+    "reversedMeaning": "Excès, impatience ou désaccord intérieur."
+  },
+  {
+    "id": "le_diable",
+    "number": 15,
+    "name": "Le Diable",
+    "keywords": ["attachement", "désir", "ombre"],
+    "uprightMeaning": "Une énergie puissante à reconnaître et canaliser.",
+    "reversedMeaning": "Dépendance, manipulation ou enfermement."
+  },
+  {
+    "id": "la_maison_dieu",
+    "number": 16,
+    "name": "La Maison-Dieu",
+    "keywords": ["rupture", "libération", "vérité"],
+    "uprightMeaning": "Une secousse libère ce qui n’était plus juste.",
+    "reversedMeaning": "Crise évitée ou changement subi avec peine."
+  },
+  {
+    "id": "l_etoile",
+    "number": 17,
+    "name": "L’Étoile",
+    "keywords": ["espoir", "inspiration", "douceur"],
+    "uprightMeaning": "Un souffle d’espoir et de clarté guide les pas.",
+    "reversedMeaning": "Découragement ou idéal qui semble lointain."
+  },
+  {
+    "id": "la_lune",
+    "number": 18,
+    "name": "La Lune",
+    "keywords": ["intuition", "rêve", "incertitude"],
+    "uprightMeaning": "Les émotions et l’intuition demandent de l’écoute.",
+    "reversedMeaning": "Confusion, illusions ou peurs anciennes."
+  },
+  {
+    "id": "le_soleil",
+    "number": 19,
+    "name": "Le Soleil",
+    "keywords": ["joie", "réussite", "clarté"],
+    "uprightMeaning": "Une lumière simple et franche illumine la situation.",
+    "reversedMeaning": "Vanité, lumière voilée ou succès en demi-teinte."
+  },
+  {
+    "id": "le_jugement",
+    "number": 20,
+    "name": "Le Jugement",
+    "keywords": ["renaissance", "appel", "bilan"],
+    "uprightMeaning": "Un appel intérieur invite à se réinventer.",
+    "reversedMeaning": "Refus d’entendre l’appel ou jugement trop sévère."
+  },
+  {
+    "id": "le_monde",
+    "number": 21,
+    "name": "Le Monde",
+    "keywords": ["accomplissement", "unité", "ouverture"],
+    "uprightMeaning": "Un cycle s’accomplit et ouvre un horizon plus large.",
+    "reversedMeaning": "Cycle inachevé ou difficulté à conclure."
+  }
+]

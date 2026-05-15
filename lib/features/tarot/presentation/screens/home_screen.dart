@@ -1,15 +1,18 @@
 import 'package:flutter/material.dart';
 
 import '../../../../app/app_theme.dart';
+import '../widgets/spread_picker_sheet.dart';
 import 'cards_library_screen.dart';
 import 'reading_screen.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
-  void _openReading(BuildContext context) {
-    Navigator.of(context).push(
-      MaterialPageRoute<void>(builder: (_) => const ReadingScreen()),
+  Future<void> _openReading(BuildContext context) async {
+    final spread = await showSpreadPicker(context);
+    if (spread == null || !context.mounted) return;
+    await Navigator.of(context).push(
+      MaterialPageRoute<void>(builder: (_) => ReadingScreen(spread: spread)),
     );
   }
 
