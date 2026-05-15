@@ -11,6 +11,7 @@ void main() {
     'meaning_reversed',
     'love',
     'work',
+    'money',
     'advice',
     'warning',
     'short_message',

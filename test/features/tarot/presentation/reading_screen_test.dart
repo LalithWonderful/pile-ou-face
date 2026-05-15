@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:pile_ou_face/app/tarot_scope.dart';
 import 'package:pile_ou_face/features/tarot/data/tarot_repository.dart';
+import 'package:pile_ou_face/features/tarot/models/reading_intent.dart';
 import 'package:pile_ou_face/features/tarot/models/tarot_spread.dart';
 import 'package:pile_ou_face/features/tarot/presentation/screens/reading_screen.dart';
 import 'package:pile_ou_face/features/tarot/services/daily_reading_service.dart';
@@ -24,6 +25,7 @@ const _singleCardFixture = '''
     "meaning_reversed": "Dispersion à recadrer.",
     "love": "Souffle frais.",
     "work": "Idée à oser.",
+    "money": "Vérifie avant d'engager.",
     "advice": "Faire le premier pas.",
     "warning": "Distinguer élan et fuite.",
     "short_message": "Un pas neuf.",
@@ -46,6 +48,7 @@ const _threeCardsFixture = '''
     "meaning_reversed": "Sens inversé A.",
     "love": "Amour A.",
     "work": "Travail A.",
+    "money": "Argent A.",
     "advice": "Conseil A.",
     "warning": "Avertissement A.",
     "short_message": "Court A.",
@@ -63,6 +66,7 @@ const _threeCardsFixture = '''
     "meaning_reversed": "Sens inversé B.",
     "love": "Amour B.",
     "work": "Travail B.",
+    "money": "Argent B.",
     "advice": "Conseil B.",
     "warning": "Avertissement B.",
     "short_message": "Court B.",
@@ -80,6 +84,7 @@ const _threeCardsFixture = '''
     "meaning_reversed": "Sens inversé C.",
     "love": "Amour C.",
     "work": "Travail C.",
+    "money": "Argent C.",
     "advice": "Conseil C.",
     "warning": "Avertissement C.",
     "short_message": "Court C.",
@@ -450,6 +455,96 @@ void main() {
 
       expect(tester.takeException(), isNull);
       expect(find.text('Le Mat'), findsOneWidget);
+    });
+  });
+
+  group('ReadingScreen (intent-based)', () {
+    testWidgets('love intent shows the card\'s love body, not meaning',
+        (tester) async {
+      final repo =
+          TarotRepository(loader: (_) async => _threeCardsFixture);
+      final drawService =
+          TarotDrawService(repository: repo, random: Random(0));
+      final dailyService = DailyReadingService(repository: repo);
+
+      await tester.pumpWidget(_wrap(
+        child: const ReadingScreen(intent: ReadingIntent.love),
+        repository: repo,
+        drawService: drawService,
+        dailyService: dailyService,
+      ));
+
+      // AppBar reflects the intent title.
+      expect(find.text('Question d’amour'), findsOneWidget);
+
+      await tester.tap(find.text('Révéler le tirage'));
+      await tester.pumpAndSettle();
+
+      // First card's body comes from love field, not meaning_upright.
+      expect(find.textContaining('Amour'), findsAtLeastNWidgets(1));
+      // The general meaning ("Sens droit") of card A must not be shown
+      // as the body text in this mode.
+      expect(find.text('Sens droit A.'), findsNothing);
+    });
+
+    testWidgets('money intent renders the financial-advice footer',
+        (tester) async {
+      await tester.binding.setSurfaceSize(const Size(320, 1200));
+      addTearDown(() => tester.binding.setSurfaceSize(null));
+
+      final repo =
+          TarotRepository(loader: (_) async => _threeCardsFixture);
+      final drawService =
+          TarotDrawService(repository: repo, random: Random(0));
+      final dailyService = DailyReadingService(repository: repo);
+
+      await tester.pumpWidget(_wrap(
+        child: const ReadingScreen(intent: ReadingIntent.money),
+        repository: repo,
+        drawService: drawService,
+        dailyService: dailyService,
+      ));
+
+      expect(find.text('Question d’argent'), findsOneWidget);
+
+      await tester.tap(find.text('Révéler le tirage'));
+      await tester.pumpAndSettle();
+
+      // The discreet footer disclaimer is reached via scroll on a
+      // narrow viewport.
+      await tester.scrollUntilVisible(
+        find.text('Ne remplace pas un conseil financier.'),
+        200,
+        scrollable: find.byType(Scrollable).first,
+      );
+      expect(
+        find.text('Ne remplace pas un conseil financier.'),
+        findsOneWidget,
+      );
+    });
+
+    testWidgets('general intent does not render the money footer',
+        (tester) async {
+      final repo =
+          TarotRepository(loader: (_) async => _threeCardsFixture);
+      final drawService =
+          TarotDrawService(repository: repo, random: Random(0));
+      final dailyService = DailyReadingService(repository: repo);
+
+      await tester.pumpWidget(_wrap(
+        child: const ReadingScreen(intent: ReadingIntent.general),
+        repository: repo,
+        drawService: drawService,
+        dailyService: dailyService,
+      ));
+
+      await tester.tap(find.text('Révéler le tirage'));
+      await tester.pumpAndSettle();
+
+      expect(
+        find.text('Ne remplace pas un conseil financier.'),
+        findsNothing,
+      );
     });
   });
 }

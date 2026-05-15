@@ -21,6 +21,7 @@ String _buildFixture(int count) {
   "meaning_reversed": "Sens inversé $i.",
   "love": "Amour $i.",
   "work": "Travail $i.",
+  "money": "Argent $i.",
   "advice": "Conseil $i.",
   "warning": "Avertissement $i.",
   "short_message": "Court $i.",

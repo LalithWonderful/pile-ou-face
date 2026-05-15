@@ -1,9 +1,12 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:share_plus/share_plus.dart';
 
 import '../../../../app/app_theme.dart';
 import '../../../../app/tarot_scope.dart';
 import '../../models/drawn_card.dart';
+import '../../models/reading_intent.dart';
 import '../../models/tarot_spread.dart';
 import '../../services/daily_share_text_builder.dart';
 import '../widgets/card_art_placeholder.dart';
@@ -19,11 +22,18 @@ class ReadingScreen extends StatefulWidget {
     super.key,
     this.spread = TarotSpread.single,
     this.isDaily = false,
+    this.intent,
     this.shareInvoker,
   });
 
   final TarotSpread spread;
   final bool isDaily;
+
+  /// When set (and [isDaily] is false), drives the AppBar title, the
+  /// idle description, the per-card body text and the optional footer
+  /// below the redraw button. The 3-card spread is always used in this
+  /// mode.
+  final ReadingIntent? intent;
 
   /// Injection point used in tests to bypass the native share sheet.
   /// In production the platform implementation is used.
@@ -38,15 +48,26 @@ class _ReadingScreenState extends State<ReadingScreen> {
   Object? _error;
   bool _loading = false;
 
-  TarotSpread get _effectiveSpread =>
-      widget.isDaily ? TarotSpread.single : widget.spread;
+  TarotSpread get _effectiveSpread {
+    if (widget.isDaily) return TarotSpread.single;
+    if (widget.intent != null) return TarotSpread.threeCards;
+    return widget.spread;
+  }
 
-  String get _appBarTitle =>
-      widget.isDaily ? 'Mon message du jour' : widget.spread.label;
+  String get _appBarTitle {
+    if (widget.isDaily) return 'Mon message du jour';
+    if (widget.intent != null) return widget.intent!.title;
+    return widget.spread.label;
+  }
 
-  String get _idleDescription => widget.isDaily
-      ? 'Pile ou Face a un message pour toi. Prends un instant, puis révèle-le.'
-      : widget.spread.description;
+  String get _idleDescription {
+    if (widget.isDaily) {
+      return 'Pile ou Face a un message pour toi. '
+          'Prends un instant, puis révèle-le.';
+    }
+    if (widget.intent != null) return widget.intent!.intro;
+    return widget.spread.description;
+  }
 
   String get _idleCta =>
       widget.isDaily ? 'Révéler mon message' : 'Révéler le tirage';
@@ -68,7 +89,7 @@ class _ReadingScreenState extends State<ReadingScreen> {
         final daily = await scope.dailyService.getOrCreateToday();
         draw = <DrawnCard>[daily];
       } else {
-        draw = await scope.drawService.draw(widget.spread);
+        draw = await scope.drawService.draw(_effectiveSpread);
       }
       if (!mounted) return;
       setState(() {
@@ -132,6 +153,7 @@ class _ReadingScreenState extends State<ReadingScreen> {
       spread: _effectiveSpread,
       drawn: result,
       isDaily: widget.isDaily,
+      intent: widget.intent,
       onRedraw: _redraw,
       shareInvoker: widget.shareInvoker ?? _defaultShareInvoker,
     );
@@ -235,6 +257,7 @@ class _RevealedState extends StatelessWidget {
     required this.spread,
     required this.drawn,
     required this.isDaily,
+    required this.intent,
     required this.onRedraw,
     required this.shareInvoker,
   });
@@ -242,11 +265,13 @@ class _RevealedState extends StatelessWidget {
   final TarotSpread spread;
   final List<DrawnCard> drawn;
   final bool isDaily;
+  final ReadingIntent? intent;
   final VoidCallback onRedraw;
   final DailyShareInvoker shareInvoker;
 
   @override
   Widget build(BuildContext context) {
+    final textTheme = Theme.of(context).textTheme;
     final hasRedraw = !isDaily;
     return ListView.separated(
       padding: const EdgeInsets.fromLTRB(20, 16, 20, 28),
@@ -259,6 +284,7 @@ class _RevealedState extends StatelessWidget {
             child: DrawnCardView(
               drawnCard: drawn[index],
               position: spread.cardCount > 1 ? spread.positions[index] : null,
+              intent: intent,
             ),
           );
         }
@@ -267,10 +293,26 @@ class _RevealedState extends StatelessWidget {
           child: Padding(
             padding: const EdgeInsets.only(top: 4),
             child: hasRedraw
-                ? OutlinedButton.icon(
-                    onPressed: onRedraw,
-                    icon: const Icon(Icons.refresh),
-                    label: const Text('Faire un autre tirage'),
+                ? Column(
+                    children: [
+                      OutlinedButton.icon(
+                        onPressed: onRedraw,
+                        icon: const Icon(Icons.refresh),
+                        label: const Text('Faire un autre tirage'),
+                      ),
+                      if (intent?.footer != null) ...[
+                        const SizedBox(height: 14),
+                        Text(
+                          intent!.footer!,
+                          textAlign: TextAlign.center,
+                          style: textTheme.bodySmall?.copyWith(
+                            color: AppColors.subtle,
+                            fontStyle: FontStyle.italic,
+                            fontSize: 11,
+                          ),
+                        ),
+                      ],
+                    ],
                   )
                 : _DailyFooter(
                     drawn: drawn.first,
@@ -375,6 +417,7 @@ class _StaggeredRevealState extends State<_StaggeredReveal>
     with SingleTickerProviderStateMixin {
   late final AnimationController _controller;
   late final Animation<Offset> _offset;
+  Timer? _startTimer;
 
   @override
   void initState() {
@@ -389,13 +432,17 @@ class _StaggeredRevealState extends State<_StaggeredReveal>
     ).animate(
       CurvedAnimation(parent: _controller, curve: Curves.easeOutCubic),
     );
-    Future.delayed(Duration(milliseconds: 110 * widget.index), () {
-      if (mounted) _controller.forward();
-    });
+    _startTimer = Timer(
+      Duration(milliseconds: 110 * widget.index),
+      () {
+        if (mounted) _controller.forward();
+      },
+    );
   }
 
   @override
   void dispose() {
+    _startTimer?.cancel();
     _controller.dispose();
     super.dispose();
   }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../../app/app_theme.dart';
 import '../../models/drawn_card.dart';
+import '../../models/reading_intent.dart';
 import 'accent_panel.dart';
 import 'card_art_placeholder.dart';
 
@@ -10,10 +11,32 @@ class DrawnCardView extends StatelessWidget {
     super.key,
     required this.drawnCard,
     this.position,
+    this.intent,
   });
 
   final DrawnCard drawnCard;
   final String? position;
+
+  /// Drives which body text is shown for the card. When null or
+  /// [ReadingIntent.general], the orientation-aware
+  /// [DrawnCard.meaning] is used (daily and general questions). For
+  /// love / work / money, the matching domain field of the card is
+  /// shown — those are orientation-agnostic by design.
+  final ReadingIntent? intent;
+
+  String _bodyFor(ReadingIntent? i) {
+    switch (i) {
+      case ReadingIntent.love:
+        return drawnCard.card.love;
+      case ReadingIntent.work:
+        return drawnCard.card.work;
+      case ReadingIntent.money:
+        return drawnCard.card.money;
+      case ReadingIntent.general:
+      case null:
+        return drawnCard.meaning;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -101,7 +124,7 @@ class DrawnCardView extends StatelessWidget {
           _ShortMessage(text: card.shortMessage),
           const SizedBox(height: 12),
           Text(
-            drawnCard.meaning,
+            _bodyFor(intent),
             style: textTheme.bodyMedium?.copyWith(height: 1.5),
           ),
           const SizedBox(height: 14),

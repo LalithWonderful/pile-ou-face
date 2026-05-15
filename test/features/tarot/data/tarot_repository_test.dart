@@ -14,6 +14,7 @@ const _fixture = '''
     "meaning_reversed": "Dispersion.",
     "love": "Souffle neuf.",
     "work": "Idée fraîche.",
+    "money": "Vérifie avant de t'engager.",
     "advice": "Oser un premier pas.",
     "warning": "Ne pas confondre élan et fuite.",
     "short_message": "Un pas neuf.",
@@ -31,6 +32,7 @@ const _fixture = '''
     "meaning_reversed": "Hésitation.",
     "love": "Authenticité.",
     "work": "Saisir une opportunité.",
+    "money": "Tester sans trop engager.",
     "advice": "Commencer modestement.",
     "warning": "Ne pas trop promettre.",
     "short_message": "Outils en main.",
@@ -58,6 +60,7 @@ void main() {
       expect(mat.meaningReversed, 'Dispersion.');
       expect(mat.love, 'Souffle neuf.');
       expect(mat.work, 'Idée fraîche.');
+      expect(mat.money, "Vérifie avant de t'engager.");
       expect(mat.advice, 'Oser un premier pas.');
       expect(mat.warning, 'Ne pas confondre élan et fuite.');
       expect(mat.shortMessage, 'Un pas neuf.');

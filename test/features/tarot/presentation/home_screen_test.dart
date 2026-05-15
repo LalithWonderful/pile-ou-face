@@ -22,6 +22,7 @@ const _threeCardsFixture = '''
     "meaning_reversed": "Sens inversé A.",
     "love": "Amour A.",
     "work": "Travail A.",
+    "money": "Argent A.",
     "advice": "Conseil A.",
     "warning": "Avertissement A.",
     "short_message": "Court A.",
@@ -39,6 +40,7 @@ const _threeCardsFixture = '''
     "meaning_reversed": "Sens inversé B.",
     "love": "Amour B.",
     "work": "Travail B.",
+    "money": "Argent B.",
     "advice": "Conseil B.",
     "warning": "Avertissement B.",
     "short_message": "Court B.",
@@ -56,6 +58,7 @@ const _threeCardsFixture = '''
     "meaning_reversed": "Sens inversé C.",
     "love": "Amour C.",
     "work": "Travail C.",
+    "money": "Argent C.",
     "advice": "Conseil C.",
     "warning": "Avertissement C.",
     "short_message": "Court C.",
@@ -82,38 +85,80 @@ void main() {
   });
 
   group('HomeScreen navigation', () {
-    testWidgets('"Découvrir mon message" opens the daily reading screen',
+    testWidgets(
+        '"Découvrir mon message du jour" opens the daily reading screen',
         (tester) async {
       await tester.pumpWidget(_buildApp(fixture: _emptyFixture));
 
-      await tester.tap(find.text('Découvrir mon message'));
+      await tester.tap(find.text('Découvrir mon message du jour'));
       await tester.pumpAndSettle();
 
       expect(find.text('Mon message du jour'), findsOneWidget);
       expect(find.text('Révéler mon message'), findsOneWidget);
     });
 
-    testWidgets('"Éclairer une situation" opens the free three-card screen',
+    testWidgets(
+        '"Je me pose une question" opens the general intent reading screen',
         (tester) async {
       await tester.pumpWidget(_buildApp(fixture: _threeCardsFixture));
 
-      // The new secondary CTA replaces "Faire un tirage 3 cartes".
+      // Retired labels must not appear on the home anymore.
+      expect(find.text('Éclairer une situation'), findsNothing);
       expect(find.text('Faire un tirage 3 cartes'), findsNothing);
 
-      await tester.tap(find.text('Éclairer une situation'));
+      await tester.tap(find.text('Je me pose une question'));
       await tester.pumpAndSettle();
 
-      // The destination screen now reuses the same product wording in
-      // its AppBar (spread label aligned with the home CTA).
-      expect(find.text('Éclairer une situation'), findsAtLeastNWidgets(1));
+      // AppBar uses the intent title.
+      expect(find.text('Je me pose une question'),
+          findsAtLeastNWidgets(1));
       expect(find.text('Révéler le tirage'), findsOneWidget);
     });
 
-    testWidgets('"Voir les cartes" opens the library screen',
+    testWidgets(
+        '"Je me pose une question d’amour" opens the love intent screen',
         (tester) async {
       await tester.pumpWidget(_buildApp(fixture: _threeCardsFixture));
 
-      // Old "Découvrir les cartes" label must no longer appear.
+      await tester.tap(find.text('Je me pose une question d’amour'));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Question d’amour'), findsOneWidget);
+      expect(find.text('Révéler le tirage'), findsOneWidget);
+    });
+
+    testWidgets(
+        '"Je me pose une question de travail" opens the work intent screen',
+        (tester) async {
+      await tester.pumpWidget(_buildApp(fixture: _threeCardsFixture));
+
+      await tester.tap(find.text('Je me pose une question de travail'));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Question de travail'), findsOneWidget);
+      expect(find.text('Révéler le tirage'), findsOneWidget);
+    });
+
+    testWidgets(
+        '"Je me pose une question d’argent" opens the money intent screen',
+        (tester) async {
+      await tester.pumpWidget(_buildApp(fixture: _threeCardsFixture));
+
+      await tester.tap(find.text('Je me pose une question d’argent'));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Question d’argent'), findsOneWidget);
+      expect(find.text('Révéler le tirage'), findsOneWidget);
+    });
+
+    testWidgets(
+        'in debug mode, "Voir les cartes" opens the library screen',
+        (tester) async {
+      // Tests run in debug mode, so the discreet library link is
+      // expected to be visible.
+      await tester.pumpWidget(_buildApp(fixture: _threeCardsFixture));
+
+      // Retired label must not appear.
       expect(find.text('Découvrir les cartes'), findsNothing);
 
       await tester.tap(find.text('Voir les cartes'));
@@ -153,7 +198,10 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(tester.takeException(), isNull);
-      expect(find.text('Découvrir mon message'), findsOneWidget);
+      expect(
+        find.text('Découvrir mon message du jour'),
+        findsOneWidget,
+      );
     });
   });
 }

@@ -7,7 +7,7 @@ import 'package:pile_ou_face/features/tarot/services/tarot_draw_service.dart';
 
 void main() {
   testWidgets(
-      'Home screen exposes the validated positioning and primary actions',
+      'Home screen exposes the five intent-based entry points and footer',
       (WidgetTester tester) async {
     final repository = TarotRepository(loader: (_) async => '[]');
     final drawService = TarotDrawService(repository: repository);
@@ -23,11 +23,19 @@ void main() {
 
     expect(find.text('Pile ou Face'), findsOneWidget);
     expect(find.text('Pile ou Face a un message pour toi.'), findsOneWidget);
-    expect(find.text('Découvrir mon message'), findsOneWidget);
-    expect(find.text('Éclairer une situation'), findsOneWidget);
-    expect(find.text('Voir les cartes'), findsOneWidget);
+
+    // Five product-validated entry points.
+    expect(find.text('Découvrir mon message du jour'), findsOneWidget);
+    expect(find.text('Je me pose une question'), findsOneWidget);
+    expect(find.text('Je me pose une question d’amour'), findsOneWidget);
+    expect(find.text('Je me pose une question de travail'), findsOneWidget);
+    expect(find.text('Je me pose une question d’argent'), findsOneWidget);
+
+    // Retired labels must not reappear.
+    expect(find.text('Découvrir mon message'), findsNothing);
+    expect(find.text('Éclairer une situation'), findsNothing);
     expect(find.text('Faire un tirage 3 cartes'), findsNothing);
-    expect(find.text('Découvrir les cartes'), findsNothing);
+
     expect(find.text('Libre à toi de l’interpréter.'), findsOneWidget);
     expect(
       find.text('Application de divertissement et d’introspection.'),

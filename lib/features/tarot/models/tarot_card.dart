@@ -13,6 +13,7 @@ class TarotCard {
     required this.meaningReversed,
     required this.love,
     required this.work,
+    required this.money,
     required this.advice,
     required this.warning,
     required this.shortMessage,
@@ -37,6 +38,7 @@ class TarotCard {
       meaningReversed: json['meaning_reversed'] as String,
       love: json['love'] as String,
       work: json['work'] as String,
+      money: json['money'] as String,
       advice: json['advice'] as String,
       warning: json['warning'] as String,
       shortMessage: json['short_message'] as String,
@@ -55,6 +57,7 @@ class TarotCard {
   final String meaningReversed;
   final String love;
   final String work;
+  final String money;
   final String advice;
   final String warning;
   final String shortMessage;

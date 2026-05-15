@@ -35,6 +35,7 @@ void main() {
             reason: '${c.id}.meaning_reversed');
         expect(c.love.trim(), isNotEmpty, reason: '${c.id}.love');
         expect(c.work.trim(), isNotEmpty, reason: '${c.id}.work');
+        expect(c.money.trim(), isNotEmpty, reason: '${c.id}.money');
         expect(c.advice.trim(), isNotEmpty, reason: '${c.id}.advice');
         expect(c.warning.trim(), isNotEmpty, reason: '${c.id}.warning');
         expect(c.shortMessage.trim(), isNotEmpty,

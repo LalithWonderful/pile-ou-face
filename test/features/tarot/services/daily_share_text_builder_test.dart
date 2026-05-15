@@ -18,6 +18,7 @@ DrawnCard _drawnSample({String shareMessage = _sampleShareMessage}) {
     meaningReversed: 'Dispersion.',
     love: 'Souffle frais.',
     work: 'Idée à oser.',
+    money: 'Vérifie avant de t’engager.',
     advice: 'Avance d’un pas.',
     warning: 'Sois honnête avec toi.',
     shortMessage: 'Un pas neuf.',
