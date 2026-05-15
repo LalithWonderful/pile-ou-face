@@ -1,24 +1,35 @@
 import 'package:flutter/material.dart';
 
 import '../../../../app/app_theme.dart';
-import '../widgets/spread_picker_sheet.dart';
+import '../../models/tarot_spread.dart';
 import 'cards_library_screen.dart';
 import 'reading_screen.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
-  Future<void> _openReading(BuildContext context) async {
-    final spread = await showSpreadPicker(context);
-    if (spread == null || !context.mounted) return;
-    await Navigator.of(context).push(
-      MaterialPageRoute<void>(builder: (_) => ReadingScreen(spread: spread)),
+  void _openDailyMessage(BuildContext context) {
+    Navigator.of(context).push(
+      MaterialPageRoute<void>(
+        builder: (_) => const ReadingScreen(isDaily: true),
+      ),
+    );
+  }
+
+  void _openThreeCardsReading(BuildContext context) {
+    Navigator.of(context).push(
+      MaterialPageRoute<void>(
+        builder: (_) =>
+            const ReadingScreen(spread: TarotSpread.threeCards),
+      ),
     );
   }
 
   void _openLibrary(BuildContext context) {
     Navigator.of(context).push(
-      MaterialPageRoute<void>(builder: (_) => const CardsLibraryScreen()),
+      MaterialPageRoute<void>(
+        builder: (_) => const CardsLibraryScreen(),
+      ),
     );
   }
 
@@ -43,32 +54,49 @@ class HomeScreen extends StatelessWidget {
                   letterSpacing: 1.2,
                 ),
               ),
-              const SizedBox(height: 12),
+              const SizedBox(height: 16),
               Text(
-                'Tirages symboliques en français',
+                'Pile ou Face a un message pour toi.',
                 textAlign: TextAlign.center,
                 style: textTheme.titleMedium?.copyWith(
-                  color: AppColors.subtle,
+                  color: AppColors.deepGreen,
                   fontStyle: FontStyle.italic,
+                  height: 1.4,
                 ),
               ),
               const Spacer(flex: 3),
-              ElevatedButton(
-                onPressed: () => _openReading(context),
-                child: const Text('Commencer un tirage'),
+              ElevatedButton.icon(
+                onPressed: () => _openDailyMessage(context),
+                icon: const Icon(Icons.auto_awesome),
+                label: const Text('Découvrir mon message'),
               ),
-              const SizedBox(height: 14),
+              const SizedBox(height: 12),
               OutlinedButton(
+                onPressed: () => _openThreeCardsReading(context),
+                child: const Text('Faire un tirage 3 cartes'),
+              ),
+              const SizedBox(height: 12),
+              TextButton(
                 onPressed: () => _openLibrary(context),
                 child: const Text('Découvrir les cartes'),
               ),
               const Spacer(flex: 2),
               Text(
+                'Libre à toi de l’interpréter.',
+                textAlign: TextAlign.center,
+                style: textTheme.bodyMedium?.copyWith(
+                  color: AppColors.deepGreen,
+                  fontStyle: FontStyle.italic,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+              const SizedBox(height: 6),
+              Text(
                 'Application de divertissement et d’introspection.',
                 textAlign: TextAlign.center,
                 style: textTheme.bodySmall?.copyWith(
                   color: AppColors.subtle,
-                  fontSize: 12,
+                  fontSize: 11,
                 ),
               ),
               const SizedBox(height: 8),

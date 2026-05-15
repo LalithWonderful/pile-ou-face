@@ -8,9 +8,14 @@ import '../widgets/card_art_placeholder.dart';
 import '../widgets/drawn_card_view.dart';
 
 class ReadingScreen extends StatefulWidget {
-  const ReadingScreen({super.key, required this.spread});
+  const ReadingScreen({
+    super.key,
+    this.spread = TarotSpread.single,
+    this.isDaily = false,
+  });
 
   final TarotSpread spread;
+  final bool isDaily;
 
   @override
   State<ReadingScreen> createState() => _ReadingScreenState();
@@ -21,14 +26,37 @@ class _ReadingScreenState extends State<ReadingScreen> {
   Object? _error;
   bool _loading = false;
 
+  TarotSpread get _effectiveSpread =>
+      widget.isDaily ? TarotSpread.single : widget.spread;
+
+  String get _appBarTitle =>
+      widget.isDaily ? 'Mon message du jour' : widget.spread.label;
+
+  String get _idleDescription => widget.isDaily
+      ? 'Pile ou Face a un message pour toi. Prends un instant, puis révèle-le.'
+      : widget.spread.description;
+
+  String get _idleCta =>
+      widget.isDaily ? 'Révéler mon message' : 'Révéler le tirage';
+
+  String get _idleHint => widget.isDaily
+      ? 'Libre à toi de l’interpréter.'
+      : 'Prenez un instant, puis révélez votre tirage.';
+
   Future<void> _reveal() async {
     setState(() {
       _loading = true;
       _error = null;
     });
     try {
-      final draw =
-          await TarotScope.of(context).drawService.draw(widget.spread);
+      final scope = TarotScope.of(context);
+      final List<DrawnCard> draw;
+      if (widget.isDaily) {
+        final daily = await scope.dailyService.getOrCreateToday();
+        draw = <DrawnCard>[daily];
+      } else {
+        draw = await scope.drawService.draw(widget.spread);
+      }
       if (!mounted) return;
       setState(() {
         _result = draw;
@@ -54,7 +82,7 @@ class _ReadingScreenState extends State<ReadingScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text(widget.spread.label)),
+      appBar: AppBar(title: Text(_appBarTitle)),
       body: SafeArea(
         child: AnimatedSwitcher(
           duration: const Duration(milliseconds: 350),
@@ -78,15 +106,19 @@ class _ReadingScreenState extends State<ReadingScreen> {
     if (result == null) {
       return _IdleState(
         key: const ValueKey('idle'),
-        spread: widget.spread,
+        spread: _effectiveSpread,
+        description: _idleDescription,
+        ctaLabel: _idleCta,
+        hint: _idleHint,
         loading: _loading,
         onReveal: _reveal,
       );
     }
     return _RevealedState(
       key: const ValueKey('revealed'),
-      spread: widget.spread,
+      spread: _effectiveSpread,
       drawn: result,
+      isDaily: widget.isDaily,
       onRedraw: _redraw,
     );
   }
@@ -96,11 +128,17 @@ class _IdleState extends StatelessWidget {
   const _IdleState({
     super.key,
     required this.spread,
+    required this.description,
+    required this.ctaLabel,
+    required this.hint,
     required this.loading,
     required this.onReveal,
   });
 
   final TarotSpread spread;
+  final String description;
+  final String ctaLabel;
+  final String hint;
   final bool loading;
   final VoidCallback onReveal;
 
@@ -117,7 +155,7 @@ class _IdleState extends StatelessWidget {
         children: [
           const Spacer(),
           Text(
-            spread.description,
+            description,
             textAlign: TextAlign.center,
             style: textTheme.bodyMedium?.copyWith(
               color: AppColors.subtle,
@@ -142,7 +180,7 @@ class _IdleState extends StatelessWidget {
           ),
           const SizedBox(height: 24),
           Text(
-            'Prenez un instant, puis révélez votre tirage.',
+            hint,
             textAlign: TextAlign.center,
             style: textTheme.bodySmall?.copyWith(color: AppColors.subtle),
           ),
@@ -159,7 +197,7 @@ class _IdleState extends StatelessWidget {
                     ),
                   )
                 : const Icon(Icons.auto_awesome),
-            label: Text(loading ? 'Révélation…' : 'Révéler le tirage'),
+            label: Text(loading ? 'Révélation…' : ctaLabel),
           ),
         ],
       ),
@@ -172,15 +210,18 @@ class _RevealedState extends StatelessWidget {
     super.key,
     required this.spread,
     required this.drawn,
+    required this.isDaily,
     required this.onRedraw,
   });
 
   final TarotSpread spread;
   final List<DrawnCard> drawn;
+  final bool isDaily;
   final VoidCallback onRedraw;
 
   @override
   Widget build(BuildContext context) {
+    final hasRedraw = !isDaily;
     return ListView.separated(
       padding: const EdgeInsets.fromLTRB(20, 16, 20, 28),
       itemCount: drawn.length + 1,
@@ -198,15 +239,48 @@ class _RevealedState extends StatelessWidget {
         return _StaggeredReveal(
           index: drawn.length,
           child: Padding(
-            padding: const EdgeInsets.only(top: 8),
-            child: OutlinedButton.icon(
-              onPressed: onRedraw,
-              icon: const Icon(Icons.refresh),
-              label: const Text('Retirer une carte'),
-            ),
+            padding: const EdgeInsets.only(top: 4),
+            child: hasRedraw
+                ? OutlinedButton.icon(
+                    onPressed: onRedraw,
+                    icon: const Icon(Icons.refresh),
+                    label: const Text('Faire un autre tirage'),
+                  )
+                : const _DailyFooter(),
           ),
         );
       },
+    );
+  }
+}
+
+class _DailyFooter extends StatelessWidget {
+  const _DailyFooter();
+
+  @override
+  Widget build(BuildContext context) {
+    final textTheme = Theme.of(context).textTheme;
+    return Column(
+      children: [
+        Text(
+          'Libre à toi de l’interpréter.',
+          textAlign: TextAlign.center,
+          style: textTheme.bodyMedium?.copyWith(
+            color: AppColors.deepGreen,
+            fontStyle: FontStyle.italic,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+        const SizedBox(height: 6),
+        Text(
+          'Application de divertissement et d’introspection.',
+          textAlign: TextAlign.center,
+          style: textTheme.bodySmall?.copyWith(
+            color: AppColors.subtle,
+            fontSize: 11,
+          ),
+        ),
+      ],
     );
   }
 }
