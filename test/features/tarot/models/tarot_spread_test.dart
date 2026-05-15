@@ -9,19 +9,30 @@ void main() {
       expect(spread.positions, hasLength(1));
     });
 
-    test('threeCards spread uses introspective labels', () {
+    test('threeCards spread uses introspective product-voice labels', () {
       const spread = TarotSpread.threeCards;
       expect(spread.cardCount, 3);
-      expect(spread.positions, ['Situation', 'Énergie', 'Conseil']);
+      expect(
+        spread.positions,
+        ['Là où tu en es', 'L’énergie du moment', 'Le conseil'],
+      );
+      expect(spread.label, 'Éclairer une situation');
     });
 
-    test('threeCards no longer uses passé/présent/futur', () {
+    test('threeCards no longer exposes any of the previously retired labels',
+        () {
       const spread = TarotSpread.threeCards;
-      for (final legacy in ['Passé', 'Présent', 'Futur']) {
+      const retired = <String>[
+        // Lot 3 era (passé / présent / futur).
+        'Passé', 'Présent', 'Futur',
+        // Lot 4-9 era (Situation / Énergie / Conseil bare).
+        'Situation', 'Énergie', 'Conseil',
+      ];
+      for (final label in retired) {
         expect(
-          spread.positions.contains(legacy),
+          spread.positions.contains(label),
           isFalse,
-          reason: 'legacy label "$legacy" should have been replaced',
+          reason: 'retired label "$label" should have been replaced',
         );
       }
     });

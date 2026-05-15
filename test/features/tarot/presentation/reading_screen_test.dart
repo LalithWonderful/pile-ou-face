@@ -414,8 +414,8 @@ void main() {
       expect(tester.takeException(), isNull);
       // First slot is rendered eagerly by the ListView; the others come
       // through scroll, which is the expected behaviour on a narrow
-      // phone.
-      expect(find.text('SITUATION'), findsOneWidget);
+      // phone. Position chip uses the product-voice wording.
+      expect(find.text('LÀ OÙ TU EN ES'), findsOneWidget);
     });
 
     testWidgets('daily mode renders at 1.4x text scaling', (tester) async {

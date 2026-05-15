@@ -96,7 +96,9 @@ void main() {
       );
       expect(find.text('Relations'.toUpperCase()), findsOneWidget);
       expect(find.text('Travail / projets'.toUpperCase()), findsOneWidget);
-      expect(find.text('INVITATION'), findsOneWidget);
+      expect(find.text('LE PETIT MOT'), findsOneWidget);
+      // The previous "INVITATION" label has been retired in lot 10.
+      expect(find.text('INVITATION'), findsNothing);
       expect(find.text('À GARDER À L’ESPRIT'), findsOneWidget);
     });
 

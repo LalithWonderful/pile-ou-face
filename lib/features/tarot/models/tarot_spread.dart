@@ -6,10 +6,13 @@ enum TarotSpread {
     positions: ['Aujourd’hui'],
   ),
   threeCards(
-    label: 'Tirage en trois cartes',
-    description: 'Une situation, son énergie, et le conseil qui s’y rattache.',
+    label: 'Éclairer une situation',
+    description:
+        'Pense à une situation. Pile ou Face t’aide à la regarder sous '
+        'trois angles : là où tu en es, l’énergie du moment, et le '
+        'conseil à garder.',
     cardCount: 3,
-    positions: ['Situation', 'Énergie', 'Conseil'],
+    positions: ['Là où tu en es', 'L’énergie du moment', 'Le conseil'],
   );
 
   const TarotSpread({

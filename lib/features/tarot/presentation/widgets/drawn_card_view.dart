@@ -106,7 +106,7 @@ class DrawnCardView extends StatelessWidget {
           ),
           const SizedBox(height: 14),
           AccentPanel(
-            label: 'CONSEIL',
+            label: 'LE PETIT MOT',
             icon: Icons.auto_awesome,
             accent: AppColors.softGold,
             background: AppColors.softGold.withValues(alpha: 0.14),

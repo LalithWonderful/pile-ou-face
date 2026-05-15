@@ -93,22 +93,30 @@ void main() {
       expect(find.text('Révéler mon message'), findsOneWidget);
     });
 
-    testWidgets('"Faire un tirage 3 cartes" opens the free three-card screen',
+    testWidgets('"Éclairer une situation" opens the free three-card screen',
         (tester) async {
       await tester.pumpWidget(_buildApp(fixture: _threeCardsFixture));
 
-      await tester.tap(find.text('Faire un tirage 3 cartes'));
+      // The new secondary CTA replaces "Faire un tirage 3 cartes".
+      expect(find.text('Faire un tirage 3 cartes'), findsNothing);
+
+      await tester.tap(find.text('Éclairer une situation'));
       await tester.pumpAndSettle();
 
-      expect(find.text('Tirage en trois cartes'), findsOneWidget);
+      // The destination screen now reuses the same product wording in
+      // its AppBar (spread label aligned with the home CTA).
+      expect(find.text('Éclairer une situation'), findsAtLeastNWidgets(1));
       expect(find.text('Révéler le tirage'), findsOneWidget);
     });
 
-    testWidgets('"Découvrir les cartes" opens the library screen',
+    testWidgets('"Voir les cartes" opens the library screen',
         (tester) async {
       await tester.pumpWidget(_buildApp(fixture: _threeCardsFixture));
 
-      await tester.tap(find.text('Découvrir les cartes'));
+      // Old "Découvrir les cartes" label must no longer appear.
+      expect(find.text('Découvrir les cartes'), findsNothing);
+
+      await tester.tap(find.text('Voir les cartes'));
       await tester.pumpAndSettle();
 
       expect(find.text('Bibliothèque des cartes'), findsOneWidget);

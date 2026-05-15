@@ -79,7 +79,7 @@ class CardDetailScreen extends StatelessWidget {
               _Section(title: 'Travail / projets', body: card.work),
               const SizedBox(height: 22),
               AccentPanel(
-                label: 'INVITATION',
+                label: 'LE PETIT MOT',
                 icon: Icons.auto_awesome,
                 accent: AppColors.softGold,
                 background: AppColors.softGold.withValues(alpha: 0.14),

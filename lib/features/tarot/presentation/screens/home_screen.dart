@@ -73,12 +73,12 @@ class HomeScreen extends StatelessWidget {
               const SizedBox(height: 12),
               OutlinedButton(
                 onPressed: () => _openThreeCardsReading(context),
-                child: const Text('Faire un tirage 3 cartes'),
+                child: const Text('Éclairer une situation'),
               ),
               const SizedBox(height: 12),
               TextButton(
                 onPressed: () => _openLibrary(context),
-                child: const Text('Découvrir les cartes'),
+                child: const Text('Voir les cartes'),
               ),
               const Spacer(flex: 2),
               Text(
