@@ -350,6 +350,7 @@ class _RevealedState extends StatelessWidget {
               position: multi ? spread.positions[index] : null,
               positionIndex: multi ? index : null,
               intent: intent,
+              expanded: isDaily,
             ),
           );
         }

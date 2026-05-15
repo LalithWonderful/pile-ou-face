@@ -13,6 +13,7 @@ class DrawnCardView extends StatelessWidget {
     this.position,
     this.positionIndex,
     this.intent,
+    this.expanded = false,
   });
 
   final DrawnCard drawnCard;
@@ -30,6 +31,11 @@ class DrawnCardView extends StatelessWidget {
   /// matching domain field of the card is shown if no validated
   /// position reading exists.
   final ReadingIntent? intent;
+
+  /// When true the card art is rendered edge-to-edge in a wide
+  /// horizontal aspect ratio (daily message). Defaults to the
+  /// classic narrow portrait format.
+  final bool expanded;
 
   String? _positionBody() {
     final meanings = drawnCard.card.spreadMeanings;
@@ -113,12 +119,19 @@ class DrawnCardView extends StatelessWidget {
             ),
             const SizedBox(height: 10),
           ],
-          Center(
-            child: CardArtPlaceholder(
-              variant: CardArtVariant.faceUp,
-              card: card,
-              width: 130,
-            ),
+          LayoutBuilder(
+            builder: (context, constraints) {
+              final imageWidth = expanded ? constraints.maxWidth : 130.0;
+              final aspectRatio = expanded ? 16 / 9 : 1 / 1.6;
+              return Center(
+                child: CardArtPlaceholder(
+                  variant: CardArtVariant.faceUp,
+                  card: card,
+                  width: imageWidth,
+                  aspectRatio: aspectRatio,
+                ),
+              );
+            },
           ),
           const SizedBox(height: 16),
           Text(

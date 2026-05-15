@@ -3,9 +3,19 @@
     "id": "le_mat",
     "number": 0,
     "name": "Le Mat",
-    "image_path": null,
-    "keywords_upright": ["liberté", "commencement", "élan", "spontanéité"],
-    "keywords_reversed": ["dispersion", "imprudence", "fuite", "indécision"],
+    "image_path": "assets/tarot/major_arcana/00_le_mat.jpg",
+    "keywords_upright": [
+      "liberté",
+      "commencement",
+      "élan",
+      "spontanéité"
+    ],
+    "keywords_reversed": [
+      "dispersion",
+      "imprudence",
+      "fuite",
+      "indécision"
+    ],
     "meaning_upright": "Tu as peut-être trop serré les choses. Le Mat te rappelle que vivre, ce n’est pas toujours maîtriser. Lâche prise, respire, fais-toi plaisir.",
     "meaning_reversed": "Peut-être que tu te disperses un peu en ce moment, ou que tu hésites à t’engager. Rien d’urgent : tu peux poser un point d’ancrage avant de repartir.",
     "love": "En amour, Le Mat parle d’un élan simple, d’une envie de vivre sans tout analyser. Laisse un peu de place au plaisir, à la surprise, au moment présent.",
@@ -20,15 +30,29 @@
       "current_energy": "L’énergie pousse au lâcher-prise. Quelque chose devient plus léger dès que tu arrêtes de vouloir tout maîtriser. Le plaisir, la spontanéité ou l’imprévu peuvent te remettre en mouvement.",
       "advice": "Fais-toi plaisir, respire, autorise-toi un pas plus libre. Mais garde juste assez de conscience pour ne pas confondre légèreté et fuite."
     },
-    "tags": ["commencement", "liberté", "mouvement"]
+    "tags": [
+      "commencement",
+      "liberté",
+      "mouvement"
+    ]
   },
   {
     "id": "le_bateleur",
     "number": 1,
-    "name": "Le Bateleur",
-    "image_path": null,
-    "keywords_upright": ["initiative", "potentiel", "savoir-faire", "action"],
-    "keywords_reversed": ["hésitation", "dispersion", "esbroufe", "doute"],
+    "name": "La Magicienne",
+    "image_path": "assets/tarot/major_arcana/01_la_magicienne.jpg",
+    "keywords_upright": [
+      "initiative",
+      "potentiel",
+      "savoir-faire",
+      "action"
+    ],
+    "keywords_reversed": [
+      "hésitation",
+      "dispersion",
+      "esbroufe",
+      "doute"
+    ],
     "meaning_upright": "Tu as déjà quelque chose entre les mains. Le Bateleur te rappelle que le premier pas ne demande pas d’être parfait, seulement d’être réel. Commence petit, mais commence vraiment.",
     "meaning_reversed": "Si tu te sens dispersé·e, c’est peut-être le moment de poser une chose à la fois, sans forcer.",
     "love": "En amour, Le Bateleur parle d’un début, d’un jeu de séduction, d’une possibilité encore fraîche. C’est vivant, mais encore fragile : regarde les actes autant que les mots.",
@@ -43,15 +67,29 @@
       "current_energy": "L’énergie est au démarrage. Il y a du potentiel, des outils, des possibilités. Rien n’est encore totalement construit, mais quelque chose peut commencer maintenant.",
       "advice": "Commence petit, mais commence vraiment. Ne reste pas bloqué·e à préparer ou à imaginer : choisis une action simple qui transforme l’intention en mouvement."
     },
-    "tags": ["initiative", "potentiel", "action"]
+    "tags": [
+      "initiative",
+      "potentiel",
+      "action"
+    ]
   },
   {
     "id": "la_papesse",
     "number": 2,
     "name": "La Papesse",
-    "image_path": null,
-    "keywords_upright": ["intuition", "savoir intérieur", "silence", "patience"],
-    "keywords_reversed": ["secret", "doute", "repli", "rumination"],
+    "image_path": "assets/tarot/major_arcana/02_la_papesse.jpg",
+    "keywords_upright": [
+      "intuition",
+      "savoir intérieur",
+      "silence",
+      "patience"
+    ],
+    "keywords_reversed": [
+      "secret",
+      "doute",
+      "repli",
+      "rumination"
+    ],
     "meaning_upright": "Tu n’as pas besoin de tout dire, ni de tout décider maintenant. La Papesse te rappelle que certaines réponses demandent du silence pour remonter. Écoute ce que tu sens avant de chercher à le prouver.",
     "meaning_reversed": "Tu portes peut-être quelque chose qui demanderait à être dit, à toi-même d’abord. Aucune urgence — juste, ne plus te cacher de toi.",
     "love": "En amour, La Papesse parle de non-dits, d’intuition et de ressentis silencieux. Si quelque chose te travaille, ne l’ignore pas : ton cœur a peut-être compris avant tes mots.",
@@ -66,15 +104,29 @@
       "current_energy": "L’énergie est discrète, intérieure, presque silencieuse. Ce n’est pas forcément le moment de forcer : observe, écoute, laisse les choses se révéler à leur rythme.",
       "advice": "Ralentis. Ne cherche pas à prouver tout de suite ce que tu sens. Si ton silence t’apaise, écoute-le ; s’il t’enferme, il sera bientôt temps de parler."
     },
-    "tags": ["intuition", "silence", "patience"]
+    "tags": [
+      "intuition",
+      "silence",
+      "patience"
+    ]
   },
   {
     "id": "l_imperatrice",
     "number": 3,
     "name": "L’Impératrice",
-    "image_path": null,
-    "keywords_upright": ["créativité", "abondance", "douceur", "fertilité"],
-    "keywords_reversed": ["blocage", "saturation", "dépendance", "négligence"],
+    "image_path": "assets/tarot/major_arcana/03_l_imperatrice.jpg",
+    "keywords_upright": [
+      "créativité",
+      "abondance",
+      "douceur",
+      "fertilité"
+    ],
+    "keywords_reversed": [
+      "blocage",
+      "saturation",
+      "dépendance",
+      "négligence"
+    ],
     "meaning_upright": "L’Impératrice parle de ce qui peut naître, grandir ou se renforcer. Un projet, un lien, une idée, une relation : quelque chose demande à être nourri avec présence. Ce que tu sèmes maintenant peut vraiment porter ses fruits.",
     "meaning_reversed": "Peut-être que tu donnes beaucoup, sans toujours recevoir. Tu peux t’accorder à toi-même ce que tu offres aux autres.",
     "love": "En amour, L’Impératrice est une belle carte de lien, de dialogue et de consolidation. Elle peut parler d’un couple qui se construit, d’un engagement, d’un mariage, d’un contrat ou d’un projet commun. Si la relation traverse une difficulté, elle invite à rouvrir le dialogue plutôt qu’à laisser les non-dits s’installer.",
@@ -89,15 +141,29 @@
       "current_energy": "L’énergie est fertile. Ce que tu nourris maintenant peut évoluer dans le bon sens, surtout si tu y mets du soin, du dialogue et une vraie implication.",
       "advice": "Nourris ce qui compte. Crée, parle, rapproche-toi, donne une forme concrète à ce que tu veux voir grandir. L’abondance répond souvent à ce qu’on entretient vraiment."
     },
-    "tags": ["créativité", "abondance", "douceur"]
+    "tags": [
+      "créativité",
+      "abondance",
+      "douceur"
+    ]
   },
   {
     "id": "l_empereur",
     "number": 4,
     "name": "L’Empereur",
-    "image_path": null,
-    "keywords_upright": ["structure", "autorité", "stabilité", "cadre"],
-    "keywords_reversed": ["rigidité", "contrôle", "autoritarisme", "perte de repères"],
+    "image_path": "assets/tarot/major_arcana/04_l_empereur.jpg",
+    "keywords_upright": [
+      "structure",
+      "autorité",
+      "stabilité",
+      "cadre"
+    ],
+    "keywords_reversed": [
+      "rigidité",
+      "contrôle",
+      "autoritarisme",
+      "perte de repères"
+    ],
     "meaning_upright": "L’Empereur te ramène au concret. Si tu veux que quelque chose tienne, il faut poser un cadre clair : des limites, des décisions, des bases solides. Ce n’est pas le moment de tout laisser flotter.",
     "meaning_reversed": "Si tu te sens à l’étroit, ou à l’inverse sans repère, c’est peut-être le moment d’ajuster ce qui t’entoure — avec douceur.",
     "love": "En amour, L’Empereur parle de stabilité, d’engagement et de relation qui cherche à se construire dans le réel. Il peut annoncer un lien solide, une personne fiable, ou le besoin de clarifier les bases du couple. Si tout repose sur le flou, cette carte invite à parler concret.",
@@ -112,15 +178,29 @@
       "current_energy": "L’énergie demande du concret. Ce qui reste flou a besoin d’un cadre, d’une limite ou d’une décision claire pour devenir stable.",
       "advice": "Pose le cadre. Dis ce qui est acceptable, ce qui ne l’est plus, et ce que tu veux construire. La solidité commence souvent par une décision nette."
     },
-    "tags": ["structure", "stabilité", "décision"]
+    "tags": [
+      "structure",
+      "stabilité",
+      "décision"
+    ]
   },
   {
     "id": "le_pape",
     "number": 5,
     "name": "Le Pape",
-    "image_path": null,
-    "keywords_upright": ["transmission", "guidance", "valeurs", "sens"],
-    "keywords_reversed": ["dogmatisme", "conformisme", "moralisme", "perte de sens"],
+    "image_path": "assets/tarot/major_arcana/05_le_pape.jpg",
+    "keywords_upright": [
+      "transmission",
+      "guidance",
+      "valeurs",
+      "sens"
+    ],
+    "keywords_reversed": [
+      "dogmatisme",
+      "conformisme",
+      "moralisme",
+      "perte de sens"
+    ],
     "meaning_upright": "Le Pape te ramène au cadre : les règles, les habitudes, les engagements, le regard du groupe. Certaines règles protègent, d’autres enferment. La vraie question est simple : ce cadre t’aide-t-il à construire quelque chose de solide, ou t’empêche-t-il d’être honnête avec toi-même ?",
     "meaning_reversed": "Si une voix extérieure te pèse, tu peux reprendre la main sur ce qui te ressemble vraiment.",
     "love": "En amour, Le Pape parle souvent d’engagement, de relation qui se pose, de couple officiel, de mariage, de PACS ou de projet reconnu par les proches. Mais il interroge aussi la pression sociale : veux-tu construire cette relation parce qu’elle est juste pour toi, ou parce qu’elle correspond à ce qu’on attend de toi ? Si le couple est en difficulté, cette carte peut montrer l’envie de sauver le lien, les apparences ou la famille — même quand une vraie discussion devient nécessaire.",
@@ -135,15 +215,29 @@
       "current_energy": "L’énergie parle de règles, d’engagements et de normes. Ce qui se joue peut demander de respecter un cadre, d’officialiser quelque chose, ou au contraire de voir clairement la pression que ce cadre exerce sur toi.",
       "advice": "Ne rejette pas le cadre par réflexe, mais ne t’y soumets pas par peur. Choisis ce que tu respectes vraiment, et laisse le reste à ceux qui en ont besoin."
     },
-    "tags": ["transmission", "valeurs", "guidance"]
+    "tags": [
+      "transmission",
+      "valeurs",
+      "guidance"
+    ]
   },
   {
     "id": "les_amoureux",
     "number": 6,
     "name": "Les Amoureux",
-    "image_path": null,
-    "keywords_upright": ["choix", "lien", "alignement", "rencontre"],
-    "keywords_reversed": ["hésitation", "déséquilibre", "tentation", "ambiguïté"],
+    "image_path": "assets/tarot/major_arcana/06_les_amoureux.jpg",
+    "keywords_upright": [
+      "choix",
+      "lien",
+      "alignement",
+      "rencontre"
+    ],
+    "keywords_reversed": [
+      "hésitation",
+      "déséquilibre",
+      "tentation",
+      "ambiguïté"
+    ],
     "meaning_upright": "Les Amoureux parlent d’un lien, d’un choix ou d’une alliance qui doit être juste pour toi. Ce n’est pas seulement une question d’envie : c’est une question d’accord profond entre ce que tu ressens, ce que tu veux, et les valeurs que tu ne veux plus mettre de côté.",
     "meaning_reversed": "Si tu hésites depuis un moment, c’est OK. Tu peux clarifier ce qui compte, sans te juger pour le temps que ça prend.",
     "love": "En amour, Les Amoureux sont une très belle carte de réciprocité, de complicité et de lien sincère. Elle peut parler d’une relation qui se renforce, d’un amour qui arrive, ou d’un choix important du cœur. Si le couple traverse une difficulté, cette carte invite à revenir à l’essentiel : est-ce que vous vous choisissez vraiment, avec respect, dialogue et valeurs communes ?",
@@ -158,15 +252,29 @@
       "current_energy": "L’énergie parle d’alliance, d’attirance ou d’harmonie possible. Deux forces peuvent se rejoindre, à condition que le lien soit réciproque et que chacun avance avec sincérité.",
       "advice": "Choisis avec ton cœur, mais pas contre toi-même. Ce qui est juste pour toi doit pouvoir respecter ton désir, tes valeurs et ta paix intérieure."
     },
-    "tags": ["choix", "lien", "alignement"]
+    "tags": [
+      "choix",
+      "lien",
+      "alignement"
+    ]
   },
   {
     "id": "le_chariot",
     "number": 7,
     "name": "Le Chariot",
-    "image_path": null,
-    "keywords_upright": ["élan", "victoire", "direction", "détermination"],
-    "keywords_reversed": ["dispersion", "perte de contrôle", "précipitation", "doute"],
+    "image_path": "assets/tarot/major_arcana/07_le_chariot.jpg",
+    "keywords_upright": [
+      "élan",
+      "victoire",
+      "direction",
+      "détermination"
+    ],
+    "keywords_reversed": [
+      "dispersion",
+      "perte de contrôle",
+      "précipitation",
+      "doute"
+    ],
     "meaning_upright": "Quand ton cap est clair, les portes s’ouvrent plus facilement. Le Chariot te rappelle que tu as déjà les clés : il reste à prendre les rênes, avancer pas à pas, et utiliser ce que tu as entre les mains.",
     "meaning_reversed": "Si tu cours sans savoir vraiment où, ralentir une minute peut éviter pas mal de détours.",
     "love": "En amour, Le Chariot t’invite à ne plus subir. Si tu sais ce que tu veux vivre, avance avec clarté : ose le premier pas, exprime tes attentes, ou demande la discussion qui manque. Une relation peut progresser si chacun sait vraiment vers quoi il veut aller.",
@@ -181,15 +289,29 @@
       "current_energy": "L’énergie pousse à l’avancée. Si ton cap est clair, les choses peuvent progresser vite, surtout si tu restes concentré·e sur ton objectif et que tu ne te laisses pas disperser.",
       "advice": "Prends les rênes. Fixe ton cap, avance pas à pas, et ne cherche pas une solution parfaite avant de bouger. C’est l’action maîtrisée qui te montrera la suite."
     },
-    "tags": ["mouvement", "victoire", "direction"]
+    "tags": [
+      "mouvement",
+      "victoire",
+      "direction"
+    ]
   },
   {
     "id": "la_justice",
     "number": 8,
     "name": "La Justice",
-    "image_path": null,
-    "keywords_upright": ["équilibre", "vérité", "responsabilité", "clarté"],
-    "keywords_reversed": ["déséquilibre", "jugement biaisé", "évitement", "injustice"],
+    "image_path": "assets/tarot/major_arcana/08_la_justice.jpg",
+    "keywords_upright": [
+      "équilibre",
+      "vérité",
+      "responsabilité",
+      "clarté"
+    ],
+    "keywords_reversed": [
+      "déséquilibre",
+      "jugement biaisé",
+      "évitement",
+      "injustice"
+    ],
     "meaning_upright": "La Justice te ramène à une question simple : qu’est-ce qui est juste, au fond, même si ce n’est pas le plus confortable ? Cette carte ne parle pas de ce qui t’arrange, de ce que tu espères ou de ce que tu voudrais éviter. Elle parle des faits, des responsabilités, des choix et des conséquences. Il est temps de regarder la situation avec honnêteté, sans te victimiser, sans accuser trop vite, et sans te mentir à toi-même.",
     "meaning_reversed": "Si quelque chose tire dans tous les sens, peut-être qu’il manque une réalité simple à reconnaître, pour toi d’abord.",
     "love": "En amour, La Justice demande de l’honnêteté. Si quelque chose est déséquilibré, il faut le nommer. Si une décision doit être prise, elle doit reposer sur des faits, pas seulement sur la peur de perdre l’autre ou l’envie de sauver les apparences. Cette carte peut parler d’une clarification, d’un engagement, d’une séparation juste, ou d’un besoin de remettre de l’équilibre dans la relation.",
@@ -204,15 +326,29 @@
       "current_energy": "L’énergie demande de l’équilibre et de la clarté. Ce qui est flou, déséquilibré ou évité revient au centre. Une décision, une limite ou une vérité peut devoir être posée.",
       "advice": "Choisis proprement. Ne te cache pas derrière l’émotion, la peur ou l’envie de plaire. Regarde les conséquences, assume ta part, et pose une décision que tu peux regarder en face."
     },
-    "tags": ["équilibre", "vérité", "responsabilité"]
+    "tags": [
+      "équilibre",
+      "vérité",
+      "responsabilité"
+    ]
   },
   {
     "id": "l_ermite",
     "number": 9,
     "name": "L’Ermite",
-    "image_path": null,
-    "keywords_upright": ["recul", "sagesse", "introspection", "discernement"],
-    "keywords_reversed": ["isolement", "fuite", "rumination", "rigidité"],
+    "image_path": "assets/tarot/major_arcana/09_l_hermite.jpg",
+    "keywords_upright": [
+      "recul",
+      "sagesse",
+      "introspection",
+      "discernement"
+    ],
+    "keywords_reversed": [
+      "isolement",
+      "fuite",
+      "rumination",
+      "rigidité"
+    ],
     "meaning_upright": "L’Hermite te dit d’arrêter de courir partout pour éviter les vraies questions. Tu as besoin de recul, pas parce que tu es perdu·e, mais parce qu’une partie de toi sait très bien qu’elle ne peut plus faire semblant. Ce que tu cherches ne se trouvera pas dans le bruit, les avis des autres ou l’agitation du quotidien. Il est temps de regarder honnêtement ce que tu veux, ce que tu refuses, et ce qui n’a plus vraiment de sens pour toi.",
     "meaning_reversed": "Si la solitude pèse, c’est OK aussi. Tu peux laisser entrer un peu de présence amie, sans honte.",
     "love": "En amour, L’Hermite demande une vraie honnêteté. Si tu es en couple, arrête de faire comme si tout allait bien si quelque chose te pèse. Prends du recul et demande-toi clairement ce que tu veux construire, ce qui te manque, et ce que tu ne peux plus ignorer. Si tu cherches l’amour, cette carte peut indiquer que tu n’es pas encore totalement disponible : une ancienne blessure, une peur ou un schéma répétitif demande peut-être à être regardé avant de recommencer la même histoire avec une autre personne.",
@@ -227,15 +363,29 @@
       "current_energy": "L’énergie pousse à couper le bruit pour retrouver ta lucidité. Ce n’est pas une énergie rapide, mais elle peut être puissante : elle t’oblige à trier ce qui est vrai, ce qui est vide, et ce qui ne te correspond plus.",
       "advice": "Prends du recul sans te mentir. Éloigne-toi du bruit, pose les vraies questions, puis reviens avec une décision plus claire. Chercher la vérité ne sert à rien si tu refuses ensuite d’en faire quelque chose."
     },
-    "tags": ["introspection", "sagesse", "recul"]
+    "tags": [
+      "introspection",
+      "sagesse",
+      "recul"
+    ]
   },
   {
     "id": "la_roue_de_fortune",
     "number": 10,
     "name": "La Roue de Fortune",
-    "image_path": null,
-    "keywords_upright": ["cycle", "tournant", "mouvement", "opportunité"],
-    "keywords_reversed": ["stagnation", "résistance", "répétition", "imprévu mal vécu"],
+    "image_path": "assets/tarot/major_arcana/10_la_roue_de_fortune.jpg",
+    "keywords_upright": [
+      "cycle",
+      "tournant",
+      "mouvement",
+      "opportunité"
+    ],
+    "keywords_reversed": [
+      "stagnation",
+      "résistance",
+      "répétition",
+      "imprévu mal vécu"
+    ],
     "meaning_upright": "La Roue de Fortune te rappelle une vérité simple : rien ne reste figé. Une situation peut tourner, un cycle peut se fermer, une porte peut s’ouvrir, parfois sans prévenir. Tu ne contrôles pas tout, et c’est précisément pour ça qu’il faut arrêter de t’accrocher à ce qui bouge déjà. Ce qui compte maintenant, c’est ta capacité à t’adapter, à saisir le mouvement, et à ne pas rester bloqué·e sur l’ancienne version des choses.",
     "meaning_reversed": "Si tu sens que ça tourne en rond, peut-être qu’un tout petit détail à ajuster pourrait remettre la suite en mouvement.",
     "love": "En amour, La Roue de Fortune parle d’un tournant. Une relation peut évoluer, une rencontre peut arriver, un ancien schéma peut se répéter ou se terminer. Ne cherche pas à tout contrôler, mais ne ferme pas les yeux non plus : regarde ce que cette situation te montre sur tes cycles amoureux, tes choix et ta façon de réagir quand les choses changent.",
@@ -250,15 +400,29 @@
       "current_energy": "L’énergie est en mouvement. Les choses peuvent tourner plus vite que prévu, et ce qui semblait bloqué peut se remettre en marche. Reste attentif·ve : une ouverture peut apparaître là où tu ne l’attendais pas.",
       "advice": "Adapte-toi au mouvement au lieu de t’accrocher à l’ancien décor. Ne subis pas la roue : observe ce qu’elle change, saisis ce qui peut l’être, et garde assez de stabilité pour ne pas partir dans tous les sens."
     },
-    "tags": ["cycle", "tournant", "mouvement"]
+    "tags": [
+      "cycle",
+      "tournant",
+      "mouvement"
+    ]
   },
   {
     "id": "la_force",
     "number": 11,
     "name": "La Force",
-    "image_path": null,
-    "keywords_upright": ["courage", "douceur", "maîtrise", "confiance"],
-    "keywords_reversed": ["doute", "peur", "agressivité", "épuisement"],
+    "image_path": "assets/tarot/major_arcana/11_la_force.jpg",
+    "keywords_upright": [
+      "courage",
+      "douceur",
+      "maîtrise",
+      "confiance"
+    ],
+    "keywords_reversed": [
+      "doute",
+      "peur",
+      "agressivité",
+      "épuisement"
+    ],
     "meaning_upright": "La Force te rappelle que tu n’as pas besoin de tout écraser pour reprendre le contrôle. La vraie maîtrise commence quand tu ne laisses plus la peur, la colère ou l’impatience décider à ta place. Tu as plus de ressources que tu ne le crois, mais elles demandent du calme pour revenir à la surface.",
     "meaning_reversed": "Si tu te sens fatigué·e ou en doute, c’est aussi de la lucidité. Reconnaître la fatigue, c’est déjà une forme de force.",
     "love": "En amour, La Force parle de maturité émotionnelle, de confiance et de vulnérabilité assumée. En couple, elle invite à ne pas transformer une tension en rapport de force : pose tes limites avec calme, mais sans t’effacer. Si tu cherches l’amour, cette carte t’encourage à te présenter tel·le que tu es, sans te cacher derrière tes doutes ou tes défauts supposés.",
@@ -273,15 +437,29 @@
       "current_energy": "L’énergie demande du calme et de la maîtrise. Tu peux reprendre le contrôle, mais pas en forçant davantage : plutôt en canalisant ce qui déborde et en retrouvant ton axe intérieur.",
       "advice": "Respire avant de répondre. Tiens bon, mais ne t’écrase pas. Pose tes limites avec calme, avance avec patience, et rappelle-toi que la vraie force sait rester douce sans devenir faible."
     },
-    "tags": ["courage", "douceur", "maîtrise"]
+    "tags": [
+      "courage",
+      "douceur",
+      "maîtrise"
+    ]
   },
   {
     "id": "le_pendu",
     "number": 12,
     "name": "Le Pendu",
-    "image_path": null,
-    "keywords_upright": ["pause", "lâcher-prise", "perspective", "patience"],
-    "keywords_reversed": ["blocage", "sacrifice inutile", "passivité", "résistance"],
+    "image_path": "assets/tarot/major_arcana/12_le_pendu.jpg",
+    "keywords_upright": [
+      "pause",
+      "lâcher-prise",
+      "perspective",
+      "patience"
+    ],
+    "keywords_reversed": [
+      "blocage",
+      "sacrifice inutile",
+      "passivité",
+      "résistance"
+    ],
     "meaning_upright": "Le Pendu te met face à une réalité simple : ça ne bouge pas parce que tu ne peux pas régler cette situation avec les mêmes réflexes qu’avant. Plus tu forces, plus tu t’épuises. Cette carte ne te demande pas de subir, mais de suspendre l’agitation pour voir autrement. Quelque chose doit être lâché, déplacé ou compris différemment avant que la suite puisse se débloquer.",
     "meaning_reversed": "Si une attente s’éternise, c’est OK de reprendre la main, même par un petit geste.",
     "love": "En amour, Le Pendu parle d’une situation qui stagne ou d’un lien qui demande un autre regard. En couple, tu ne peux peut-être pas faire avancer les choses en insistant, en réclamant ou en contrôlant. Il faut comprendre ce qui bloque vraiment. Si tu cherches l’amour, cette carte peut montrer que tu t’accroches à une attente, une ancienne histoire ou une image idéale qui t’empêche d’être disponible pour autre chose.",
@@ -296,15 +474,29 @@
       "current_energy": "L’énergie est suspendue. Ce n’est pas le moment de pousser plus fort, mais de changer d’angle. Une pause, un délai ou un recul peut révéler ce que l’action directe ne permettait pas de voir.",
       "advice": "Arrête de t’épuiser contre le même mur. Suspends l’action, observe autrement, puis décide ce qui mérite encore ton énergie. Lâcher prise ne veut pas dire perdre : parfois, c’est la seule manière de récupérer ta liberté."
     },
-    "tags": ["pause", "perspective", "lâcher-prise"]
+    "tags": [
+      "pause",
+      "perspective",
+      "lâcher-prise"
+    ]
   },
   {
     "id": "la_mort",
     "number": 13,
     "name": "La Mort",
-    "image_path": null,
-    "keywords_upright": ["transformation", "fin", "renouveau", "transition"],
-    "keywords_reversed": ["résistance", "deuil suspendu", "stagnation", "peur du changement"],
+    "image_path": "assets/tarot/major_arcana/13_la_mort.jpg",
+    "keywords_upright": [
+      "transformation",
+      "fin",
+      "renouveau",
+      "transition"
+    ],
+    "keywords_reversed": [
+      "résistance",
+      "deuil suspendu",
+      "stagnation",
+      "peur du changement"
+    ],
     "meaning_upright": "L’Arcane sans nom ne vient pas te faire peur : il vient te dire d’arrêter de t’accrocher à ce qui est déjà fini. Une situation, une habitude, une relation, une version de toi ou un vieux scénario n’a peut-être plus rien à t’apporter. Tu peux continuer à tirer dessus, à espérer que ça redevienne comme avant, ou tu peux regarder la vérité en face : quelque chose doit se terminer pour qu’autre chose puisse commencer. Le passé n’a pas besoin d’être renié, mais il doit rester à sa place : derrière toi.",
     "meaning_reversed": "Si tu sens une transition retenue, c’est OK aussi. Reconnaître ce qui veut partir, c’est déjà avancer.",
     "love": "En amour, L’Arcane sans nom demande une vraie mise au clair avec le passé. Si tu cherches l’amour, demande-toi franchement si ton cœur est vraiment disponible, ou si une ancienne histoire occupe encore la place. En couple, cette carte dit qu’un changement profond est nécessaire : soit vous laissez les vieux reproches derrière vous pour repartir autrement, soit il faut reconnaître que quelque chose ne fonctionne plus. Sauver les apparences ne suffit pas si le lien est déjà vidé de l’intérieur.",
@@ -319,15 +511,29 @@
       "current_energy": "L’énergie pousse au grand tri. Ce qui est usé, toxique, dépassé ou déjà terminé devient difficile à ignorer. Ça peut remuer, mais ce mouvement sert à libérer de la place, pas à te punir.",
       "advice": "Laisse mourir ce qui n’a plus de vie. Ne dramatise pas, ne t’accroche pas, ne maquille pas la réalité. Coupe proprement ce qui te retient, garde ce qui t’aide vraiment, et avance vers une version plus honnête de ta vie."
     },
-    "tags": ["transformation", "transition", "renouveau"]
+    "tags": [
+      "transformation",
+      "transition",
+      "renouveau"
+    ]
   },
   {
     "id": "la_temperance",
     "number": 14,
-    "name": "La Tempérance",
-    "image_path": null,
-    "keywords_upright": ["harmonie", "fluidité", "modération", "patience"],
-    "keywords_reversed": ["excès", "impatience", "discorde", "déséquilibre"],
+    "name": "Tempérance",
+    "image_path": "assets/tarot/major_arcana/14_temperance.jpg",
+    "keywords_upright": [
+      "harmonie",
+      "fluidité",
+      "modération",
+      "patience"
+    ],
+    "keywords_reversed": [
+      "excès",
+      "impatience",
+      "discorde",
+      "déséquilibre"
+    ],
     "meaning_upright": "Tempérance te dit de ralentir le débordement. Si tu passes d’un extrême à l’autre, tu risques de t’épuiser. Cette carte ne te demande pas de tout régler tout de suite, ni de faire semblant que tout va bien. Elle te demande de retrouver un dosage plus juste : entre action et repos, parole et silence, effort et lâcher-prise. Ce qui se répare maintenant demande du temps, de la mesure et de la cohérence.",
     "meaning_reversed": "Si tu sens un excès ou une impatience, reviens à un rythme plus tenable. Ça suffit souvent à réparer l’essentiel.",
     "love": "En amour, Tempérance parle d’apaisement, de dialogue et de rééquilibrage. En couple, elle invite à sortir des réactions excessives pour retrouver une communication plus saine. Il ne s’agit pas d’éviter les sujets difficiles, mais de les aborder sans mettre le feu à toute la relation. Si tu cherches l’amour, cette carte te conseille de ne pas te précipiter : laisse le lien se construire sans vouloir tout accélérer ni tout contrôler.",
@@ -342,15 +548,29 @@
       "current_energy": "L’énergie pousse à l’apaisement et à l’ajustement. Les choses peuvent se remettre en place, mais pas dans la précipitation. Ce qui compte maintenant, c’est le bon dosage.",
       "advice": "Cherche l’équilibre, pas la réaction parfaite. Ajuste ce qui déborde, répare ce qui peut l’être, et avance par étapes. Le calme n’est pas de la passivité : c’est une façon plus intelligente de reprendre la main."
     },
-    "tags": ["harmonie", "équilibre", "fluidité"]
+    "tags": [
+      "harmonie",
+      "équilibre",
+      "fluidité"
+    ]
   },
   {
     "id": "le_diable",
     "number": 15,
     "name": "Le Diable",
-    "image_path": null,
-    "keywords_upright": ["attachement", "désir", "ombre", "énergie brute"],
-    "keywords_reversed": ["libération", "prise de conscience", "rupture saine", "responsabilité"],
+    "image_path": "assets/tarot/major_arcana/15_le_diable.jpg",
+    "keywords_upright": [
+      "attachement",
+      "désir",
+      "ombre",
+      "énergie brute"
+    ],
+    "keywords_reversed": [
+      "libération",
+      "prise de conscience",
+      "rupture saine",
+      "responsabilité"
+    ],
     "meaning_upright": "Le Diable te met face à ce que tu préfères parfois ne pas regarder : une envie, une dépendance, une peur, une obsession, une relation ou une habitude qui prend trop de place. Ce n’est pas forcément “mal”, mais si ça te tient plus que tu ne le tiens, il faut arrêter de te raconter des histoires. Cette carte ne vient pas te punir : elle vient te demander où tu as perdu ta liberté, et ce que tu continues à nourrir même quand ça te coûte.",
     "meaning_reversed": "Une libération est possible. Ce qui te retenait peut se desserrer, à ton rythme.",
     "love": "En amour, Le Diable parle d’attirance forte, de passion, de dépendance ou de rapport de force. Ce lien peut être intense, mais intensité ne veut pas dire amour sain. Si tu es en couple, regarde ce qui vous attache vraiment : désir, peur, contrôle, culpabilité, habitude, ou vrai choix conscient ? Si tu cherches l’amour, attention aux liens qui brûlent vite mais te font perdre ton axe.",
@@ -365,15 +585,29 @@
       "current_energy": "L’énergie est intense, magnétique, parfois lourde. Il y a du désir, de l’attachement ou de la tentation. Le point clé n’est pas de juger ce que tu ressens, mais de voir si tu restes libre dedans.",
       "advice": "Nomme la chaîne. Regarde ce qui te contrôle, ce que tu alimentes, et ce que ça te coûte vraiment. Le premier geste de liberté, c’est d’arrêter d’appeler “choix” ce qui est devenu une dépendance."
     },
-    "tags": ["ombre", "désir", "conscience"]
+    "tags": [
+      "ombre",
+      "désir",
+      "conscience"
+    ]
   },
   {
     "id": "la_maison_dieu",
     "number": 16,
-    "name": "La Maison-Dieu",
-    "image_path": null,
-    "keywords_upright": ["rupture", "libération", "vérité qui éclate", "secousse"],
-    "keywords_reversed": ["crise évitée", "changement subi", "retenue", "explosion intérieure"],
+    "name": "La Tour",
+    "image_path": "assets/tarot/major_arcana/16_la_tour.jpg",
+    "keywords_upright": [
+      "rupture",
+      "libération",
+      "vérité qui éclate",
+      "secousse"
+    ],
+    "keywords_reversed": [
+      "crise évitée",
+      "changement subi",
+      "retenue",
+      "explosion intérieure"
+    ],
     "meaning_upright": "La Maison Dieu ne vient pas caresser dans le sens du poil. Elle arrive quand quelque chose craque, bascule ou explose parce que ça ne pouvait plus continuer comme avant. Une certitude tombe, une situation se révèle, un équilibre de façade s’effondre. Oui, ça peut faire peur. Oui, ça peut secouer. Mais ce qui tombe ici n’était peut-être pas aussi solide que tu voulais le croire. La question n’est plus de sauver les apparences : c’est de voir clair, de rester debout, et de reconstruire sur quelque chose de plus vrai.",
     "meaning_reversed": "Si tu retiens un changement qui veut arriver, c’est OK. Nommer la secousse aide plus que la cacher.",
     "love": "En amour, La Maison Dieu parle d’un bouleversement qui remet les choses à nu. Une vérité peut sortir, une illusion peut tomber, une relation peut traverser une crise, ou un sentiment inattendu peut tout déplacer. Ce n’est pas forcément la fin, mais ce n’est clairement plus le moment de faire semblant. Si quelque chose doit être dit, vu ou reconnu, ça sortira d’une manière ou d’une autre. À toi de ne pas reconstruire sur le déni.",
@@ -388,15 +622,29 @@
       "current_energy": "L’énergie est directe, instable, impossible à maquiller. Une vérité peut sortir, un décor peut tomber, une certitude peut voler en éclats. Ce n’est pas confortable, mais ça remet le réel au centre.",
       "advice": "Reste debout, même si ça secoue. Ne sauve pas une façade qui tombe déjà. Protège l’essentiel, regarde ce que la crise révèle, et reconstruis seulement sur ce qui est vrai."
     },
-    "tags": ["rupture", "libération", "vérité"]
+    "tags": [
+      "rupture",
+      "libération",
+      "vérité"
+    ]
   },
   {
     "id": "l_etoile",
     "number": 17,
     "name": "L’Étoile",
-    "image_path": null,
-    "keywords_upright": ["espoir", "inspiration", "douceur", "clarté"],
-    "keywords_reversed": ["découragement", "doute", "perte d’élan", "idéal lointain"],
+    "image_path": "assets/tarot/major_arcana/17_l_etoile.jpg",
+    "keywords_upright": [
+      "espoir",
+      "inspiration",
+      "douceur",
+      "clarté"
+    ],
+    "keywords_reversed": [
+      "découragement",
+      "doute",
+      "perte d’élan",
+      "idéal lointain"
+    ],
     "meaning_upright": "L’Étoile arrive quand il faut arrêter de vivre en mode survie. Quelque chose en toi peut enfin respirer, se réparer, retrouver un peu de confiance. Ce n’est pas une carte qui te promet que tout devient magique du jour au lendemain. Elle te dit plutôt que tu peux recommencer à croire en la suite, mais sans te mentir. Tu n’as pas besoin de forcer, de prouver ou de porter un masque : reviens à ce qui est simple, vrai, vivant.",
     "meaning_reversed": "Si tu te sens découragé·e, c’est passager. Reconnecter à une toute petite joie peut suffire à raviver la flamme.",
     "love": "En amour, L’Étoile parle de douceur, de sincérité et de lien qui peut faire du bien. En couple, elle invite à retrouver une forme de confiance, de tendresse ou de vérité simple, sans jouer un rôle. Si tu cherches l’amour, cette carte te rappelle que tu n’as pas besoin de te vendre ni de te durcir : ce qui est authentique en toi est déjà une force.",
@@ -411,15 +659,29 @@
       "current_energy": "L’énergie est plus douce, réparatrice, inspirante. Elle ne pousse pas à forcer, mais à te reconnecter à ce qui te remet debout : une envie, une paix, une vérité simple, une confiance qui revient petit à petit.",
       "advice": "Respire et reviens à toi. Ne te durcis pas pour te protéger de tout. Fais un geste concret pour nourrir ta confiance, même petit. L’espoir devient solide quand tu recommences à prendre soin de ce qui est vivant en toi."
     },
-    "tags": ["espoir", "inspiration", "lumière"]
+    "tags": [
+      "espoir",
+      "inspiration",
+      "lumière"
+    ]
   },
   {
     "id": "la_lune",
     "number": 18,
     "name": "La Lune",
-    "image_path": null,
-    "keywords_upright": ["intuition", "rêve", "mystère", "émotions profondes"],
-    "keywords_reversed": ["confusion", "illusions", "peurs anciennes", "doute"],
+    "image_path": "assets/tarot/major_arcana/18_la_lune.jpg",
+    "keywords_upright": [
+      "intuition",
+      "rêve",
+      "mystère",
+      "émotions profondes"
+    ],
+    "keywords_reversed": [
+      "confusion",
+      "illusions",
+      "peurs anciennes",
+      "doute"
+    ],
     "meaning_upright": "La Lune arrive quand tout n’est pas clair. Quelque chose te travaille, mais tu ne sais pas encore si c’est ton intuition qui parle ou ta peur qui prend toute la place. Cette carte te demande de ralentir avant de tirer des conclusions. Ne remplis pas les blancs avec des scénarios catastrophes. Observe ce qui est réel, ce qui est ressenti, et ce que ton mental amplifie parce qu’il veut une réponse tout de suite.",
     "meaning_reversed": "Si tu te sens dans un brouillard, c’est OK. Distinguer ce qui appartient à maintenant et ce qui vient du passé apaise déjà.",
     "love": "En amour, La Lune parle de doutes, de non-dits, de peurs ou d’une situation qui manque de clarté. Tu peux sentir que quelque chose t’échappe, mais attention à ne pas transformer chaque silence en menace. En couple, il faut clarifier sans accuser. Si tu cherches l’amour, cette carte t’invite à regarder tes peurs relationnelles avant de les projeter sur quelqu’un qui n’a encore rien prouvé.",
@@ -434,15 +696,29 @@
       "current_energy": "L’énergie est trouble, sensible, instable. Les peurs, les rêves, les intuitions et les projections peuvent se mélanger. Tout semble plus intense, mais tout n’est pas forcément aussi menaçant que ton mental le raconte.",
       "advice": "Ne panique pas dans le brouillard. Vérifie les faits, écoute ton intuition sans la transformer en certitude, et attends d’y voir plus clair avant de prendre une décision lourde. La clarté viendra mieux si tu arrêtes de courir après elle."
     },
-    "tags": ["intuition", "rêve", "mystère"]
+    "tags": [
+      "intuition",
+      "rêve",
+      "mystère"
+    ]
   },
   {
     "id": "le_soleil",
     "number": 19,
     "name": "Le Soleil",
-    "image_path": null,
-    "keywords_upright": ["joie", "clarté", "réussite", "simplicité"],
-    "keywords_reversed": ["lumière voilée", "succès en demi-teinte", "vanité", "fatigue"],
+    "image_path": "assets/tarot/major_arcana/19_le_soleil.jpg",
+    "keywords_upright": [
+      "joie",
+      "clarté",
+      "réussite",
+      "simplicité"
+    ],
+    "keywords_reversed": [
+      "lumière voilée",
+      "succès en demi-teinte",
+      "vanité",
+      "fatigue"
+    ],
     "meaning_upright": "Le Soleil arrive quand quelque chose s’éclaire enfin. Après les doutes, les efforts ou les passages plus lourds, tu peux retrouver de l’énergie, de la joie et une vraie confiance en toi. Cette carte parle de réussite, de clarté et d’accomplissement : tu vois mieux où tu te diriges, ce que tu veux, et ce que tu ne veux plus. La lumière fait du bien, mais elle montre aussi la vérité. Ce qui est sincère peut grandir. Ce qui est faux aura plus de mal à se cacher.",
     "meaning_reversed": "Si la lumière semble voilée, ce n’est pas perdu. Un petit moment vrai peut suffire à laisser passer plus de clarté.",
     "love": "En amour, Le Soleil parle de joie simple, de lien sincère et de relation qui fait du bien. En couple, il invite à retrouver le plaisir d’être ensemble : faire quelque chose à deux, rire, parler vrai, se reconnecter sans tout compliquer. Si tu cherches l’amour, cette carte encourage les rencontres lumineuses, franches, chaleureuses. Ne cours pas après quelqu’un qui t’éteint : va vers ce qui te donne envie d’être pleinement toi.",
@@ -457,15 +733,29 @@
       "current_energy": "L’énergie est lumineuse, confiante, ouverte. Elle favorise la réussite, la joie, la reconnaissance et les liens sincères. Ce qui est vrai peut se montrer sans forcer.",
       "advice": "Assume ta lumière. Montre-toi, demande, célèbre, avance. Ne minimise pas ce qui va bien par peur que ça disparaisse. Appuie-toi sur ce qui te nourrit et continue à construire avec lucidité."
     },
-    "tags": ["joie", "clarté", "réussite"]
+    "tags": [
+      "joie",
+      "clarté",
+      "réussite"
+    ]
   },
   {
     "id": "le_jugement",
     "number": 20,
     "name": "Le Jugement",
-    "image_path": null,
-    "keywords_upright": ["renaissance", "appel intérieur", "bilan", "élévation"],
-    "keywords_reversed": ["culpabilité", "appel ignoré", "jugement sévère", "stagnation"],
+    "image_path": "assets/tarot/major_arcana/20_le_jugement.jpg",
+    "keywords_upright": [
+      "renaissance",
+      "appel intérieur",
+      "bilan",
+      "élévation"
+    ],
+    "keywords_reversed": [
+      "culpabilité",
+      "appel ignoré",
+      "jugement sévère",
+      "stagnation"
+    ],
     "meaning_upright": "Le Jugement arrive quand quelque chose en toi se réveille pour de bon. Ce n’est pas une envie passagère ni une crise de motivation : c’est une prise de conscience qui vient de loin. Tout ce que tu as vécu, compris, encaissé, réparé ou pardonné commence à former une version plus entière de toi. Le passé peut rester derrière, mais seulement si tu arrêtes de le rejouer. Cette carte te demande d’écouter ce qui t’appelle maintenant, de mettre des mots sur tes vraies envies, et d’agir en adulte face à ce que tu sais déjà.",
     "meaning_reversed": "Si tu te juges trop sévèrement, c’est OK de relâcher. Se pardonner reste un pas légitime.",
     "love": "En amour, Le Jugement dit qu’il faut arrêter de faire semblant. Si quelque chose ne va pas, tu le sais déjà au fond. En couple, c’est le moment d’une vraie discussion : ce qui fonctionne, ce qui ne fonctionne plus, ce que chacun attend, ce qui peut être réparé, et ce qui doit peut-être s’arrêter. Si tu cherches l’amour, cette carte t’invite à regarder tes anciennes histoires sans te flageller : qu’est-ce que tu ne veux plus répéter ? Qu’est-ce que tu veux vraiment vivre maintenant ? L’amour demande parfois d’être plus honnête que romantique.",
@@ -480,15 +770,29 @@
       "current_energy": "L’énergie pousse au réveil et à la libération. Ce que tu as vécu commence à prendre sens. Une envie profonde, une vérité ou un appel intérieur remonte, non pas pour te troubler, mais pour te remettre dans une direction plus juste.",
       "advice": "Écoute ce qui t’appelle, mais ne reste pas dans la théorie. Fais le point, reconnais ce que tu ne veux plus reproduire, puis pose une décision concrète. Le passé est derrière toi seulement si tu arrêtes de lui redonner les commandes."
     },
-    "tags": ["renaissance", "appel", "bilan"]
+    "tags": [
+      "renaissance",
+      "appel",
+      "bilan"
+    ]
   },
   {
     "id": "le_monde",
     "number": 21,
     "name": "Le Monde",
-    "image_path": null,
-    "keywords_upright": ["accomplissement", "unité", "ouverture", "plénitude"],
-    "keywords_reversed": ["inachèvement", "stagnation", "peur de conclure", "ouverture freinée"],
+    "image_path": "assets/tarot/major_arcana/21_le_monde.jpg",
+    "keywords_upright": [
+      "accomplissement",
+      "unité",
+      "ouverture",
+      "plénitude"
+    ],
+    "keywords_reversed": [
+      "inachèvement",
+      "stagnation",
+      "peur de conclure",
+      "ouverture freinée"
+    ],
     "meaning_upright": "Le Monde arrive quand quelque chose se boucle enfin. Une étape importante est franchie, une leçon est intégrée, un cycle arrive à son accomplissement. Ce n’est pas juste “ça va mieux” : c’est le moment où tu peux regarder le chemin parcouru et te dire que tu n’es plus la même personne qu’au départ. Quelque chose en toi est plus complet, plus aligné, plus prêt. Alors ne minimise pas. Savoure. Puis ouvre la suite : un nouveau projet, un nouvel horizon, un voyage, une évolution, une version de ta vie qui te ressemble davantage.",
     "meaning_reversed": "Si tu peines à conclure, c’est OK. Reconnaître ce qui est déjà acquis aide à poser le pas suivant.",
     "love": "En amour, Le Monde parle d’une étape importante. Si tu es en couple, la relation peut franchir un cap : engagement, emménagement, projet commun, voyage, construction plus solide. Mais si le lien est arrivé au bout de ce qu’il pouvait donner, cette carte peut aussi dire qu’il faut reconnaître la fin avec maturité, sans salir tout le chemin parcouru. Si tu cherches l’amour, Le Monde t’invite à ne plus te présenter comme quelqu’un à compléter : tu es prêt·e à rencontrer depuis une place plus entière, plus ouverte, plus alignée.",
@@ -503,6 +807,10 @@
       "current_energy": "L’énergie est large, ouverte, accomplie. Elle parle d’harmonie, d’expansion, de reconnaissance et de nouvelle étape. Ce qui était dispersé peut enfin trouver sa place dans un ensemble plus cohérent.",
       "advice": "Reconnais ce que tu as accompli. Savoure le chemin, remercie ce qu’il t’a appris, puis ouvre la suite sans te rapetisser. Tu n’as pas besoin de repartir de zéro : tu peux avancer avec tout ce que tu es devenu·e."
     },
-    "tags": ["accomplissement", "unité", "ouverture"]
+    "tags": [
+      "accomplissement",
+      "unité",
+      "ouverture"
+    ]
   }
 ]

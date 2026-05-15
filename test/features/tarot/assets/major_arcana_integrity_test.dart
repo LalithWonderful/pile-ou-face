@@ -77,5 +77,13 @@ void main() {
             reason: '${c.id}.spread_meanings.advice');
       }
     });
+
+    test('all cards carry a non-null, non-empty imagePath', () {
+      for (final c in cards) {
+        expect(c.imagePath, isNotNull, reason: '${c.id} must have imagePath');
+        expect(c.imagePath, isNotEmpty,
+            reason: '${c.id} imagePath must not be empty');
+      }
+    });
   });
 }

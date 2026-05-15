@@ -36,6 +36,64 @@ class CardArtPlaceholder extends StatelessWidget {
     final height = width / aspectRatio;
     final isMini = width <= 60;
 
+    if (_isFaceUp) {
+      return _buildFaceUp(context, isMini, width, height);
+    }
+
+    return _buildCardShell(
+      isMini: isMini,
+      width: width,
+      height: height,
+      child: _buildFaceDownContent(isMini),
+    );
+  }
+
+  Widget _buildFaceUp(
+    BuildContext context,
+    bool isMini,
+    double width,
+    double height,
+  ) {
+    final c = card!;
+    final hasImage = !isMini &&
+        c.imagePath != null &&
+        c.imagePath!.isNotEmpty;
+
+    if (hasImage) {
+      return Container(
+        width: width,
+        height: height,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(isMini ? 8 : 14),
+          border: Border.all(
+            color: AppColors.softGold.withValues(alpha: 0.55),
+            width: 1.4,
+          ),
+        ),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(isMini ? 8 : 14),
+          child: Image.asset(
+            c.imagePath!,
+            fit: BoxFit.cover,
+          ),
+        ),
+      );
+    }
+
+    return _buildCardShell(
+      isMini: isMini,
+      width: width,
+      height: height,
+      child: _buildFaceUpContent(isMini),
+    );
+  }
+
+  Widget _buildCardShell({
+    required bool isMini,
+    required double width,
+    required double height,
+    required Widget child,
+  }) {
     return SizedBox(
       width: width,
       height: height,
@@ -62,13 +120,13 @@ class CardArtPlaceholder extends StatelessWidget {
             ),
           ),
           alignment: Alignment.center,
-          child: _isFaceUp ? _buildFaceUp(isMini) : _buildFaceDown(isMini),
+          child: child,
         ),
       ),
     );
   }
 
-  Widget _buildFaceDown(bool isMini) {
+  Widget _buildFaceDownContent(bool isMini) {
     return Icon(
       Icons.auto_awesome,
       color: AppColors.softGold.withValues(alpha: 0.85),
@@ -76,7 +134,7 @@ class CardArtPlaceholder extends StatelessWidget {
     );
   }
 
-  Widget _buildFaceUp(bool isMini) {
+  Widget _buildFaceUpContent(bool isMini) {
     final c = card!;
     final numeral = _romanNumeral(c.number);
 
