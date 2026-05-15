@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
@@ -258,6 +259,82 @@ void main() {
         scrollable: find.byType(Scrollable).first,
       );
 
+      expect(find.text('Partager ce message'), findsOneWidget);
+    });
+
+    testWidgets('reveal CTA flips to a loading label as soon as it is tapped',
+        (tester) async {
+      // A completer-backed loader suspends the async chain so that the
+      // transient loading state stays visible long enough to assert on.
+      final loaderCompleter = Completer<String>();
+      final repo =
+          TarotRepository(loader: (_) => loaderCompleter.future);
+      final drawService = TarotDrawService(repository: repo);
+      final dailyService = DailyReadingService(
+        repository: repo,
+        random: Random(0),
+        clock: () => DateTime(2026, 5, 15),
+      );
+
+      await tester.pumpWidget(_wrap(
+        child: const ReadingScreen(isDaily: true),
+        repository: repo,
+        drawService: drawService,
+        dailyService: dailyService,
+      ));
+
+      await tester.tap(find.text('Révéler mon message'));
+      await tester.pump();
+
+      // Visual double-tap protection: the CTA is replaced by the loading
+      // label, so a second tap on the original label cannot fire a second
+      // draw.
+      expect(find.text('Révéler mon message'), findsNothing);
+      expect(find.text('Un instant…'), findsOneWidget);
+
+      loaderCompleter.complete(_singleCardFixture);
+      await tester.pumpAndSettle();
+      expect(find.text('Le Mat'), findsOneWidget);
+    });
+
+    testWidgets('surfaces a SnackBar when sharing fails', (tester) async {
+      final repo =
+          TarotRepository(loader: (_) async => _singleCardFixture);
+      final drawService = TarotDrawService(repository: repo);
+      final dailyService = DailyReadingService(
+        repository: repo,
+        random: Random(0),
+        clock: () => DateTime(2026, 5, 15),
+      );
+
+      Future<void> throwingInvoker(String _) async {
+        throw Exception('share unavailable in test');
+      }
+
+      await tester.pumpWidget(_wrap(
+        child: ReadingScreen(
+          isDaily: true,
+          shareInvoker: throwingInvoker,
+        ),
+        repository: repo,
+        drawService: drawService,
+        dailyService: dailyService,
+      ));
+
+      await tester.tap(find.text('Révéler mon message'));
+      await tester.pumpAndSettle();
+
+      await tester.scrollUntilVisible(
+        find.text('Partager ce message'),
+        200,
+        scrollable: find.byType(Scrollable).first,
+      );
+
+      await tester.tap(find.text('Partager ce message'));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Le partage n’a pas pu se lancer.'), findsOneWidget);
+      // Button has returned to its idle state, not stuck on "Un instant…".
       expect(find.text('Partager ce message'), findsOneWidget);
     });
   });
