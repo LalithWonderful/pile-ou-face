@@ -41,7 +41,7 @@ class _ReadingScreenState extends State<ReadingScreen> {
 
   String get _idleHint => widget.isDaily
       ? 'Libre à toi de l’interpréter.'
-      : 'Prenez un instant, puis révélez votre tirage.';
+      : 'Prends un instant, puis révèle ton tirage.';
 
   Future<void> _reveal() async {
     setState(() {
@@ -197,7 +197,7 @@ class _IdleState extends StatelessWidget {
                     ),
                   )
                 : const Icon(Icons.auto_awesome),
-            label: Text(loading ? 'Révélation…' : ctaLabel),
+            label: Text(loading ? 'Un instant…' : ctaLabel),
           ),
         ],
       ),

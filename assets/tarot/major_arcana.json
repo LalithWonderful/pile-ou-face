@@ -13,7 +13,7 @@
     "advice": "Avance d’un pas, sans attendre d’avoir toutes les réponses.",
     "warning": "Distingue, avec douceur, ce qui t’appelle et ce que tu fuis.",
     "short_message": "Un pas neuf, à ta façon.",
-    "share_message": "Aujourd’hui, Le Mat me souffle d’oser un premier pas.",
+    "share_message": "J’ai tiré Le Mat — l’envie de tout lâcher et de sauter.",
     "tags": ["commencement", "liberté", "mouvement"]
   },
   {
@@ -40,7 +40,7 @@
     "image_path": null,
     "keywords_upright": ["intuition", "savoir intérieur", "silence", "patience"],
     "keywords_reversed": ["secret", "doute", "repli", "rumination"],
-    "meaning_upright": "Peut-être que les réponses sont déjà en toi, simplement plus discrètes que les questions. Prends un instant, écoute ce qui parle bas.",
+    "meaning_upright": "Tu n’as pas besoin de tout savoir maintenant. Ce message t’invite à attendre que le brouillard se lève.",
     "meaning_reversed": "Tu portes peut-être quelque chose qui demanderait à être dit, à toi-même d’abord. Aucune urgence — juste, ne plus te cacher de toi.",
     "love": "Une relation gagne à respirer dans le silence aussi. Tout ne se dit pas tout de suite, c’est très bien.",
     "work": "Observer, comprendre, puis seulement agir. Tu peux te permettre un peu plus de lenteur.",
@@ -91,7 +91,7 @@
     "image_path": null,
     "keywords_upright": ["transmission", "guidance", "valeurs", "sens"],
     "keywords_reversed": ["dogmatisme", "conformisme", "moralisme", "perte de sens"],
-    "meaning_upright": "Une parole, un conseil, une lecture peut faire sens en ce moment. Tu peux la prendre, sans avoir à tout accepter d’un coup.",
+    "meaning_upright": "Quelqu’un — ou quelque chose en toi — sait déjà. L’écouter ne veut pas dire tout accepter.",
     "meaning_reversed": "Si une voix extérieure te pèse, tu peux reprendre la main sur ce qui te ressemble vraiment.",
     "love": "Une relation s’ancre dans des valeurs partagées. Tu peux dire celles qui comptent pour toi.",
     "work": "Un mentor, une tradition, un cadre peuvent apporter une réponse utile. Apprendre n’empêche pas de douter.",
@@ -125,13 +125,13 @@
     "image_path": null,
     "keywords_upright": ["élan", "victoire", "direction", "détermination"],
     "keywords_reversed": ["dispersion", "perte de contrôle", "précipitation", "doute"],
-    "meaning_upright": "Tu peux avancer, plus calmement que tu ne le crois. Quand la direction est claire, les forces s’alignent presque toutes seules.",
+    "meaning_upright": "Avancer, c’est décider que la direction compte plus que la vitesse.",
     "meaning_reversed": "Si tu cours sans savoir vraiment où, ralentir une minute peut éviter pas mal de détours.",
     "love": "Un élan partagé ouvre un nouveau chapitre. Avancer côte à côte vaut mieux que tirer l’autre.",
     "work": "Un objectif clair devient accessible. La concentration vaut plus que la vitesse.",
     "advice": "Choisis une direction, donne-lui un rythme tenable.",
     "warning": "Ne confonds pas vitesse et progression.",
-    "short_message": "Avance, en sachant où tu vas.",
+    "short_message": "Avancer, même sans être sûr de tout.",
     "share_message": "Aujourd’hui, Le Chariot me rappelle qu’avancer doucement, c’est aussi avancer.",
     "tags": ["mouvement", "victoire", "direction"]
   },
@@ -142,14 +142,14 @@
     "image_path": null,
     "keywords_upright": ["équilibre", "vérité", "responsabilité", "clarté"],
     "keywords_reversed": ["déséquilibre", "jugement biaisé", "évitement", "injustice"],
-    "meaning_upright": "Tu peux regarder la situation telle qu’elle est, sans dramatiser ni complaire. Remettre les choses d’aplomb, doucement.",
+    "meaning_upright": "Ce message te ramène à une question simple : qu’est-ce qui est juste, au fond, même si ce n’est pas le plus confortable ?",
     "meaning_reversed": "Si quelque chose tire dans tous les sens, peut-être qu’il manque une réalité simple à reconnaître, pour toi d’abord.",
     "love": "Une relation gagne à dire ce qui est juste pour toi. L’équilibre se cherche à deux.",
     "work": "Une décision posée s’impose doucement. Les faits valent mieux que les ressentis non vérifiés.",
     "advice": "Regarde la situation telle qu’elle est, pas telle que tu la crains.",
     "warning": "Évite de plaider à la place des autres.",
     "short_message": "Remets les choses d’aplomb.",
-    "share_message": "Aujourd’hui, La Justice me souffle de regarder les choses simplement.",
+    "share_message": "J’ai tiré La Justice — un coup de projecteur sur ce que je préférais ne pas voir.",
     "tags": ["équilibre", "vérité", "responsabilité"]
   },
   {
@@ -251,7 +251,7 @@
     "advice": "Dose, ajuste, reprends — sans te brusquer.",
     "warning": "Le tout ou rien fatigue plus qu’il ne sert.",
     "short_message": "Trouve ton juste rythme.",
-    "share_message": "Aujourd’hui, La Tempérance m’invite à la fluidité et au juste rythme.",
+    "share_message": "J’ai tiré La Tempérance — ni tout casser, ni tout supporter.",
     "tags": ["harmonie", "équilibre", "fluidité"]
   },
   {
@@ -268,7 +268,7 @@
     "advice": "Regarde ce qui te retient, sans le juger ni le nourrir.",
     "warning": "Ne confonds pas intensité et amour.",
     "short_message": "Vois ce qui te retient, pour mieux choisir.",
-    "share_message": "Aujourd’hui, Le Diable m’invite à regarder ce qui me retient, avec douceur.",
+    "share_message": "J’ai tiré Le Diable — et je commence à voir ce qui me tient, même quand je prétends le choisir.",
     "tags": ["ombre", "désir", "conscience"]
   },
   {
@@ -278,7 +278,7 @@
     "image_path": null,
     "keywords_upright": ["rupture", "libération", "vérité qui éclate", "secousse"],
     "keywords_reversed": ["crise évitée", "changement subi", "retenue", "explosion intérieure"],
-    "meaning_upright": "Quelque chose se redéfinit, peut-être un peu brusquement, et pourtant ça libère. Ce qui ne tenait plus debout cesse de te demander des efforts.",
+    "meaning_upright": "Ce qui tenait debout vacille. Ce n’est pas une punition — c’est l’occasion de sortir de ce qui t’étouffait.",
     "meaning_reversed": "Si tu retiens un changement qui veut arriver, c’est OK. Nommer la secousse aide plus que la cacher.",
     "love": "Une parole enfin dite peut bousculer et soulager à la fois. Ce qui résiste à la lumière n’est souvent pas si solide.",
     "work": "Un cadre éclate ou se redéfinit. Le déséquilibre temporaire prépare un agencement plus juste.",
@@ -302,7 +302,7 @@
     "advice": "Laisse-toi guider par ce qui t’apaise.",
     "warning": "Espérer ne te dispense pas d’agir, doucement.",
     "short_message": "Une lumière douce, juste devant.",
-    "share_message": "Aujourd’hui, L’Étoile me souffle qu’un peu d’espoir suffit.",
+    "share_message": "J’ai tiré L’Étoile — une lumière petite, mais suffisante pour ce soir.",
     "tags": ["espoir", "inspiration", "lumière"]
   },
   {
@@ -312,7 +312,7 @@
     "image_path": null,
     "keywords_upright": ["intuition", "rêve", "mystère", "émotions profondes"],
     "keywords_reversed": ["confusion", "illusions", "peurs anciennes", "doute"],
-    "meaning_upright": "Tes émotions, tes rêves, ton intuition portent un message. Tu peux les écouter sans tout vouloir décoder.",
+    "meaning_upright": "Tu n’as pas toutes les cartes en main — et c’est normal. Ce message te demande de ne pas décider dans le flou.",
     "meaning_reversed": "Si tu te sens dans un brouillard, c’est OK. Distinguer ce qui appartient à maintenant et ce qui vient du passé apaise déjà.",
     "love": "Une relation traverse une zone de flou. Patience et tendresse comptent plus que les conclusions hâtives.",
     "work": "Une situation reste partiellement opaque. Mieux vaut différer une décision que la prendre dans la brume.",
@@ -346,7 +346,7 @@
     "image_path": null,
     "keywords_upright": ["renaissance", "appel intérieur", "bilan", "élévation"],
     "keywords_reversed": ["culpabilité", "appel ignoré", "jugement sévère", "stagnation"],
-    "meaning_upright": "Quelque chose en toi appelle, plus pleinement. Tu peux y répondre, sans avoir à tout comprendre d’un coup.",
+    "meaning_upright": "Quelque chose t’appelle depuis longtemps. Ce n’est pas trop tard — mais ce n’est plus le moment de faire semblant.",
     "meaning_reversed": "Si tu te juges trop sévèrement, c’est OK de relâcher. Se pardonner reste un pas légitime.",
     "love": "Une relation se réinvente, parfois après un silence. Un mot vrai peut renouer ce qui ne demandait qu’à reprendre.",
     "work": "Une orientation se précise, souvent après un temps de retrait. C’est l’heure de répondre à un appel laissé en attente.",
