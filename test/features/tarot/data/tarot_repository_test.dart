@@ -7,33 +7,62 @@ const _fixture = '''
     "id": "le_mat",
     "number": 0,
     "name": "Le Mat",
-    "keywords": ["liberté", "commencement"],
-    "uprightMeaning": "Un nouveau départ.",
-    "reversedMeaning": "Imprudence."
+    "image_path": null,
+    "keywords_upright": ["liberté", "commencement"],
+    "keywords_reversed": ["dispersion"],
+    "meaning_upright": "Un pas neuf.",
+    "meaning_reversed": "Dispersion.",
+    "love": "Souffle neuf.",
+    "work": "Idée fraîche.",
+    "advice": "Oser un premier pas.",
+    "warning": "Ne pas confondre élan et fuite.",
+    "short_message": "Un pas neuf.",
+    "share_message": "J'ai tiré Le Mat.",
+    "tags": ["commencement", "liberté"]
   },
   {
     "id": "le_bateleur",
     "number": 1,
     "name": "Le Bateleur",
-    "keywords": ["initiative"],
-    "uprightMeaning": "Passage à l'action.",
-    "reversedMeaning": "Hésitation."
+    "image_path": null,
+    "keywords_upright": ["initiative"],
+    "keywords_reversed": ["hésitation"],
+    "meaning_upright": "Passer à l'action.",
+    "meaning_reversed": "Hésitation.",
+    "love": "Authenticité.",
+    "work": "Saisir une opportunité.",
+    "advice": "Commencer modestement.",
+    "warning": "Ne pas trop promettre.",
+    "short_message": "Outils en main.",
+    "share_message": "J'ai tiré Le Bateleur.",
+    "tags": ["initiative"]
   }
 ]
 ''';
 
 void main() {
   group('TarotRepository', () {
-    test('parses JSON into TarotCard list', () async {
+    test('parses JSON into TarotCard list with enriched fields', () async {
       final repo = TarotRepository(loader: (_) async => _fixture);
       final cards = await repo.loadMajorArcana();
 
       expect(cards, hasLength(2));
-      expect(cards.first.id, 'le_mat');
-      expect(cards.first.name, 'Le Mat');
-      expect(cards.first.keywords, ['liberté', 'commencement']);
-      expect(cards.first.uprightMeaning, 'Un nouveau départ.');
-      expect(cards[1].number, 1);
+      final mat = cards.first;
+      expect(mat.id, 'le_mat');
+      expect(mat.number, 0);
+      expect(mat.name, 'Le Mat');
+      expect(mat.imagePath, isNull);
+      expect(mat.keywordsUpright, ['liberté', 'commencement']);
+      expect(mat.keywordsReversed, ['dispersion']);
+      expect(mat.meaningUpright, 'Un pas neuf.');
+      expect(mat.meaningReversed, 'Dispersion.');
+      expect(mat.love, 'Souffle neuf.');
+      expect(mat.work, 'Idée fraîche.');
+      expect(mat.advice, 'Oser un premier pas.');
+      expect(mat.warning, 'Ne pas confondre élan et fuite.');
+      expect(mat.shortMessage, 'Un pas neuf.');
+      expect(mat.shareMessage, "J'ai tiré Le Mat.");
+      expect(mat.tags, ['commencement', 'liberté']);
     });
 
     test('caches results after first load', () async {

@@ -78,7 +78,7 @@ class DrawnCardView extends StatelessWidget {
             spacing: 6,
             runSpacing: 6,
             children: [
-              for (final kw in card.keywords)
+              for (final kw in drawnCard.keywords)
                 Container(
                   padding:
                       const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
@@ -99,6 +99,37 @@ class DrawnCardView extends StatelessWidget {
           Text(
             drawnCard.meaning,
             style: textTheme.bodyMedium,
+          ),
+          const SizedBox(height: 12),
+          Container(
+            padding: const EdgeInsets.fromLTRB(12, 10, 12, 12),
+            decoration: BoxDecoration(
+              color: AppColors.softGold.withValues(alpha: 0.12),
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(
+                color: AppColors.softGold.withValues(alpha: 0.35),
+              ),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'CONSEIL',
+                  style: textTheme.labelSmall?.copyWith(
+                    color: AppColors.softGold,
+                    letterSpacing: 1.2,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  drawnCard.advice,
+                  style: textTheme.bodyMedium?.copyWith(
+                    color: AppColors.charcoal,
+                  ),
+                ),
+              ],
+            ),
           ),
         ],
       ),

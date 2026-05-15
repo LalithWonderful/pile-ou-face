@@ -14,9 +14,18 @@ String _buildFixture(int count) {
   "id": "card_$i",
   "number": $i,
   "name": "Carte $i",
-  "keywords": ["mot$i"],
-  "uprightMeaning": "Sens droit $i.",
-  "reversedMeaning": "Sens inversé $i."
+  "image_path": null,
+  "keywords_upright": ["droit_$i"],
+  "keywords_reversed": ["inverse_$i"],
+  "meaning_upright": "Sens droit $i.",
+  "meaning_reversed": "Sens inversé $i.",
+  "love": "Amour $i.",
+  "work": "Travail $i.",
+  "advice": "Conseil $i.",
+  "warning": "Avertissement $i.",
+  "short_message": "Court $i.",
+  "share_message": "Partage $i.",
+  "tags": ["tag_$i"]
 }
 ''');
   }

@@ -104,7 +104,7 @@ class _CardTile extends StatelessWidget {
                 ),
                 const SizedBox(height: 2),
                 Text(
-                  card.keywords.join(' · '),
+                  card.keywordsUpright.join(' · '),
                   style: textTheme.bodySmall?.copyWith(
                     color: AppColors.subtle,
                   ),
