@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../../app/app_theme.dart';
 import '../../../../app/tarot_scope.dart';
 import '../../models/tarot_card.dart';
+import '../widgets/card_art_placeholder.dart';
 
 class CardsLibraryScreen extends StatefulWidget {
   const CardsLibraryScreen({super.key});
@@ -80,18 +81,10 @@ class _CardTile extends StatelessWidget {
         ),
       ),
       child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          SizedBox(
-            width: 36,
-            child: Text(
-              '${card.number}',
-              style: textTheme.titleMedium?.copyWith(
-                color: AppColors.softGold,
-                fontWeight: FontWeight.w700,
-              ),
-            ),
-          ),
+          CardArtPlaceholder.mini(card: card),
+          const SizedBox(width: 14),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -100,6 +93,7 @@ class _CardTile extends StatelessWidget {
                   card.name,
                   style: textTheme.titleMedium?.copyWith(
                     color: AppColors.deepGreen,
+                    fontWeight: FontWeight.w600,
                   ),
                 ),
                 const SizedBox(height: 2),

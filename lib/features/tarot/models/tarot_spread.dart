@@ -7,9 +7,9 @@ enum TarotSpread {
   ),
   threeCards(
     label: 'Tirage en trois cartes',
-    description: 'Passé, présent, futur.',
+    description: 'Une situation, son énergie, et le conseil qui s’y rattache.',
     cardCount: 3,
-    positions: ['Passé', 'Présent', 'Futur'],
+    positions: ['Situation', 'Énergie', 'Conseil'],
   );
 
   const TarotSpread({

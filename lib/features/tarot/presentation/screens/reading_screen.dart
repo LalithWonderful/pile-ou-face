@@ -4,6 +4,7 @@ import '../../../../app/app_theme.dart';
 import '../../../../app/tarot_scope.dart';
 import '../../models/drawn_card.dart';
 import '../../models/tarot_spread.dart';
+import '../widgets/card_art_placeholder.dart';
 import '../widgets/drawn_card_view.dart';
 
 class ReadingScreen extends StatefulWidget {
@@ -16,18 +17,38 @@ class ReadingScreen extends StatefulWidget {
 }
 
 class _ReadingScreenState extends State<ReadingScreen> {
-  late Future<List<DrawnCard>> _drawFuture;
+  List<DrawnCard>? _result;
+  Object? _error;
+  bool _loading = false;
 
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    _drawFuture = TarotScope.of(context).drawService.draw(widget.spread);
+  Future<void> _reveal() async {
+    setState(() {
+      _loading = true;
+      _error = null;
+    });
+    try {
+      final draw =
+          await TarotScope.of(context).drawService.draw(widget.spread);
+      if (!mounted) return;
+      setState(() {
+        _result = draw;
+        _loading = false;
+      });
+    } catch (e) {
+      if (!mounted) return;
+      setState(() {
+        _error = e;
+        _loading = false;
+      });
+    }
   }
 
   void _redraw() {
     setState(() {
-      _drawFuture = TarotScope.of(context).drawService.draw(widget.spread);
+      _result = null;
+      _error = null;
     });
+    _reveal();
   }
 
   @override
@@ -35,30 +56,120 @@ class _ReadingScreenState extends State<ReadingScreen> {
     return Scaffold(
       appBar: AppBar(title: Text(widget.spread.label)),
       body: SafeArea(
-        child: FutureBuilder<List<DrawnCard>>(
-          future: _drawFuture,
-          builder: (context, snapshot) {
-            if (snapshot.connectionState != ConnectionState.done) {
-              return const Center(child: CircularProgressIndicator());
-            }
-            if (snapshot.hasError) {
-              return _ErrorState(message: snapshot.error.toString());
-            }
-            final cards = snapshot.data ?? const <DrawnCard>[];
-            return _DrawResult(
-              spread: widget.spread,
-              drawn: cards,
-              onRedraw: _redraw,
-            );
-          },
+        child: AnimatedSwitcher(
+          duration: const Duration(milliseconds: 350),
+          switchInCurve: Curves.easeOutCubic,
+          switchOutCurve: Curves.easeIn,
+          child: _buildBody(),
         ),
+      ),
+    );
+  }
+
+  Widget _buildBody() {
+    if (_error != null) {
+      return _ErrorState(
+        key: const ValueKey('error'),
+        message: _error.toString(),
+        onRetry: _reveal,
+      );
+    }
+    final result = _result;
+    if (result == null) {
+      return _IdleState(
+        key: const ValueKey('idle'),
+        spread: widget.spread,
+        loading: _loading,
+        onReveal: _reveal,
+      );
+    }
+    return _RevealedState(
+      key: const ValueKey('revealed'),
+      spread: widget.spread,
+      drawn: result,
+      onRedraw: _redraw,
+    );
+  }
+}
+
+class _IdleState extends StatelessWidget {
+  const _IdleState({
+    super.key,
+    required this.spread,
+    required this.loading,
+    required this.onReveal,
+  });
+
+  final TarotSpread spread;
+  final bool loading;
+  final VoidCallback onReveal;
+
+  @override
+  Widget build(BuildContext context) {
+    final textTheme = Theme.of(context).textTheme;
+    final isSingle = spread.cardCount == 1;
+    final cardWidth = isSingle ? 160.0 : 92.0;
+
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(24, 16, 24, 24),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          const Spacer(),
+          Text(
+            spread.description,
+            textAlign: TextAlign.center,
+            style: textTheme.bodyMedium?.copyWith(
+              color: AppColors.subtle,
+              fontStyle: FontStyle.italic,
+              height: 1.4,
+            ),
+          ),
+          const SizedBox(height: 28),
+          Center(
+            child: Wrap(
+              spacing: 14,
+              runSpacing: 14,
+              alignment: WrapAlignment.center,
+              children: List.generate(
+                spread.cardCount,
+                (_) => CardArtPlaceholder(
+                  variant: CardArtVariant.faceDown,
+                  width: cardWidth,
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(height: 24),
+          Text(
+            'Prenez un instant, puis révélez votre tirage.',
+            textAlign: TextAlign.center,
+            style: textTheme.bodySmall?.copyWith(color: AppColors.subtle),
+          ),
+          const Spacer(),
+          ElevatedButton.icon(
+            onPressed: loading ? null : onReveal,
+            icon: loading
+                ? const SizedBox(
+                    width: 16,
+                    height: 16,
+                    child: CircularProgressIndicator(
+                      strokeWidth: 2,
+                      color: AppColors.ivory,
+                    ),
+                  )
+                : const Icon(Icons.auto_awesome),
+            label: Text(loading ? 'Révélation…' : 'Révéler le tirage'),
+          ),
+        ],
       ),
     );
   }
 }
 
-class _DrawResult extends StatelessWidget {
-  const _DrawResult({
+class _RevealedState extends StatelessWidget {
+  const _RevealedState({
+    super.key,
     required this.spread,
     required this.drawn,
     required this.onRedraw,
@@ -71,22 +182,28 @@ class _DrawResult extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListView.separated(
-      padding: const EdgeInsets.fromLTRB(20, 16, 20, 24),
+      padding: const EdgeInsets.fromLTRB(20, 16, 20, 28),
       itemCount: drawn.length + 1,
-      separatorBuilder: (_, _) => const SizedBox(height: 14),
+      separatorBuilder: (_, _) => const SizedBox(height: 16),
       itemBuilder: (context, index) {
         if (index < drawn.length) {
-          return DrawnCardView(
-            drawnCard: drawn[index],
-            position: spread.positions[index],
+          return _StaggeredReveal(
+            index: index,
+            child: DrawnCardView(
+              drawnCard: drawn[index],
+              position: spread.cardCount > 1 ? spread.positions[index] : null,
+            ),
           );
         }
-        return Padding(
-          padding: const EdgeInsets.only(top: 8),
-          child: OutlinedButton.icon(
-            onPressed: onRedraw,
-            icon: const Icon(Icons.refresh),
-            label: const Text('Retirer'),
+        return _StaggeredReveal(
+          index: drawn.length,
+          child: Padding(
+            padding: const EdgeInsets.only(top: 8),
+            child: OutlinedButton.icon(
+              onPressed: onRedraw,
+              icon: const Icon(Icons.refresh),
+              label: const Text('Retirer une carte'),
+            ),
           ),
         );
       },
@@ -94,10 +211,66 @@ class _DrawResult extends StatelessWidget {
   }
 }
 
+class _StaggeredReveal extends StatefulWidget {
+  const _StaggeredReveal({required this.index, required this.child});
+
+  final int index;
+  final Widget child;
+
+  @override
+  State<_StaggeredReveal> createState() => _StaggeredRevealState();
+}
+
+class _StaggeredRevealState extends State<_StaggeredReveal>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _controller;
+  late final Animation<Offset> _offset;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 420),
+    );
+    _offset = Tween<Offset>(
+      begin: const Offset(0, 0.06),
+      end: Offset.zero,
+    ).animate(
+      CurvedAnimation(parent: _controller, curve: Curves.easeOutCubic),
+    );
+    Future.delayed(Duration(milliseconds: 110 * widget.index), () {
+      if (mounted) _controller.forward();
+    });
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return FadeTransition(
+      opacity: _controller,
+      child: SlideTransition(
+        position: _offset,
+        child: widget.child,
+      ),
+    );
+  }
+}
+
 class _ErrorState extends StatelessWidget {
-  const _ErrorState({required this.message});
+  const _ErrorState({
+    super.key,
+    required this.message,
+    required this.onRetry,
+  });
 
   final String message;
+  final VoidCallback onRetry;
 
   @override
   Widget build(BuildContext context) {
@@ -121,6 +294,11 @@ class _ErrorState extends StatelessWidget {
               message,
               style: textTheme.bodySmall?.copyWith(color: AppColors.subtle),
               textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 16),
+            OutlinedButton(
+              onPressed: onRetry,
+              child: const Text('Réessayer'),
             ),
           ],
         ),

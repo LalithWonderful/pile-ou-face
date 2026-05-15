@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../../app/app_theme.dart';
 import '../../models/drawn_card.dart';
+import 'card_art_placeholder.dart';
 
 class DrawnCardView extends StatelessWidget {
   const DrawnCardView({
@@ -22,10 +23,17 @@ class DrawnCardView extends StatelessWidget {
       padding: const EdgeInsets.fromLTRB(20, 18, 20, 20),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(18),
         border: Border.all(
           color: AppColors.softGold.withValues(alpha: 0.35),
         ),
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.deepGreen.withValues(alpha: 0.05),
+            blurRadius: 14,
+            offset: const Offset(0, 6),
+          ),
+        ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -35,35 +43,28 @@ class DrawnCardView extends StatelessWidget {
               position!.toUpperCase(),
               style: textTheme.labelSmall?.copyWith(
                 color: AppColors.softGold,
-                letterSpacing: 1.2,
+                letterSpacing: 1.4,
                 fontWeight: FontWeight.w700,
               ),
             ),
-            const SizedBox(height: 6),
+            const SizedBox(height: 10),
           ],
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.baseline,
-            textBaseline: TextBaseline.alphabetic,
-            children: [
-              Text(
-                _romanNumeral(card.number),
-                style: textTheme.titleMedium?.copyWith(
-                  color: AppColors.softGold,
-                  fontWeight: FontWeight.w700,
-                ),
-              ),
-              const SizedBox(width: 10),
-              Expanded(
-                child: Text(
-                  card.name,
-                  style: textTheme.titleLarge?.copyWith(
-                    color: AppColors.deepGreen,
-                  ),
-                ),
-              ),
-            ],
+          Center(
+            child: CardArtPlaceholder(
+              variant: CardArtVariant.faceUp,
+              card: card,
+              width: 130,
+            ),
           ),
-          const SizedBox(height: 4),
+          const SizedBox(height: 16),
+          Text(
+            card.name,
+            style: textTheme.titleLarge?.copyWith(
+              color: AppColors.deepGreen,
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+          const SizedBox(height: 2),
           Text(
             drawnCard.orientationLabel,
             style: textTheme.bodySmall?.copyWith(
@@ -73,7 +74,7 @@ class DrawnCardView extends StatelessWidget {
               fontStyle: FontStyle.italic,
             ),
           ),
-          const SizedBox(height: 10),
+          const SizedBox(height: 12),
           Wrap(
             spacing: 6,
             runSpacing: 6,
@@ -95,72 +96,163 @@ class DrawnCardView extends StatelessWidget {
                 ),
             ],
           ),
+          const SizedBox(height: 14),
+          _ShortMessage(text: card.shortMessage),
           const SizedBox(height: 12),
           Text(
             drawnCard.meaning,
-            style: textTheme.bodyMedium,
+            style: textTheme.bodyMedium?.copyWith(height: 1.5),
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: 14),
+          _AdvicePanel(text: drawnCard.advice),
+          const SizedBox(height: 10),
+          _WarningPanel(text: card.warning),
+        ],
+      ),
+    );
+  }
+}
+
+class _ShortMessage extends StatelessWidget {
+  const _ShortMessage({required this.text});
+
+  final String text;
+
+  @override
+  Widget build(BuildContext context) {
+    final textTheme = Theme.of(context).textTheme;
+    return IntrinsicHeight(
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
           Container(
-            padding: const EdgeInsets.fromLTRB(12, 10, 12, 12),
+            width: 2,
             decoration: BoxDecoration(
-              color: AppColors.softGold.withValues(alpha: 0.12),
-              borderRadius: BorderRadius.circular(12),
-              border: Border.all(
-                color: AppColors.softGold.withValues(alpha: 0.35),
-              ),
+              color: AppColors.softGold.withValues(alpha: 0.6),
+              borderRadius: BorderRadius.circular(2),
             ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'CONSEIL',
-                  style: textTheme.labelSmall?.copyWith(
-                    color: AppColors.softGold,
-                    letterSpacing: 1.2,
-                    fontWeight: FontWeight.w700,
-                  ),
+          ),
+          const SizedBox(width: 10),
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 2),
+              child: Text(
+                text,
+                style: textTheme.titleSmall?.copyWith(
+                  color: AppColors.deepGreen,
+                  fontStyle: FontStyle.italic,
+                  fontWeight: FontWeight.w600,
+                  height: 1.35,
                 ),
-                const SizedBox(height: 4),
-                Text(
-                  drawnCard.advice,
-                  style: textTheme.bodyMedium?.copyWith(
-                    color: AppColors.charcoal,
-                  ),
-                ),
-              ],
+              ),
             ),
           ),
         ],
       ),
     );
   }
+}
 
-  static String _romanNumeral(int n) {
-    const numerals = <int, String>{
-      1000: 'M',
-      900: 'CM',
-      500: 'D',
-      400: 'CD',
-      100: 'C',
-      90: 'XC',
-      50: 'L',
-      40: 'XL',
-      10: 'X',
-      9: 'IX',
-      5: 'V',
-      4: 'IV',
-      1: 'I',
-    };
-    if (n == 0) return '0';
-    final buffer = StringBuffer();
-    var remaining = n;
-    for (final entry in numerals.entries) {
-      while (remaining >= entry.key) {
-        buffer.write(entry.value);
-        remaining -= entry.key;
-      }
-    }
-    return buffer.toString();
+class _AdvicePanel extends StatelessWidget {
+  const _AdvicePanel({required this.text});
+
+  final String text;
+
+  @override
+  Widget build(BuildContext context) {
+    final textTheme = Theme.of(context).textTheme;
+    return Container(
+      padding: const EdgeInsets.fromLTRB(14, 12, 14, 14),
+      decoration: BoxDecoration(
+        color: AppColors.softGold.withValues(alpha: 0.14),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color: AppColors.softGold.withValues(alpha: 0.4),
+        ),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Icon(
+                Icons.auto_awesome,
+                size: 14,
+                color: AppColors.softGold.withValues(alpha: 0.9),
+              ),
+              const SizedBox(width: 6),
+              Text(
+                'CONSEIL',
+                style: textTheme.labelSmall?.copyWith(
+                  color: AppColors.softGold,
+                  letterSpacing: 1.4,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 6),
+          Text(
+            text,
+            style: textTheme.bodyMedium?.copyWith(
+              color: AppColors.charcoal,
+              height: 1.45,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _WarningPanel extends StatelessWidget {
+  const _WarningPanel({required this.text});
+
+  final String text;
+
+  @override
+  Widget build(BuildContext context) {
+    final textTheme = Theme.of(context).textTheme;
+    return Container(
+      padding: const EdgeInsets.fromLTRB(14, 10, 14, 12),
+      decoration: BoxDecoration(
+        color: AppColors.deepGreen.withValues(alpha: 0.05),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color: AppColors.deepGreen.withValues(alpha: 0.15),
+        ),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              const Icon(
+                Icons.spa_outlined,
+                size: 14,
+                color: AppColors.subtle,
+              ),
+              const SizedBox(width: 6),
+              Text(
+                'À GARDER À L’ESPRIT',
+                style: textTheme.labelSmall?.copyWith(
+                  color: AppColors.subtle,
+                  letterSpacing: 1.4,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 4),
+          Text(
+            text,
+            style: textTheme.bodySmall?.copyWith(
+              color: AppColors.charcoal,
+              height: 1.4,
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }
