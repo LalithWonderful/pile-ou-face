@@ -162,59 +162,69 @@ class _IdleState extends StatelessWidget {
     final isSingle = spread.cardCount == 1;
     final cardWidth = isSingle ? 160.0 : 92.0;
 
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(24, 16, 24, 24),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          const Spacer(),
-          Text(
-            description,
-            textAlign: TextAlign.center,
-            style: textTheme.bodyMedium?.copyWith(
-              color: AppColors.subtle,
-              fontStyle: FontStyle.italic,
-              height: 1.4,
-            ),
-          ),
-          const SizedBox(height: 28),
-          Center(
-            child: Wrap(
-              spacing: 14,
-              runSpacing: 14,
-              alignment: WrapAlignment.center,
-              children: List.generate(
-                spread.cardCount,
-                (_) => CardArtPlaceholder(
-                  variant: CardArtVariant.faceDown,
-                  width: cardWidth,
-                ),
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        return SingleChildScrollView(
+          padding: const EdgeInsets.fromLTRB(24, 16, 24, 24),
+          child: ConstrainedBox(
+            constraints: BoxConstraints(minHeight: constraints.maxHeight - 40),
+            child: IntrinsicHeight(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  const Spacer(),
+                  Text(
+                    description,
+                    textAlign: TextAlign.center,
+                    style: textTheme.bodyMedium?.copyWith(
+                      color: AppColors.subtle,
+                      fontStyle: FontStyle.italic,
+                      height: 1.4,
+                    ),
+                  ),
+                  const SizedBox(height: 28),
+                  Center(
+                    child: Wrap(
+                      spacing: 14,
+                      runSpacing: 14,
+                      alignment: WrapAlignment.center,
+                      children: List.generate(
+                        spread.cardCount,
+                        (_) => CardArtPlaceholder(
+                          variant: CardArtVariant.faceDown,
+                          width: cardWidth,
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 24),
+                  Text(
+                    hint,
+                    textAlign: TextAlign.center,
+                    style:
+                        textTheme.bodySmall?.copyWith(color: AppColors.subtle),
+                  ),
+                  const Spacer(),
+                  ElevatedButton.icon(
+                    onPressed: loading ? null : onReveal,
+                    icon: loading
+                        ? const SizedBox(
+                            width: 16,
+                            height: 16,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2,
+                              color: AppColors.ivory,
+                            ),
+                          )
+                        : const Icon(Icons.auto_awesome),
+                    label: Text(loading ? 'Un instant…' : ctaLabel),
+                  ),
+                ],
               ),
             ),
           ),
-          const SizedBox(height: 24),
-          Text(
-            hint,
-            textAlign: TextAlign.center,
-            style: textTheme.bodySmall?.copyWith(color: AppColors.subtle),
-          ),
-          const Spacer(),
-          ElevatedButton.icon(
-            onPressed: loading ? null : onReveal,
-            icon: loading
-                ? const SizedBox(
-                    width: 16,
-                    height: 16,
-                    child: CircularProgressIndicator(
-                      strokeWidth: 2,
-                      color: AppColors.ivory,
-                    ),
-                  )
-                : const Icon(Icons.auto_awesome),
-            label: Text(loading ? 'Un instant…' : ctaLabel),
-          ),
-        ],
-      ),
+        );
+      },
     );
   }
 }

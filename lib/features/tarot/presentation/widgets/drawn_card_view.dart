@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../../app/app_theme.dart';
 import '../../models/drawn_card.dart';
+import 'accent_panel.dart';
 import 'card_art_placeholder.dart';
 
 class DrawnCardView extends StatelessWidget {
@@ -104,9 +105,23 @@ class DrawnCardView extends StatelessWidget {
             style: textTheme.bodyMedium?.copyWith(height: 1.5),
           ),
           const SizedBox(height: 14),
-          _AdvicePanel(text: drawnCard.advice),
+          AccentPanel(
+            label: 'CONSEIL',
+            icon: Icons.auto_awesome,
+            accent: AppColors.softGold,
+            background: AppColors.softGold.withValues(alpha: 0.14),
+            border: AppColors.softGold.withValues(alpha: 0.4),
+            body: drawnCard.advice,
+          ),
           const SizedBox(height: 10),
-          _WarningPanel(text: card.warning),
+          AccentPanel(
+            label: 'À GARDER À L’ESPRIT',
+            icon: Icons.spa_outlined,
+            accent: AppColors.subtle,
+            background: AppColors.deepGreen.withValues(alpha: 0.05),
+            border: AppColors.deepGreen.withValues(alpha: 0.15),
+            body: card.warning,
+          ),
         ],
       ),
     );
@@ -153,106 +168,3 @@ class _ShortMessage extends StatelessWidget {
   }
 }
 
-class _AdvicePanel extends StatelessWidget {
-  const _AdvicePanel({required this.text});
-
-  final String text;
-
-  @override
-  Widget build(BuildContext context) {
-    final textTheme = Theme.of(context).textTheme;
-    return Container(
-      padding: const EdgeInsets.fromLTRB(14, 12, 14, 14),
-      decoration: BoxDecoration(
-        color: AppColors.softGold.withValues(alpha: 0.14),
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(
-          color: AppColors.softGold.withValues(alpha: 0.4),
-        ),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Icon(
-                Icons.auto_awesome,
-                size: 14,
-                color: AppColors.softGold.withValues(alpha: 0.9),
-              ),
-              const SizedBox(width: 6),
-              Text(
-                'CONSEIL',
-                style: textTheme.labelSmall?.copyWith(
-                  color: AppColors.softGold,
-                  letterSpacing: 1.4,
-                  fontWeight: FontWeight.w700,
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 6),
-          Text(
-            text,
-            style: textTheme.bodyMedium?.copyWith(
-              color: AppColors.charcoal,
-              height: 1.45,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _WarningPanel extends StatelessWidget {
-  const _WarningPanel({required this.text});
-
-  final String text;
-
-  @override
-  Widget build(BuildContext context) {
-    final textTheme = Theme.of(context).textTheme;
-    return Container(
-      padding: const EdgeInsets.fromLTRB(14, 10, 14, 12),
-      decoration: BoxDecoration(
-        color: AppColors.deepGreen.withValues(alpha: 0.05),
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(
-          color: AppColors.deepGreen.withValues(alpha: 0.15),
-        ),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              const Icon(
-                Icons.spa_outlined,
-                size: 14,
-                color: AppColors.subtle,
-              ),
-              const SizedBox(width: 6),
-              Text(
-                'À GARDER À L’ESPRIT',
-                style: textTheme.labelSmall?.copyWith(
-                  color: AppColors.subtle,
-                  letterSpacing: 1.4,
-                  fontWeight: FontWeight.w700,
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 4),
-          Text(
-            text,
-            style: textTheme.bodySmall?.copyWith(
-              color: AppColors.charcoal,
-              height: 1.4,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}

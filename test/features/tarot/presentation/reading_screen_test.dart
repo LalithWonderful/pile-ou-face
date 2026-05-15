@@ -338,4 +338,118 @@ void main() {
       expect(find.text('Partager ce message'), findsOneWidget);
     });
   });
+
+  group('ReadingScreen (responsiveness)', () {
+    Future<void> noopInvoker(String _) async {}
+
+    testWidgets(
+        'daily mode renders and exposes a scrollable share button on '
+        'a 320x568 viewport', (tester) async {
+      await tester.binding.setSurfaceSize(const Size(320, 568));
+      addTearDown(() => tester.binding.setSurfaceSize(null));
+
+      final repo =
+          TarotRepository(loader: (_) async => _singleCardFixture);
+      final drawService = TarotDrawService(repository: repo);
+      final dailyService = DailyReadingService(
+        repository: repo,
+        random: Random(0),
+        clock: () => DateTime(2026, 5, 15),
+      );
+
+      await tester.pumpWidget(_wrap(
+        child: ReadingScreen(
+          isDaily: true,
+          shareInvoker: noopInvoker,
+        ),
+        repository: repo,
+        drawService: drawService,
+        dailyService: dailyService,
+      ));
+
+      await tester.tap(find.text('Révéler mon message'));
+      await tester.pumpAndSettle();
+
+      expect(tester.takeException(), isNull);
+      expect(find.text('Le Mat'), findsOneWidget);
+
+      // Share CTA must remain reachable via scroll on a narrow screen.
+      await tester.scrollUntilVisible(
+        find.text('Partager ce message'),
+        200,
+        scrollable: find.byType(Scrollable).first,
+      );
+      expect(find.text('Partager ce message'), findsOneWidget);
+    });
+
+    testWidgets('three-card spread renders on a 320x568 viewport',
+        (tester) async {
+      await tester.binding.setSurfaceSize(const Size(320, 568));
+      addTearDown(() => tester.binding.setSurfaceSize(null));
+
+      final repo =
+          TarotRepository(loader: (_) async => _threeCardsFixture);
+      final drawService =
+          TarotDrawService(repository: repo, random: Random(0));
+      final dailyService = DailyReadingService(repository: repo);
+
+      await tester.pumpWidget(_wrap(
+        child: const ReadingScreen(spread: TarotSpread.threeCards),
+        repository: repo,
+        drawService: drawService,
+        dailyService: dailyService,
+      ));
+      await tester.pumpAndSettle();
+
+      // The idle CTA may sit below the viewport on a narrow phone; the
+      // _IdleState is now scrollable so it can be reached.
+      await tester.scrollUntilVisible(
+        find.text('Révéler le tirage'),
+        100,
+        scrollable: find.byType(Scrollable).first,
+      );
+      await tester.tap(find.text('Révéler le tirage'));
+      await tester.pumpAndSettle();
+
+      expect(tester.takeException(), isNull);
+      // First slot is rendered eagerly by the ListView; the others come
+      // through scroll, which is the expected behaviour on a narrow
+      // phone.
+      expect(find.text('SITUATION'), findsOneWidget);
+    });
+
+    testWidgets('daily mode renders at 1.4x text scaling', (tester) async {
+      final repo =
+          TarotRepository(loader: (_) async => _singleCardFixture);
+      final drawService = TarotDrawService(repository: repo);
+      final dailyService = DailyReadingService(
+        repository: repo,
+        random: Random(0),
+        clock: () => DateTime(2026, 5, 15),
+      );
+
+      await tester.pumpWidget(
+        MediaQuery(
+          data: const MediaQueryData(
+            textScaler: TextScaler.linear(1.4),
+          ),
+          child: _wrap(
+            child: ReadingScreen(
+              isDaily: true,
+              shareInvoker: noopInvoker,
+            ),
+            repository: repo,
+            drawService: drawService,
+            dailyService: dailyService,
+          ),
+        ),
+      );
+
+      await tester.tap(find.text('Révéler mon message'));
+      await tester.pumpAndSettle();
+
+      expect(tester.takeException(), isNull);
+      expect(find.text('Le Mat'), findsOneWidget);
+    });
+  });
 }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../../app/app_theme.dart';
 import '../../models/tarot_card.dart';
+import '../widgets/accent_panel.dart';
 import '../widgets/card_art_placeholder.dart';
 
 class CardDetailScreen extends StatelessWidget {
@@ -77,7 +78,7 @@ class CardDetailScreen extends StatelessWidget {
               const SizedBox(height: 18),
               _Section(title: 'Travail / projets', body: card.work),
               const SizedBox(height: 22),
-              _AccentPanel(
+              AccentPanel(
                 label: 'INVITATION',
                 icon: Icons.auto_awesome,
                 accent: AppColors.softGold,
@@ -86,7 +87,7 @@ class CardDetailScreen extends StatelessWidget {
                 body: card.advice,
               ),
               const SizedBox(height: 12),
-              _AccentPanel(
+              AccentPanel(
                 label: 'À GARDER À L’ESPRIT',
                 icon: Icons.spa_outlined,
                 accent: AppColors.subtle,
@@ -135,62 +136,3 @@ class _Section extends StatelessWidget {
   }
 }
 
-class _AccentPanel extends StatelessWidget {
-  const _AccentPanel({
-    required this.label,
-    required this.icon,
-    required this.accent,
-    required this.background,
-    required this.border,
-    required this.body,
-  });
-
-  final String label;
-  final IconData icon;
-  final Color accent;
-  final Color background;
-  final Color border;
-  final String body;
-
-  @override
-  Widget build(BuildContext context) {
-    final textTheme = Theme.of(context).textTheme;
-    return Container(
-      padding: const EdgeInsets.fromLTRB(14, 12, 14, 14),
-      decoration: BoxDecoration(
-        color: background,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: border),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Icon(icon, size: 14, color: accent.withValues(alpha: 0.9)),
-              const SizedBox(width: 6),
-              Flexible(
-                child: Text(
-                  label,
-                  style: textTheme.labelSmall?.copyWith(
-                    color: accent,
-                    letterSpacing: 1.4,
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 6),
-          Text(
-            body,
-            style: textTheme.bodyMedium?.copyWith(
-              color: AppColors.charcoal,
-              height: 1.45,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
