@@ -98,15 +98,16 @@ void main() {
     });
 
     testWidgets(
-        '"Je me pose une question" opens the general intent reading screen',
+        '"Une situation" opens the general intent reading screen',
         (tester) async {
       await tester.pumpWidget(_buildApp(fixture: _threeCardsFixture));
 
-      // Retired labels must not appear on the home anymore.
+      // The compact button labels are visible; the long retired ones
+      // must not appear on the home anymore.
+      expect(find.text('Je me pose une question d’amour'), findsNothing);
       expect(find.text('Éclairer une situation'), findsNothing);
-      expect(find.text('Faire un tirage 3 cartes'), findsNothing);
 
-      await tester.tap(find.text('Je me pose une question'));
+      await tester.tap(find.text('Une situation'));
       await tester.pumpAndSettle();
 
       // AppBar uses the intent title.
@@ -116,11 +117,11 @@ void main() {
     });
 
     testWidgets(
-        '"Je me pose une question d’amour" opens the love intent screen',
+        '"L’amour" opens the love intent screen',
         (tester) async {
       await tester.pumpWidget(_buildApp(fixture: _threeCardsFixture));
 
-      await tester.tap(find.text('Je me pose une question d’amour'));
+      await tester.tap(find.text('L’amour'));
       await tester.pumpAndSettle();
 
       expect(find.text('Question d’amour'), findsOneWidget);
@@ -128,11 +129,11 @@ void main() {
     });
 
     testWidgets(
-        '"Je me pose une question de travail" opens the work intent screen',
+        '"Le travail" opens the work intent screen',
         (tester) async {
       await tester.pumpWidget(_buildApp(fixture: _threeCardsFixture));
 
-      await tester.tap(find.text('Je me pose une question de travail'));
+      await tester.tap(find.text('Le travail'));
       await tester.pumpAndSettle();
 
       expect(find.text('Question de travail'), findsOneWidget);
@@ -140,11 +141,11 @@ void main() {
     });
 
     testWidgets(
-        '"Je me pose une question d’argent" opens the money intent screen',
+        '"L’argent" opens the money intent screen',
         (tester) async {
       await tester.pumpWidget(_buildApp(fixture: _threeCardsFixture));
 
-      await tester.tap(find.text('Je me pose une question d’argent'));
+      await tester.tap(find.text('L’argent'));
       await tester.pumpAndSettle();
 
       expect(find.text('Question d’argent'), findsOneWidget);

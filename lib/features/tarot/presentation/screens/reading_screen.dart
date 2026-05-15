@@ -183,50 +183,68 @@ class _IdleState extends StatelessWidget {
     final textTheme = Theme.of(context).textTheme;
     final isSingle = spread.cardCount == 1;
     final cardWidth = isSingle ? 160.0 : 92.0;
+    final showPositions = !isSingle;
 
     return LayoutBuilder(
       builder: (context, constraints) {
         return SingleChildScrollView(
-          padding: const EdgeInsets.fromLTRB(24, 16, 24, 24),
+          padding: const EdgeInsets.fromLTRB(24, 12, 24, 24),
           child: ConstrainedBox(
             constraints: BoxConstraints(minHeight: constraints.maxHeight - 40),
             child: IntrinsicHeight(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  const Spacer(),
-                  Text(
-                    description,
-                    textAlign: TextAlign.center,
-                    style: textTheme.bodyMedium?.copyWith(
-                      color: AppColors.subtle,
-                      fontStyle: FontStyle.italic,
-                      height: 1.4,
-                    ),
-                  ),
-                  const SizedBox(height: 28),
+                  const Spacer(flex: 1),
+                  _IntroText(description: description),
+                  const SizedBox(height: 24),
                   Center(
                     child: Wrap(
                       spacing: 14,
-                      runSpacing: 14,
+                      runSpacing: 16,
                       alignment: WrapAlignment.center,
-                      children: List.generate(
-                        spread.cardCount,
-                        (_) => CardArtPlaceholder(
+                      children: List.generate(spread.cardCount, (i) {
+                        final placeholder = CardArtPlaceholder(
                           variant: CardArtVariant.faceDown,
                           width: cardWidth,
-                        ),
-                      ),
+                        );
+                        if (!showPositions) return placeholder;
+                        return SizedBox(
+                          width: cardWidth,
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              placeholder,
+                              const SizedBox(height: 8),
+                              Text(
+                                spread.positions[i].toUpperCase(),
+                                textAlign: TextAlign.center,
+                                maxLines: 2,
+                                style: textTheme.labelSmall?.copyWith(
+                                  color: AppColors.softGold,
+                                  fontSize: 9,
+                                  letterSpacing: 1.0,
+                                  fontWeight: FontWeight.w700,
+                                  height: 1.2,
+                                ),
+                              ),
+                            ],
+                          ),
+                        );
+                      }),
                     ),
                   ),
-                  const SizedBox(height: 24),
+                  const SizedBox(height: 20),
                   Text(
                     hint,
                     textAlign: TextAlign.center,
-                    style:
-                        textTheme.bodySmall?.copyWith(color: AppColors.subtle),
+                    style: textTheme.bodyMedium?.copyWith(
+                      color: AppColors.deepGreen.withValues(alpha: 0.85),
+                      fontWeight: FontWeight.w500,
+                      height: 1.35,
+                    ),
                   ),
-                  const Spacer(),
+                  const Spacer(flex: 2),
                   ElevatedButton.icon(
                     onPressed: loading ? null : onReveal,
                     icon: loading
@@ -247,6 +265,51 @@ class _IdleState extends StatelessWidget {
           ),
         );
       },
+    );
+  }
+}
+
+class _IntroText extends StatelessWidget {
+  const _IntroText({required this.description});
+
+  final String description;
+
+  @override
+  Widget build(BuildContext context) {
+    final textTheme = Theme.of(context).textTheme;
+    final lines = description
+        .split('\n')
+        .map((l) => l.trim())
+        .where((l) => l.isNotEmpty)
+        .toList();
+    final primary = lines.isNotEmpty ? lines.first : description.trim();
+    final secondary =
+        lines.length > 1 ? lines.skip(1).join(' ') : null;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Text(
+          primary,
+          textAlign: TextAlign.center,
+          style: textTheme.titleMedium?.copyWith(
+            color: AppColors.deepGreen,
+            fontWeight: FontWeight.w600,
+            height: 1.3,
+          ),
+        ),
+        if (secondary != null) ...[
+          const SizedBox(height: 6),
+          Text(
+            secondary,
+            textAlign: TextAlign.center,
+            style: textTheme.bodyMedium?.copyWith(
+              color: AppColors.charcoal,
+              height: 1.4,
+            ),
+          ),
+        ],
+      ],
     );
   }
 }

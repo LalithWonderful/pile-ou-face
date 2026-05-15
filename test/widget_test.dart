@@ -7,8 +7,8 @@ import 'package:pile_ou_face/features/tarot/services/tarot_draw_service.dart';
 
 void main() {
   testWidgets(
-      'Home screen exposes the five intent-based entry points and footer',
-      (WidgetTester tester) async {
+      'Home screen presents the daily CTA, the question group and the four '
+      'compact intent buttons', (WidgetTester tester) async {
     final repository = TarotRepository(loader: (_) async => '[]');
     final drawService = TarotDrawService(repository: repository);
     final dailyService = DailyReadingService(repository: repository);
@@ -24,15 +24,23 @@ void main() {
     expect(find.text('Pile ou Face'), findsOneWidget);
     expect(find.text('Pile ou Face a un message pour toi.'), findsOneWidget);
 
-    // Five product-validated entry points.
+    // Primary CTA.
     expect(find.text('Découvrir mon message du jour'), findsOneWidget);
-    expect(find.text('Je me pose une question'), findsOneWidget);
-    expect(find.text('Je me pose une question d’amour'), findsOneWidget);
-    expect(find.text('Je me pose une question de travail'), findsOneWidget);
-    expect(find.text('Je me pose une question d’argent'), findsOneWidget);
 
-    // Retired labels must not reappear.
-    expect(find.text('Découvrir mon message'), findsNothing);
+    // Group title.
+    expect(find.text('Je me pose une question sur…'), findsOneWidget);
+
+    // Four compact intent buttons.
+    expect(find.text('Une situation'), findsOneWidget);
+    expect(find.text('L’amour'), findsOneWidget);
+    expect(find.text('Le travail'), findsOneWidget);
+    expect(find.text('L’argent'), findsOneWidget);
+
+    // Retired long labels must no longer appear on the home screen.
+    expect(find.text('Je me pose une question'), findsNothing);
+    expect(find.text('Je me pose une question d’amour'), findsNothing);
+    expect(find.text('Je me pose une question de travail'), findsNothing);
+    expect(find.text('Je me pose une question d’argent'), findsNothing);
     expect(find.text('Éclairer une situation'), findsNothing);
     expect(find.text('Faire un tirage 3 cartes'), findsNothing);
 
