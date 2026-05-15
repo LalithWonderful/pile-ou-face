@@ -4,6 +4,7 @@ import '../../../../app/app_theme.dart';
 import '../../../../app/tarot_scope.dart';
 import '../../models/tarot_card.dart';
 import '../widgets/card_art_placeholder.dart';
+import 'card_detail_screen.dart';
 
 class CardsLibraryScreen extends StatefulWidget {
   const CardsLibraryScreen({super.key});
@@ -68,45 +69,60 @@ class _CardTile extends StatelessWidget {
 
   final TarotCard card;
 
+  void _openDetail(BuildContext context) {
+    Navigator.of(context).push(
+      MaterialPageRoute<void>(
+        builder: (_) => CardDetailScreen(card: card),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-      decoration: BoxDecoration(
-        color: Colors.white,
+    return Material(
+      color: Colors.white,
+      shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(
+        side: BorderSide(
           color: AppColors.softGold.withValues(alpha: 0.3),
         ),
       ),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          CardArtPlaceholder.mini(card: card),
-          const SizedBox(width: 14),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  card.name,
-                  style: textTheme.titleMedium?.copyWith(
-                    color: AppColors.deepGreen,
-                    fontWeight: FontWeight.w600,
-                  ),
+      clipBehavior: Clip.antiAlias,
+      child: InkWell(
+        onTap: () => _openDetail(context),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              CardArtPlaceholder.mini(card: card),
+              const SizedBox(width: 14),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      card.name,
+                      style: textTheme.titleMedium?.copyWith(
+                        color: AppColors.deepGreen,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    const SizedBox(height: 2),
+                    Text(
+                      card.keywordsUpright.join(' · '),
+                      style: textTheme.bodySmall?.copyWith(
+                        color: AppColors.subtle,
+                      ),
+                    ),
+                  ],
                 ),
-                const SizedBox(height: 2),
-                Text(
-                  card.keywordsUpright.join(' · '),
-                  style: textTheme.bodySmall?.copyWith(
-                    color: AppColors.subtle,
-                  ),
-                ),
-              ],
-            ),
+              ),
+              const Icon(Icons.chevron_right, color: AppColors.subtle),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }
