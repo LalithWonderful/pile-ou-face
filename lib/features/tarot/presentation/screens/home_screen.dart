@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
@@ -46,7 +48,7 @@ class HomeScreen extends StatelessWidget {
                   const EdgeInsets.symmetric(horizontal: 28, vertical: 24),
               child: ConstrainedBox(
                 constraints: BoxConstraints(
-                  minHeight: constraints.maxHeight - 48,
+                  minHeight: math.max(0.0, constraints.maxHeight - 48),
                 ),
                 child: IntrinsicHeight(
                   child: Column(
