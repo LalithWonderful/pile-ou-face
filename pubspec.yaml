@@ -47,6 +47,8 @@ dev_dependencies:
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
   flutter_lints: ^6.0.0
+  flutter_launcher_icons: ^0.14.4
+  flutter_native_splash: ^2.4.7
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
@@ -89,3 +91,28 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/to/font-from-package
+
+# ---------------------------------------------------------------------------
+# Native icon generation (dev-only).
+# Source: assets/tarot/branding/pile_ou_face_logo.png (1080x1080 PNG RGB).
+# Run: `dart run flutter_launcher_icons` after any logo update.
+# ---------------------------------------------------------------------------
+flutter_launcher_icons:
+  android: "ic_launcher"
+  ios: true
+  image_path: "assets/tarot/branding/pile_ou_face_logo.png"
+  remove_alpha_ios: true
+  adaptive_icon_background: "#FBF7EE"
+  adaptive_icon_foreground: "assets/tarot/branding/pile_ou_face_logo.png"
+
+# ---------------------------------------------------------------------------
+# Native splash screen generation (dev-only).
+# Background follows AppColors.ivory (#FBF7EE). Logo centred.
+# Run: `dart run flutter_native_splash:create` after any visual update.
+# ---------------------------------------------------------------------------
+flutter_native_splash:
+  color: "#FBF7EE"
+  image: assets/tarot/branding/pile_ou_face_logo.png
+  android_12:
+    color: "#FBF7EE"
+    image: assets/tarot/branding/pile_ou_face_logo.png
