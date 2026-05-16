@@ -116,7 +116,15 @@ class _ReadingScreenState extends State<ReadingScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text(_appBarTitle)),
+      appBar: AppBar(
+        title: Text(_appBarTitle),
+        leading: widget.intent != null
+            ? IconButton(
+                icon: const Icon(Icons.close),
+                onPressed: () => Navigator.of(context).pop(),
+              )
+            : null,
+      ),
       body: SafeArea(
         child: AnimatedSwitcher(
           duration: const Duration(milliseconds: 350),
@@ -334,6 +342,18 @@ class _RevealedState extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (spread.cardCount > 1) {
+      return _StaggeredReveal(
+        index: 0,
+        child: _MultiCardPager(
+          drawn: drawn,
+          spread: spread,
+          intent: intent,
+          onRedraw: onRedraw,
+        ),
+      );
+    }
+
     final textTheme = Theme.of(context).textTheme;
     final hasRedraw = !isDaily;
     return ListView.separated(
@@ -342,13 +362,12 @@ class _RevealedState extends StatelessWidget {
       separatorBuilder: (_, _) => const SizedBox(height: 16),
       itemBuilder: (context, index) {
         if (index < drawn.length) {
-          final multi = spread.cardCount > 1;
           return _StaggeredReveal(
             index: index,
             child: DrawnCardView(
               drawnCard: drawn[index],
-              position: multi ? spread.positions[index] : null,
-              positionIndex: multi ? index : null,
+              position: null,
+              positionIndex: null,
               intent: intent,
               expanded: isDaily,
             ),
@@ -387,6 +406,210 @@ class _RevealedState extends StatelessWidget {
           ),
         );
       },
+    );
+  }
+}
+
+class _MultiCardPager extends StatefulWidget {
+  const _MultiCardPager({
+    required this.drawn,
+    required this.spread,
+    required this.intent,
+    required this.onRedraw,
+  });
+
+  final List<DrawnCard> drawn;
+  final TarotSpread spread;
+  final ReadingIntent? intent;
+  final VoidCallback onRedraw;
+
+  @override
+  State<_MultiCardPager> createState() => _MultiCardPagerState();
+}
+
+class _MultiCardPagerState extends State<_MultiCardPager> {
+  int _currentIndex = 0;
+
+  void _goTo(int index) {
+    if (index < 0 || index >= widget.drawn.length) return;
+    setState(() => _currentIndex = index);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final textTheme = Theme.of(context).textTheme;
+    final card = widget.drawn[_currentIndex];
+    final position = widget.spread.positions[_currentIndex];
+
+    final prevLabel = _currentIndex > 0
+        ? widget.spread.positions[_currentIndex - 1]
+        : 'Précédente';
+    final nextLabel = _currentIndex < widget.drawn.length - 1
+        ? widget.spread.positions[_currentIndex + 1]
+        : 'Suivante';
+
+    return SingleChildScrollView(
+      padding: const EdgeInsets.fromLTRB(0, 16, 0, 28),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Carte ${_currentIndex + 1} sur ${widget.drawn.length}',
+                  style: textTheme.labelSmall?.copyWith(
+                    color: AppColors.subtle,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  position,
+                  style: textTheme.headlineSmall?.copyWith(
+                    color: AppColors.deepGreen,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 12),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            child: DrawnCardView(
+              key: ValueKey(card.card.id),
+              drawnCard: card,
+              position: null,
+              positionIndex: _currentIndex,
+              intent: widget.intent,
+              expanded: true,
+            ),
+          ),
+          const SizedBox(height: 12),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                if (_currentIndex > 0)
+                  Expanded(
+                    child: OutlinedButton(
+                      onPressed: () => _goTo(_currentIndex - 1),
+                      style: OutlinedButton.styleFrom(
+                        side: const BorderSide(
+                          color: AppColors.softGold,
+                          width: 1.5,
+                        ),
+                        backgroundColor: AppColors.ivory,
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 12,
+                          vertical: 12,
+                        ),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Précédent',
+                            style: textTheme.labelSmall?.copyWith(
+                              color: AppColors.subtle,
+                            ),
+                          ),
+                          Text(
+                            prevLabel,
+                            style: textTheme.bodyMedium?.copyWith(
+                              color: AppColors.deepGreen,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  )
+                else
+                  const Spacer(),
+                const SizedBox(width: 8),
+                if (_currentIndex < widget.drawn.length - 1)
+                  Expanded(
+                    child: OutlinedButton(
+                      onPressed: () => _goTo(_currentIndex + 1),
+                      style: OutlinedButton.styleFrom(
+                        side: const BorderSide(
+                          color: AppColors.softGold,
+                          width: 1.5,
+                        ),
+                        backgroundColor: AppColors.ivory,
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 12,
+                          vertical: 12,
+                        ),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          Text(
+                            'Suivant',
+                            style: textTheme.labelSmall?.copyWith(
+                              color: AppColors.subtle,
+                            ),
+                          ),
+                          Text(
+                            nextLabel,
+                            style: textTheme.bodyMedium?.copyWith(
+                              color: AppColors.deepGreen,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  )
+                else
+                  const Spacer(),
+              ],
+            ),
+          ),
+          if (_currentIndex == widget.drawn.length - 1) ...[
+            const SizedBox(height: 12),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: OutlinedButton.icon(
+                onPressed: () => Navigator.of(context).popUntil(
+                  (route) => route.isFirst,
+                ),
+                icon: const Icon(Icons.home_outlined),
+                label: const Text('Revenir à l\'accueil'),
+              ),
+            ),
+          ],
+          if (widget.intent?.footer != null) ...[
+            const SizedBox(height: 14),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: Text(
+                widget.intent!.footer!,
+                textAlign: TextAlign.center,
+                style: textTheme.bodySmall?.copyWith(
+                  color: AppColors.subtle,
+                  fontStyle: FontStyle.italic,
+                  fontSize: 11,
+                ),
+              ),
+            ),
+          ],
+        ],
+      ),
     );
   }
 }
