@@ -3,7 +3,7 @@
     "id": "le_mat",
     "number": 0,
     "name": "Le Mat",
-    "image_path": "assets/tarot/major_arcana/00_le_mat.jpg",
+    "image_path": "assets/tarot/major_arcana/00_le_mat.webp",
     "keywords_upright": [
       "liberté",
       "commencement",
@@ -40,7 +40,7 @@
     "id": "le_bateleur",
     "number": 1,
     "name": "La Magicienne",
-    "image_path": "assets/tarot/major_arcana/01_la_magicienne.jpg",
+    "image_path": "assets/tarot/major_arcana/01_la_magicienne.webp",
     "keywords_upright": [
       "initiative",
       "potentiel",
@@ -77,7 +77,7 @@
     "id": "la_papesse",
     "number": 2,
     "name": "La Papesse",
-    "image_path": "assets/tarot/major_arcana/02_la_papesse.jpg",
+    "image_path": "assets/tarot/major_arcana/02_la_papesse.webp",
     "keywords_upright": [
       "intuition",
       "savoir intérieur",
@@ -114,7 +114,7 @@
     "id": "l_imperatrice",
     "number": 3,
     "name": "L’Impératrice",
-    "image_path": "assets/tarot/major_arcana/03_l_imperatrice.jpg",
+    "image_path": "assets/tarot/major_arcana/03_l_imperatrice.webp",
     "keywords_upright": [
       "créativité",
       "abondance",
@@ -151,7 +151,7 @@
     "id": "l_empereur",
     "number": 4,
     "name": "L’Empereur",
-    "image_path": "assets/tarot/major_arcana/04_l_empereur.jpg",
+    "image_path": "assets/tarot/major_arcana/04_l_empereur.webp",
     "keywords_upright": [
       "structure",
       "autorité",
@@ -188,7 +188,7 @@
     "id": "le_pape",
     "number": 5,
     "name": "Le Pape",
-    "image_path": "assets/tarot/major_arcana/05_le_pape.jpg",
+    "image_path": "assets/tarot/major_arcana/05_le_pape.webp",
     "keywords_upright": [
       "transmission",
       "guidance",
@@ -225,7 +225,7 @@
     "id": "les_amoureux",
     "number": 6,
     "name": "Les Amoureux",
-    "image_path": "assets/tarot/major_arcana/06_les_amoureux.jpg",
+    "image_path": "assets/tarot/major_arcana/06_les_amoureux.webp",
     "keywords_upright": [
       "choix",
       "lien",
@@ -262,7 +262,7 @@
     "id": "le_chariot",
     "number": 7,
     "name": "Le Chariot",
-    "image_path": "assets/tarot/major_arcana/07_le_chariot.jpg",
+    "image_path": "assets/tarot/major_arcana/07_le_chariot.webp",
     "keywords_upright": [
       "élan",
       "victoire",
@@ -299,7 +299,7 @@
     "id": "la_justice",
     "number": 8,
     "name": "La Justice",
-    "image_path": "assets/tarot/major_arcana/08_la_justice.jpg",
+    "image_path": "assets/tarot/major_arcana/08_la_justice.webp",
     "keywords_upright": [
       "équilibre",
       "vérité",
@@ -336,7 +336,7 @@
     "id": "l_ermite",
     "number": 9,
     "name": "L’Ermite",
-    "image_path": "assets/tarot/major_arcana/09_l_hermite.jpg",
+    "image_path": "assets/tarot/major_arcana/09_l_hermite.webp",
     "keywords_upright": [
       "recul",
       "sagesse",
@@ -373,7 +373,7 @@
     "id": "la_roue_de_fortune",
     "number": 10,
     "name": "La Roue de Fortune",
-    "image_path": "assets/tarot/major_arcana/10_la_roue_de_fortune.jpg",
+    "image_path": "assets/tarot/major_arcana/10_la_roue_de_fortune.webp",
     "keywords_upright": [
       "cycle",
       "tournant",
@@ -410,7 +410,7 @@
     "id": "la_force",
     "number": 11,
     "name": "La Force",
-    "image_path": "assets/tarot/major_arcana/11_la_force.jpg",
+    "image_path": "assets/tarot/major_arcana/11_la_force.webp",
     "keywords_upright": [
       "courage",
       "douceur",
@@ -447,7 +447,7 @@
     "id": "le_pendu",
     "number": 12,
     "name": "Le Pendu",
-    "image_path": "assets/tarot/major_arcana/12_le_pendu.jpg",
+    "image_path": "assets/tarot/major_arcana/12_le_pendu.webp",
     "keywords_upright": [
       "pause",
       "lâcher-prise",
@@ -484,7 +484,7 @@
     "id": "la_mort",
     "number": 13,
     "name": "La Mort",
-    "image_path": "assets/tarot/major_arcana/13_la_mort.jpg",
+    "image_path": "assets/tarot/major_arcana/13_la_mort.webp",
     "keywords_upright": [
       "transformation",
       "fin",
@@ -521,7 +521,7 @@
     "id": "la_temperance",
     "number": 14,
     "name": "Tempérance",
-    "image_path": "assets/tarot/major_arcana/14_temperance.jpg",
+    "image_path": "assets/tarot/major_arcana/14_temperance.webp",
     "keywords_upright": [
       "harmonie",
       "fluidité",
@@ -558,7 +558,7 @@
     "id": "le_diable",
     "number": 15,
     "name": "Le Diable",
-    "image_path": "assets/tarot/major_arcana/15_le_diable.jpg",
+    "image_path": "assets/tarot/major_arcana/15_le_diable.webp",
     "keywords_upright": [
       "attachement",
       "désir",
@@ -595,7 +595,7 @@
     "id": "la_maison_dieu",
     "number": 16,
     "name": "La Tour",
-    "image_path": "assets/tarot/major_arcana/16_la_tour.jpg",
+    "image_path": "assets/tarot/major_arcana/16_la_tour.webp",
     "keywords_upright": [
       "rupture",
       "libération",
@@ -632,7 +632,7 @@
     "id": "l_etoile",
     "number": 17,
     "name": "L’Étoile",
-    "image_path": "assets/tarot/major_arcana/17_l_etoile.jpg",
+    "image_path": "assets/tarot/major_arcana/17_l_etoile.webp",
     "keywords_upright": [
       "espoir",
       "inspiration",
@@ -669,7 +669,7 @@
     "id": "la_lune",
     "number": 18,
     "name": "La Lune",
-    "image_path": "assets/tarot/major_arcana/18_la_lune.jpg",
+    "image_path": "assets/tarot/major_arcana/18_la_lune.webp",
     "keywords_upright": [
       "intuition",
       "rêve",
@@ -706,7 +706,7 @@
     "id": "le_soleil",
     "number": 19,
     "name": "Le Soleil",
-    "image_path": "assets/tarot/major_arcana/19_le_soleil.jpg",
+    "image_path": "assets/tarot/major_arcana/19_le_soleil.webp",
     "keywords_upright": [
       "joie",
       "clarté",
@@ -743,7 +743,7 @@
     "id": "le_jugement",
     "number": 20,
     "name": "Le Jugement",
-    "image_path": "assets/tarot/major_arcana/20_le_jugement.jpg",
+    "image_path": "assets/tarot/major_arcana/20_le_jugement.webp",
     "keywords_upright": [
       "renaissance",
       "appel intérieur",
@@ -780,7 +780,7 @@
     "id": "le_monde",
     "number": 21,
     "name": "Le Monde",
-    "image_path": "assets/tarot/major_arcana/21_le_monde.jpg",
+    "image_path": "assets/tarot/major_arcana/21_le_monde.webp",
     "keywords_upright": [
       "accomplissement",
       "unité",
