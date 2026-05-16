@@ -56,7 +56,7 @@ void main() {
 
     test('malformed JSON returns fresh snapshot without crash', () async {
       SharedPreferences.setMockInitialValues({
-        'quota.daily_intent_counters': 'not-json',
+        DailyQuotaService.prefsKey: 'not-json',
       });
       expect(await service.remaining(ReadingIntent.work), 2);
       expect(await service.tryConsume(ReadingIntent.work), isTrue);
@@ -64,7 +64,7 @@ void main() {
 
     test('missing intent key in counters is treated as 0', () async {
       SharedPreferences.setMockInitialValues({
-        'quota.daily_intent_counters':
+        DailyQuotaService.prefsKey:
             '{"date":"2026-05-15","counters":{}}',
       });
       expect(await service.remaining(ReadingIntent.money), 2);

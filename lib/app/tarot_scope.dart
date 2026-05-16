@@ -1,6 +1,7 @@
 import 'package:flutter/widgets.dart';
 
 import '../features/tarot/data/tarot_repository.dart';
+import '../features/tarot/services/app_data_reset_service.dart';
 import '../features/tarot/services/daily_quota_service.dart';
 import '../features/tarot/services/daily_reading_service.dart';
 import '../features/tarot/services/tarot_draw_service.dart';
@@ -12,6 +13,7 @@ class TarotScope extends InheritedWidget {
     required this.drawService,
     required this.dailyService,
     required this.quotaService,
+    required this.resetService,
     required super.child,
   });
 
@@ -19,6 +21,7 @@ class TarotScope extends InheritedWidget {
   final TarotDrawService drawService;
   final DailyReadingService dailyService;
   final DailyQuotaService quotaService;
+  final AppDataResetService resetService;
 
   static TarotScope of(BuildContext context) {
     final scope = context.dependOnInheritedWidgetOfExactType<TarotScope>();
@@ -31,5 +34,6 @@ class TarotScope extends InheritedWidget {
       repository != oldWidget.repository ||
       drawService != oldWidget.drawService ||
       dailyService != oldWidget.dailyService ||
-      quotaService != oldWidget.quotaService;
+      quotaService != oldWidget.quotaService ||
+      resetService != oldWidget.resetService;
 }

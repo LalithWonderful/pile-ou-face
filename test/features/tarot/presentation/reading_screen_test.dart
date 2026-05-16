@@ -8,6 +8,7 @@ import 'package:pile_ou_face/features/tarot/data/tarot_repository.dart';
 import 'package:pile_ou_face/features/tarot/models/reading_intent.dart';
 import 'package:pile_ou_face/features/tarot/models/tarot_spread.dart';
 import 'package:pile_ou_face/features/tarot/presentation/screens/reading_screen.dart';
+import 'package:pile_ou_face/features/tarot/services/app_data_reset_service.dart';
 import 'package:pile_ou_face/features/tarot/services/daily_quota_service.dart';
 import 'package:pile_ou_face/features/tarot/services/daily_reading_service.dart';
 import 'package:pile_ou_face/features/tarot/services/tarot_draw_service.dart';
@@ -116,6 +117,7 @@ Widget _wrap({
   required TarotDrawService drawService,
   required DailyReadingService dailyService,
   DailyQuotaService? quotaService,
+  AppDataResetService? resetService,
 }) {
   return MaterialApp(
     home: TarotScope(
@@ -123,6 +125,7 @@ Widget _wrap({
       drawService: drawService,
       dailyService: dailyService,
       quotaService: quotaService ?? DailyQuotaService(),
+      resetService: resetService ?? AppDataResetService(),
       child: child,
     ),
   );

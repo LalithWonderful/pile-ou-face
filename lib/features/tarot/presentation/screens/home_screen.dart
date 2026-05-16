@@ -7,6 +7,7 @@ import '../../../../app/app_theme.dart';
 import '../../models/reading_intent.dart';
 import 'cards_library_screen.dart';
 import 'reading_screen.dart';
+import 'settings_screen.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -31,6 +32,14 @@ class HomeScreen extends StatelessWidget {
     Navigator.of(context).push(
       MaterialPageRoute<void>(
         builder: (_) => const CardsLibraryScreen(),
+      ),
+    );
+  }
+
+  void _openSettings(BuildContext context) {
+    Navigator.of(context).push(
+      MaterialPageRoute<void>(
+        builder: (_) => const SettingsScreen(),
       ),
     );
   }
@@ -65,6 +74,17 @@ class HomeScreen extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          IconButton(
+                            onPressed: () => _openSettings(context),
+                            icon: const Icon(Icons.settings_outlined),
+                            color: AppColors.deepGreen,
+                            tooltip: 'Paramètres',
+                          ),
+                        ],
+                      ),
                       const Spacer(flex: 2),
                       Text(
                         'Pile ou Face',

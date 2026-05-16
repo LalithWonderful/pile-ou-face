@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:pile_ou_face/app/pile_ou_face_app.dart';
 import 'package:pile_ou_face/features/tarot/data/tarot_repository.dart';
@@ -167,6 +166,19 @@ void main() {
 
       expect(find.text('Bibliothèque des cartes'), findsOneWidget);
       expect(find.text('Carte A'), findsOneWidget);
+    });
+
+    testWidgets('settings icon opens the settings screen', (tester) async {
+      await tester.pumpWidget(_buildApp(fixture: _emptyFixture));
+      await tester.pumpAndSettle();
+
+      expect(find.byIcon(Icons.settings_outlined), findsOneWidget);
+
+      await tester.tap(find.byIcon(Icons.settings_outlined));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Paramètres'), findsOneWidget);
+      expect(find.text('Effacer mes données'), findsOneWidget);
     });
   });
 

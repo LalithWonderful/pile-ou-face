@@ -4,6 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../models/daily_quota_snapshot.dart';
 import '../models/reading_intent.dart';
+import 'local_storage_keys.dart';
 
 /// Tracks daily per-intent consumption counters (MVP quota = 2 / day).
 class DailyQuotaService {
@@ -11,7 +12,7 @@ class DailyQuotaService {
     DateTime Function()? clock,
   }) : _clock = clock ?? DateTime.now;
 
-  static const String _prefsKey = 'quota.daily_intent_counters';
+  static const String prefsKey = LocalStorageKeys.dailyIntentCounters;
   static const int _quota = 2;
 
   final DateTime Function() _clock;
@@ -33,7 +34,7 @@ class DailyQuotaService {
 
   Future<DailyQuotaSnapshot> _loadSnapshot() async {
     final prefs = await SharedPreferences.getInstance();
-    final raw = prefs.getString(_prefsKey);
+    final raw = prefs.getString(prefsKey);
     if (raw == null || raw.isEmpty) {
       return _freshSnapshot();
     }
@@ -65,7 +66,7 @@ class DailyQuotaService {
 
   Future<void> _saveSnapshot(DailyQuotaSnapshot snapshot) async {
     final prefs = await SharedPreferences.getInstance();
-    await prefs.setString(_prefsKey, jsonEncode(snapshot.toJson()));
+    await prefs.setString(prefsKey, jsonEncode(snapshot.toJson()));
   }
 
   /// Returns how many draws remain for [intent] today (never negative).

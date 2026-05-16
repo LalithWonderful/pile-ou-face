@@ -5,6 +5,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../data/tarot_repository.dart';
 import '../models/drawn_card.dart';
 import '../models/tarot_card.dart';
+import 'local_storage_keys.dart';
 
 class DailyReadingService {
   DailyReadingService({
@@ -14,9 +15,9 @@ class DailyReadingService {
   })  : _random = random ?? Random(),
         _clock = clock ?? DateTime.now;
 
-  static const String dateKey = 'daily_reading.date';
-  static const String cardIdKey = 'daily_reading.card_id';
-  static const String reversedKey = 'daily_reading.reversed';
+  static const String dateKey = LocalStorageKeys.dailyReadingDate;
+  static const String cardIdKey = LocalStorageKeys.dailyReadingCardId;
+  static const String reversedKey = LocalStorageKeys.dailyReadingReversed;
 
   final TarotRepository repository;
   final Random _random;
