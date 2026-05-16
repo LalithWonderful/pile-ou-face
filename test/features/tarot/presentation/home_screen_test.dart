@@ -86,11 +86,11 @@ void main() {
 
   group('HomeScreen navigation', () {
     testWidgets(
-        '"Découvrir mon message du jour" opens the daily reading screen',
+        '"Découvrir ton message du jour" opens the daily reading screen',
         (tester) async {
       await tester.pumpWidget(_buildApp(fixture: _emptyFixture));
 
-      await tester.tap(find.text('Découvrir mon message du jour'));
+      await tester.tap(find.text('Découvrir ton message du jour'));
       await tester.pumpAndSettle();
 
       expect(find.text('Mon message du jour'), findsOneWidget);
@@ -181,7 +181,7 @@ void main() {
 
       expect(tester.takeException(), isNull);
       expect(
-        find.text('Pile ou Face a un message pour toi.'),
+        find.text('C’est le moment de tirer une carte.'),
         findsOneWidget,
       );
     });
@@ -200,7 +200,7 @@ void main() {
 
       expect(tester.takeException(), isNull);
       expect(
-        find.text('Découvrir mon message du jour'),
+        find.text('Découvrir ton message du jour'),
         findsOneWidget,
       );
     });

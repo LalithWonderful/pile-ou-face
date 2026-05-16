@@ -62,8 +62,8 @@ class _ReadingScreenState extends State<ReadingScreen> {
 
   String get _idleDescription {
     if (widget.isDaily) {
-      return 'Pile ou Face a un message pour toi. '
-          'Prends un instant, puis révèle-le.';
+      return 'Prends un instant pour toi.\n'
+          'Ton message t’attend.';
     }
     if (widget.intent != null) return widget.intent!.intro;
     return widget.spread.description;

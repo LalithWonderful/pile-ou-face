@@ -66,7 +66,7 @@ class HomeScreen extends StatelessWidget {
                       ),
                       const SizedBox(height: 12),
                       Text(
-                        'Pile ou Face a un message pour toi.',
+                        'C’est le moment de tirer une carte.',
                         textAlign: TextAlign.center,
                         style: textTheme.titleMedium?.copyWith(
                           color: AppColors.deepGreen,
@@ -77,7 +77,7 @@ class HomeScreen extends StatelessWidget {
                       ElevatedButton.icon(
                         onPressed: () => _openDailyMessage(context),
                         icon: const Icon(Icons.auto_awesome),
-                        label: const Text('Découvrir mon message du jour'),
+                        label: const Text('Découvrir ton message du jour'),
                       ),
                       const SizedBox(height: 24),
                       Text(

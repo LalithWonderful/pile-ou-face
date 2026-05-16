@@ -22,10 +22,10 @@ void main() {
     );
 
     expect(find.text('Pile ou Face'), findsOneWidget);
-    expect(find.text('Pile ou Face a un message pour toi.'), findsOneWidget);
+    expect(find.text('C’est le moment de tirer une carte.'), findsOneWidget);
 
     // Primary CTA.
-    expect(find.text('Découvrir mon message du jour'), findsOneWidget);
+    expect(find.text('Découvrir ton message du jour'), findsOneWidget);
 
     // Group title.
     expect(find.text('Je me pose une question sur…'), findsOneWidget);
