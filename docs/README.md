@@ -23,13 +23,18 @@ Ce dossier contient les pages HTML statiques destinées à être publiées via *
 3. Sous **Source**, choisir :
    - **Deploy from a branch**
    - Branch : `main`
-   - Folder : `/ (root)` ou `/docs`
-4. GitHub Pages ne permet pas de choisir `/docs/site` directement comme racine.
-   - **Option A (recommandée)** : définir le dossier source sur `/docs`. Dans ce cas, déplacer les fichiers de `docs/site/` vers `docs/` (à la racine de `docs/`).
-   - **Option B** : définir le dossier source sur `/ (root)` et ajouter une GitHub Action qui copie `docs/site/` vers la branche `gh-pages` à chaque push.
-5. Une fois activé, l'URL sera de la forme `https://<utilisateur>.github.io/<repo>/`.
+   - Folder : `/docs`
+4. Cliquer sur **Save**.
+5. Une fois activé, les pages seront accessibles aux URL suivantes :
+   - `https://<utilisateur>.github.io/pile_ou_face/`
+   - `https://<utilisateur>.github.io/pile_ou_face/privacy-policy.html`
+   - `https://<utilisateur>.github.io/pile_ou_face/support.html`
 
 > **Note** : Ne pas inventer d'URL définitive tant que GitHub Pages n'est pas activé dans les paramètres du dépôt. L'URL exacte dépend du nom d'utilisateur ou d'organisation GitHub.
+
+## Notes internes
+
+- Avant soumission store, vérifier que `contact@pileouface.app` existe réellement et est monitorée.
 
 ## Contraintes respectées
 
