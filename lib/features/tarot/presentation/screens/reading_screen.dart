@@ -47,6 +47,23 @@ class _ReadingScreenState extends State<ReadingScreen> {
   List<DrawnCard>? _result;
   Object? _error;
   bool _loading = false;
+  bool _quotaExhausted = false;
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.intent != null) {
+      WidgetsBinding.instance.addPostFrameCallback((_) => _checkQuota());
+    }
+  }
+
+  Future<void> _checkQuota() async {
+    final scope = TarotScope.of(context);
+    final remaining = await scope.quotaService.remaining(widget.intent!);
+    if (remaining == 0 && mounted) {
+      setState(() => _quotaExhausted = true);
+    }
+  }
 
   TarotSpread get _effectiveSpread {
     if (widget.isDaily) return TarotSpread.single;
@@ -89,6 +106,17 @@ class _ReadingScreenState extends State<ReadingScreen> {
         final daily = await scope.dailyService.getOrCreateToday();
         draw = <DrawnCard>[daily];
       } else {
+        if (widget.intent != null) {
+          final consumed = await scope.quotaService.tryConsume(widget.intent!);
+          if (!consumed) {
+            if (!mounted) return;
+            setState(() {
+              _quotaExhausted = true;
+              _loading = false;
+            });
+            return;
+          }
+        }
         draw = await scope.drawService.draw(_effectiveSpread);
       }
       if (!mounted) return;
@@ -142,6 +170,12 @@ class _ReadingScreenState extends State<ReadingScreen> {
         key: const ValueKey('error'),
         message: _error.toString(),
         onRetry: _reveal,
+      );
+    }
+    if (_quotaExhausted && widget.intent != null) {
+      return _QuotaExhaustedState(
+        key: const ValueKey('quota_exhausted'),
+        intent: widget.intent!,
       );
     }
     final result = _result;
@@ -764,6 +798,60 @@ class _StaggeredRevealState extends State<_StaggeredReveal>
       child: SlideTransition(
         position: _offset,
         child: widget.child,
+      ),
+    );
+  }
+}
+
+class _QuotaExhaustedState extends StatelessWidget {
+  const _QuotaExhaustedState({super.key, required this.intent});
+
+  final ReadingIntent intent;
+
+  String get _themeLabel => switch (intent) {
+        ReadingIntent.general => 'situation',
+        ReadingIntent.love => 'amour',
+        ReadingIntent.work => 'travail',
+        ReadingIntent.money => 'argent',
+      };
+
+  @override
+  Widget build(BuildContext context) {
+    final textTheme = Theme.of(context).textTheme;
+    return Padding(
+      padding: const EdgeInsets.all(24),
+      child: Center(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              'Tu as déjà tiré deux messages $_themeLabel aujourd’hui.',
+              textAlign: TextAlign.center,
+              style: textTheme.titleMedium?.copyWith(
+                color: AppColors.deepGreen,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            const SizedBox(height: 12),
+            Text(
+              'Laisse ces messages faire leur chemin.\n'
+              'Reviens demain pour un nouveau souffle.',
+              textAlign: TextAlign.center,
+              style: textTheme.bodyMedium?.copyWith(
+                color: AppColors.charcoal,
+                height: 1.4,
+              ),
+            ),
+            const SizedBox(height: 24),
+            OutlinedButton.icon(
+              onPressed: () => Navigator.of(context).popUntil(
+                (route) => route.isFirst,
+              ),
+              icon: const Icon(Icons.home_outlined),
+              label: const Text('Revenir à l\'accueil'),
+            ),
+          ],
+        ),
       ),
     );
   }

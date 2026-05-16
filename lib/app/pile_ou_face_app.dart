@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../features/tarot/data/tarot_repository.dart';
 import '../features/tarot/presentation/screens/home_screen.dart';
+import '../features/tarot/services/daily_quota_service.dart';
 import '../features/tarot/services/daily_reading_service.dart';
 import '../features/tarot/services/tarot_draw_service.dart';
 import 'app_theme.dart';
@@ -27,6 +28,7 @@ class _PileOuFaceAppState extends State<PileOuFaceApp> {
   late final TarotRepository _repository;
   late final TarotDrawService _drawService;
   late final DailyReadingService _dailyService;
+  late final DailyQuotaService _quotaService;
 
   @override
   void initState() {
@@ -36,6 +38,7 @@ class _PileOuFaceAppState extends State<PileOuFaceApp> {
         widget.drawService ?? TarotDrawService(repository: _repository);
     _dailyService =
         widget.dailyService ?? DailyReadingService(repository: _repository);
+    _quotaService = DailyQuotaService();
   }
 
   @override
@@ -44,6 +47,7 @@ class _PileOuFaceAppState extends State<PileOuFaceApp> {
       repository: _repository,
       drawService: _drawService,
       dailyService: _dailyService,
+      quotaService: _quotaService,
       child: MaterialApp(
         title: 'Pile ou Face',
         debugShowCheckedModeBanner: false,
