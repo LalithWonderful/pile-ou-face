@@ -1,0 +1,22 @@
+# Pile ou Face — Android release signing template.
+#
+# Copy this file to android/key.properties (next to settings.gradle.kts)
+# and fill in the real values BEFORE building a release.
+#
+# IMPORTANT
+# - android/key.properties is gitignored. Never commit a filled-in version.
+# - The keystore (.jks) itself must live OUTSIDE the repo or be gitignored
+#   too. The recommended path "../app/upload-keystore.jks" resolves to
+#   android/app/upload-keystore.jks, which is already covered by
+#   android/.gitignore (**/*.jks).
+# - Generate the keystore once with:
+#     keytool -genkey -v -keystore android/app/upload-keystore.jks \
+#         -keyalg RSA -keysize 2048 -validity 10000 -alias upload
+# - Back up the keystore + passwords in a password manager.
+#   Losing them = no more updates of the app on the Play Store.
+# - See docs/publication/android_release_signing.md for the full procedure.
+
+storePassword=CHANGE_ME
+keyPassword=CHANGE_ME
+keyAlias=upload
+storeFile=../app/upload-keystore.jks
