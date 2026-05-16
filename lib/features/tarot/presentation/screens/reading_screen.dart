@@ -663,8 +663,64 @@ class _MultiCardPagerState extends State<_MultiCardPager> {
               ),
             ),
           ],
+          if (widget.intent != null) ...[
+            const SizedBox(height: 14),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: _QuotaHint(intent: widget.intent!),
+            ),
+          ],
         ],
       ),
+    );
+  }
+}
+
+class _QuotaHint extends StatelessWidget {
+  const _QuotaHint({required this.intent});
+
+  final ReadingIntent intent;
+
+  String get _themeLabel => switch (intent) {
+        ReadingIntent.general => 'situation',
+        ReadingIntent.love => 'amour',
+        ReadingIntent.work => 'travail',
+        ReadingIntent.money => 'argent',
+      };
+
+  @override
+  Widget build(BuildContext context) {
+    final textTheme = Theme.of(context).textTheme;
+    return FutureBuilder<int>(
+      future: TarotScope.of(context).quotaService.remaining(intent),
+      builder: (context, snapshot) {
+        if (!snapshot.hasData) return const SizedBox.shrink();
+        final remaining = snapshot.data!;
+        if (remaining == 1) {
+          return Text(
+            'Il te reste un tirage $_themeLabel aujourd’hui.',
+            textAlign: TextAlign.center,
+            style: textTheme.bodySmall?.copyWith(
+              color: AppColors.subtle,
+              fontStyle: FontStyle.italic,
+              fontSize: 11,
+            ),
+          );
+        }
+        if (remaining == 0) {
+          return Text(
+            'Laisse ce message infuser.\n'
+            'Tu peux revenir demain pour un nouveau tirage $_themeLabel.',
+            textAlign: TextAlign.center,
+            style: textTheme.bodySmall?.copyWith(
+              color: AppColors.subtle,
+              fontStyle: FontStyle.italic,
+              fontSize: 11,
+            ),
+          );
+        }
+        return const SizedBox.shrink();
+      },
     );
   }
 }
@@ -808,51 +864,64 @@ class _QuotaExhaustedState extends StatelessWidget {
 
   final ReadingIntent intent;
 
-  String get _themeLabel => switch (intent) {
-        ReadingIntent.general => 'situation',
-        ReadingIntent.love => 'amour',
-        ReadingIntent.work => 'travail',
-        ReadingIntent.money => 'argent',
+  String get _themePhrase => switch (intent) {
+        ReadingIntent.general => 'pour ta situation',
+        ReadingIntent.love => 'sur l’amour',
+        ReadingIntent.work => 'sur le travail',
+        ReadingIntent.money => 'sur l’argent',
       };
 
   @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
-    return Padding(
-      padding: const EdgeInsets.all(24),
-      child: Center(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(
-              'Tu as déjà tiré deux messages $_themeLabel aujourd’hui.',
-              textAlign: TextAlign.center,
-              style: textTheme.titleMedium?.copyWith(
-                color: AppColors.deepGreen,
-                fontWeight: FontWeight.w600,
-              ),
+    return Stack(
+      children: [
+        Positioned.fill(
+          child: Opacity(
+            opacity: 0.25,
+            child: Image.asset(
+              'assets/tarot/backgrounds/question_reading_bg.webp',
+              fit: BoxFit.cover,
             ),
-            const SizedBox(height: 12),
-            Text(
-              'Laisse ces messages faire leur chemin.\n'
-              'Reviens demain pour un nouveau souffle.',
-              textAlign: TextAlign.center,
-              style: textTheme.bodyMedium?.copyWith(
-                color: AppColors.charcoal,
-                height: 1.4,
-              ),
-            ),
-            const SizedBox(height: 24),
-            OutlinedButton.icon(
-              onPressed: () => Navigator.of(context).popUntil(
-                (route) => route.isFirst,
-              ),
-              icon: const Icon(Icons.home_outlined),
-              label: const Text('Revenir à l\'accueil'),
-            ),
-          ],
+          ),
         ),
-      ),
+        Padding(
+          padding: const EdgeInsets.all(24),
+          child: Center(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  'Tu as déjà tiré deux messages $_themePhrase aujourd’hui.',
+                  textAlign: TextAlign.center,
+                  style: textTheme.titleMedium?.copyWith(
+                    color: AppColors.deepGreen,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                const SizedBox(height: 12),
+                Text(
+                  'Laisse ces messages faire leur chemin.\n'
+                  'Reviens demain pour un nouveau souffle.',
+                  textAlign: TextAlign.center,
+                  style: textTheme.bodyMedium?.copyWith(
+                    color: AppColors.charcoal,
+                    height: 1.4,
+                  ),
+                ),
+                const SizedBox(height: 24),
+                OutlinedButton.icon(
+                  onPressed: () => Navigator.of(context).popUntil(
+                    (route) => route.isFirst,
+                  ),
+                  icon: const Icon(Icons.home_outlined),
+                  label: const Text('Revenir à l\'accueil'),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
     );
   }
 }

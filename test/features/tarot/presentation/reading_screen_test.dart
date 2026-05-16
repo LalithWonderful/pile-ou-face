@@ -395,6 +395,34 @@ void main() {
       expect(find.text('Le Mat'), findsOneWidget);
       expect(find.text('Mon message du jour'), findsOneWidget);
     });
+
+    testWidgets('daily mode does not show quota hint after reveal',
+        (tester) async {
+      final repo = TarotRepository(loader: (_) async => _singleCardFixture);
+      final drawService = TarotDrawService(repository: repo);
+      final dailyService = DailyReadingService(
+        repository: repo,
+        random: Random(0),
+        clock: () => DateTime(2026, 5, 15),
+      );
+
+      await tester.pumpWidget(_wrap(
+        child: ReadingScreen(
+          isDaily: true,
+          shareInvoker: (String _) async {},
+        ),
+        repository: repo,
+        drawService: drawService,
+        dailyService: dailyService,
+      ));
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.text('Révéler mon message'));
+      await tester.pumpAndSettle();
+
+      expect(find.textContaining('Il te reste'), findsNothing);
+      expect(find.textContaining('Laisse ce message infuser'), findsNothing);
+    });
   });
 
   group('ReadingScreen (responsiveness)', () {
@@ -661,7 +689,7 @@ void main() {
 
       expect(find.text('Révéler le tirage'), findsNothing);
       expect(
-        find.text('Tu as déjà tiré deux messages amour aujourd’hui.'),
+        find.text('Tu as déjà tiré deux messages sur l’amour aujourd’hui.'),
         findsOneWidget,
       );
       expect(find.text('Revenir à l\'accueil'), findsOneWidget);
@@ -730,9 +758,79 @@ void main() {
 
       expect(find.text('Révéler le tirage'), findsNothing);
       expect(
-        find.text('Tu as déjà tiré deux messages amour aujourd’hui.'),
+        find.text('Tu as déjà tiré deux messages sur l’amour aujourd’hui.'),
         findsOneWidget,
       );
+    });
+
+    testWidgets(
+        'after first intent draw shows remaining hint with one left',
+        (tester) async {
+      SharedPreferences.setMockInitialValues({});
+      final quotaService = DailyQuotaService(
+        clock: () => DateTime(2026, 5, 15),
+      );
+      final repo = TarotRepository(loader: (_) async => _threeCardsFixture);
+      final drawService =
+          TarotDrawService(repository: repo, random: Random(0));
+      final dailyService = DailyReadingService(repository: repo);
+
+      await tester.pumpWidget(_wrap(
+        child: const ReadingScreen(intent: ReadingIntent.love),
+        repository: repo,
+        drawService: drawService,
+        dailyService: dailyService,
+        quotaService: quotaService,
+      ));
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.text('Révéler le tirage'));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Là où tu en es'), findsOneWidget);
+      expect(
+        find.text('Il te reste un tirage amour aujourd’hui.'),
+        findsOneWidget,
+      );
+    });
+
+    testWidgets(
+        'after second intent draw shows exhausted hint and no redraw button',
+        (tester) async {
+      SharedPreferences.setMockInitialValues({
+        'quota.daily_intent_counters':
+            '{"date":"2026-05-15","counters":{"love":1}}',
+      });
+      final quotaService = DailyQuotaService(
+        clock: () => DateTime(2026, 5, 15),
+      );
+      final repo = TarotRepository(loader: (_) async => _threeCardsFixture);
+      final drawService =
+          TarotDrawService(repository: repo, random: Random(0));
+      final dailyService = DailyReadingService(repository: repo);
+
+      await tester.pumpWidget(_wrap(
+        child: const ReadingScreen(intent: ReadingIntent.love),
+        repository: repo,
+        drawService: drawService,
+        dailyService: dailyService,
+        quotaService: quotaService,
+      ));
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.text('Révéler le tirage'));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Là où tu en es'), findsOneWidget);
+      expect(
+        find.textContaining('Laisse ce message infuser'),
+        findsOneWidget,
+      );
+      expect(
+        find.textContaining('demain pour un nouveau tirage amour'),
+        findsOneWidget,
+      );
+      expect(find.text('Faire un autre tirage'), findsNothing);
     });
   });
 }
