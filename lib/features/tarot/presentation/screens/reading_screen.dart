@@ -285,7 +285,7 @@ class _IdleState extends StatelessWidget {
             child: Opacity(
               opacity: 0.25,
               child: Image.asset(
-                'assets/tarot/backgrounds/question_reading_bg.jpg',
+                'assets/tarot/backgrounds/question_reading_bg.webp',
                 fit: BoxFit.cover,
               ),
             ),
