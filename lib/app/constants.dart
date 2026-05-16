@@ -2,8 +2,7 @@
 class AppConstants {
   AppConstants._();
 
-  /// Placeholder URL for the privacy policy.
-  /// Replace with the definitive link once it is published.
+  /// Public privacy policy URL (GitHub Pages).
   static const String privacyPolicyUrl =
-      'https://pileouface.app/politique-de-confidentialite';
+      'https://lalithwonderful.github.io/pile-ou-face/privacy-policy.html';
 }
