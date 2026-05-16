@@ -2,14 +2,21 @@ import 'package:flutter/material.dart';
 
 import '../../../../app/app_theme.dart';
 import '../../../../app/tarot_scope.dart';
+import 'privacy_policy_screen.dart';
 
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({super.key});
 
-  void _openPrivacyPolicy() {
-    // TODO: launchUrl(Uri.parse(AppConstants.privacyPolicyUrl));
-    // url_launcher is not part of the MVP dependency set; the link is shown
-    // as a placeholder so the UI and tests can already be validated.
+  void _openPrivacyPolicy(BuildContext context) {
+    // For now the policy lives inside the app (no url_launcher in the
+    // MVP dependency set). AppConstants.privacyPolicyUrl is preserved
+    // centrally so a future lot can swap this navigation for an
+    // external launch without touching call sites.
+    Navigator.of(context).push(
+      MaterialPageRoute<void>(
+        builder: (_) => const PrivacyPolicyScreen(),
+      ),
+    );
   }
 
   Future<void> _confirmClearData(BuildContext context) async {
@@ -91,8 +98,8 @@ class SettingsScreen extends StatelessWidget {
             ListTile(
               leading: const Icon(Icons.policy_outlined, color: AppColors.deepGreen),
               title: const Text('Politique de confidentialité'),
-              trailing: const Icon(Icons.open_in_new, size: 18),
-              onTap: _openPrivacyPolicy,
+              trailing: const Icon(Icons.chevron_right, size: 18),
+              onTap: () => _openPrivacyPolicy(context),
             ),
           ],
         ),
