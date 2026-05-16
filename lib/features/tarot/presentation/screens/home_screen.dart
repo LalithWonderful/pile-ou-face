@@ -40,8 +40,19 @@ class HomeScreen extends StatelessWidget {
     final textTheme = Theme.of(context).textTheme;
 
     return Scaffold(
-      body: SafeArea(
-        child: LayoutBuilder(
+      body: Stack(
+        children: [
+          Positioned.fill(
+            child: Opacity(
+              opacity: 0.25,
+              child: Image.asset(
+                'assets/tarot/backgrounds/question_reading_bg.jpg',
+                fit: BoxFit.cover,
+              ),
+            ),
+          ),
+          SafeArea(
+            child: LayoutBuilder(
           builder: (context, constraints) {
             return SingleChildScrollView(
               padding:
@@ -141,6 +152,8 @@ class HomeScreen extends StatelessWidget {
           },
         ),
       ),
+      ],
+    ),
     );
   }
 }

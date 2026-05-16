@@ -154,6 +154,7 @@ class _ReadingScreenState extends State<ReadingScreen> {
         hint: _idleHint,
         loading: _loading,
         onReveal: _reveal,
+        showBackground: widget.isDaily || widget.intent != null,
       );
     }
     return _RevealedState(
@@ -177,6 +178,7 @@ class _IdleState extends StatelessWidget {
     required this.hint,
     required this.loading,
     required this.onReveal,
+    required this.showBackground,
   });
 
   final TarotSpread spread;
@@ -185,6 +187,7 @@ class _IdleState extends StatelessWidget {
   final String hint;
   final bool loading;
   final VoidCallback onReveal;
+  final bool showBackground;
 
   @override
   Widget build(BuildContext context) {
@@ -193,7 +196,7 @@ class _IdleState extends StatelessWidget {
     final cardWidth = isSingle ? 160.0 : 92.0;
     final showPositions = !isSingle;
 
-    return LayoutBuilder(
+    final body = LayoutBuilder(
       builder: (context, constraints) {
         return SingleChildScrollView(
           padding: const EdgeInsets.fromLTRB(24, 12, 24, 24),
@@ -252,7 +255,7 @@ class _IdleState extends StatelessWidget {
                       height: 1.35,
                     ),
                   ),
-                  const Spacer(flex: 2),
+                  const Spacer(flex: 1),
                   ElevatedButton.icon(
                     onPressed: loading ? null : onReveal,
                     icon: loading
@@ -274,6 +277,24 @@ class _IdleState extends StatelessWidget {
         );
       },
     );
+
+    if (showBackground) {
+      return Stack(
+        children: [
+          Positioned.fill(
+            child: Opacity(
+              opacity: 0.25,
+              child: Image.asset(
+                'assets/tarot/backgrounds/question_reading_bg.jpg',
+                fit: BoxFit.cover,
+              ),
+            ),
+          ),
+          body,
+        ],
+      );
+    }
+    return body;
   }
 }
 
