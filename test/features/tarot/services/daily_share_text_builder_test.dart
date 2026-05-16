@@ -41,18 +41,16 @@ void main() {
         text,
         contains('Pile ou Face avait un message pour moi aujourd’hui :'),
       );
-      expect(text, contains('Libre à moi de l’interpréter.'),);
     });
 
-    test('keeps the layout: intro + share_message + signoff', () {
+    test('keeps the layout: intro + share_message', () {
       final text = buildDailyShareText(_drawnSample());
       final lines = text.split('\n');
       expect(lines.first,
           'Pile ou Face avait un message pour moi aujourd’hui :');
       expect(lines[1], isEmpty);
       expect(lines[2], _sampleShareMessage);
-      expect(lines[3], isEmpty);
-      expect(lines.last, 'Libre à moi de l’interpréter.');
+      expect(lines.last, _sampleShareMessage);
     });
 
     test('does not include voyance-flavoured wording', () {
@@ -74,7 +72,7 @@ void main() {
       final text = buildDailyShareText(
         _drawnSample(shareMessage: '  Une phrase à partager.  '),
       );
-      expect(text, contains('\n\nUne phrase à partager.\n\n'));
+      expect(text, contains('\n\nUne phrase à partager.'));
     });
   });
 }
