@@ -22,12 +22,17 @@ class CardDetailScreen extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Center(
-                child: CardArtPlaceholder(
-                  variant: CardArtVariant.faceUp,
-                  card: card,
-                  width: 160,
-                ),
+              LayoutBuilder(
+                builder: (context, constraints) {
+                  return Center(
+                    child: CardArtPlaceholder(
+                      variant: CardArtVariant.faceUp,
+                      card: card,
+                      width: constraints.maxWidth,
+                      aspectRatio: 16 / 9,
+                    ),
+                  );
+                },
               ),
               const SizedBox(height: 18),
               Text(
