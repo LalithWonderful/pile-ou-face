@@ -42,8 +42,8 @@ pour lever tous les bloquants techniques.
 | Nom affiché Android | `pile_ou_face` (snake_case technique) dans `AndroidManifest.xml:3` | 🔴 **Bloquant** — doit être `Pile ou Face` |
 | Nom affiché iOS (`CFBundleDisplayName`) | `Pile Ou Face` ("Ou" capitalisé) | 🔴 **Bloquant** — doit être `Pile ou Face` |
 | `CFBundleName` iOS | `pile_ou_face` | 🟠 Important — utilisé en fallback si display name absent, à aligner |
-| Bundle ID Android | `com.lalith.pileouface.pile_ou_face` | 🔴 **Bloquant** — incohérent avec iOS |
-| Bundle ID iOS | `com.lalith.pileouface.pileOuFace` | 🔴 **Bloquant** — incohérent avec Android |
+| Bundle ID Android | `com.lalith.pileouface` | ✅ Aligné sur iOS (commit PUB-2e) |
+| Bundle ID iOS | `com.lalith.pileouface` | ✅ Aligné sur Android (commit PUB-2e) |
 | Version | `1.0.0+1` (`pubspec.yaml:19`) | ✅ OK pour première publication |
 | App icon Android | PNG par défaut Flutter (442 B pour mdpi, mêmes octets que la sortie de `flutter create`) | 🔴 **Bloquant** — icône F-shape par défaut, refusée par Play Store |
 | App icon iOS | 1024×1024 = 10,9 KB, manifestement template Flutter | 🔴 **Bloquant** — icône par défaut, refusée par App Store |
@@ -56,18 +56,10 @@ pour lever tous les bloquants techniques.
 
 ### Recommandations bundle identifier
 
-Décision à figer **maintenant** car le bundle ID est immuable après
-publication store. Recommandation :
-
-- **Android** : `com.lalith.pileouface` (sans suffixe `pile_ou_face`).
-- **iOS** : `com.lalith.pileouface` (sans suffixe `pileOuFace`).
-
-Le suffixe redondant ne sert qu'à éviter les collisions internes et
-nuit à la lisibilité côté store. Si la racine `com.lalith.pileouface`
-n'est pas viable (réservée par un autre projet), garder la forme
-actuelle Android (`com.lalith.pileouface.pile_ou_face`) ET **aligner
-iOS sur la même chaîne**, jamais l'inverse (le snake_case est valide
-en iOS, le camelCase Android marche aussi mais moins idiomatique).
+Décision figée dans le commit PUB-2e : les deux plateformes utilisent
+`com.lalith.pileouface`. Le suffixe redondant a été retiré car il nuisait
+à la lisibilité côté store et n'était pas nécessaire. Le bundle ID est
+désormais immuable et cohérent entre Android et iOS.
 
 ## B. Permissions et privacy
 
@@ -256,7 +248,7 @@ cohérent avec la garde éditoriale déjà active sur le JSON.
 | 🔴 **Bloquant** | Splash screen par défaut | UX inacceptable au démarrage | Personnaliser `launch_background.xml` Android (logo centré sur fond ivoire) et remplacer `LaunchImage.imageset` iOS. Plugin `flutter_native_splash` ou édition manuelle. |
 | 🔴 **Bloquant** | Nom affiché Android `pile_ou_face` | Affiché tel quel sur le home screen | Modifier `AndroidManifest.xml:3` `android:label="Pile ou Face"` |
 | 🔴 **Bloquant** | Nom affiché iOS `Pile Ou Face` | Capitalisation incorrecte | Modifier `Info.plist` `CFBundleDisplayName` → `Pile ou Face` |
-| 🔴 **Bloquant** | Incohérence bundle ID Android/iOS | Risque dégradé une fois publié (réservation store) | Décider une forme canonique (recommandation : `com.lalith.pileouface`) et l'appliquer aux deux plateformes **avant** la première soumission |
+| ✅ **Résolu** | Incohérence bundle ID Android/iOS | Risque dégradé une fois publié (réservation store) | Alignement sur `com.lalith.pileouface` pour Android et iOS (commit PUB-2e) |
 | 🔴 **Bloquant** | Signing Android = debug key | Refus Play Store | Générer keystore release, configurer `signingConfigs.release` dans `build.gradle.kts` |
 | 🔴 **Bloquant** | URL publique politique de confidentialité | Champ obligatoire des fiches store | Héberger une page web statique reprenant le texte de `PrivacyPolicyScreen` à l'URL `AppConstants.privacyPolicyUrl` |
 | 🔴 **Bloquant** | `CFBundleDevelopmentRegion` par défaut `en` | App considérée comme anglaise par Apple alors qu'elle est 100 % FR | Forcer `<string>fr</string>` dans `Info.plist` |

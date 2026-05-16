@@ -1,4 +1,4 @@
-package com.lalith.pileouface.pile_ou_face
+package com.lalith.pileouface
 
 import io.flutter.embedding.android.FlutterActivity
 
