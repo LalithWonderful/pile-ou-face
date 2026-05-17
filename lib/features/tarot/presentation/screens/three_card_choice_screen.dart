@@ -200,7 +200,47 @@ class _ThreeCardChoiceScreenState extends State<ThreeCardChoiceScreen>
           onPressed: () => Navigator.of(context).pop(),
         ),
       ),
-      body: SafeArea(child: _buildBody()),
+      // The decorative background and the "Ton tirage t'attend"
+      // overlay both sit outside SafeArea so they cover the entire
+      // body — including the bottom home-indicator strip — and the
+      // page no longer breaks into a flat cream block below the fan.
+      // Only the page CONTENT is inset by SafeArea.
+      body: Stack(
+        children: [
+          Positioned.fill(
+            child: Opacity(
+              opacity: 0.25,
+              child: Image.asset(
+                'assets/tarot/backgrounds/question_reading_bg.webp',
+                fit: BoxFit.cover,
+              ),
+            ),
+          ),
+          SafeArea(child: _buildBody()),
+          if (_committed)
+            Positioned.fill(
+              child: IgnorePointer(
+                child: ColoredBox(
+                  color: AppColors.ivory.withValues(alpha: 0.92),
+                  child: Center(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 32),
+                      child: Text(
+                        'Ton tirage t’attend.',
+                        textAlign: TextAlign.center,
+                        style:
+                            Theme.of(context).textTheme.titleLarge?.copyWith(
+                                  color: AppColors.deepGreen,
+                                  fontWeight: FontWeight.w700,
+                                ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+        ],
+      ),
     );
   }
 
@@ -229,41 +269,7 @@ class _ThreeCardChoiceScreenState extends State<ThreeCardChoiceScreen>
     if (_quotaExhausted) {
       return _ChoiceQuotaExhausted(intent: widget.intent);
     }
-    return Stack(
-      children: [
-        Positioned.fill(
-          child: Opacity(
-            opacity: 0.25,
-            child: Image.asset(
-              'assets/tarot/backgrounds/question_reading_bg.webp',
-              fit: BoxFit.cover,
-            ),
-          ),
-        ),
-        _buildChoiceLayout(),
-        if (_committed)
-          Positioned.fill(
-            child: IgnorePointer(
-              child: ColoredBox(
-                color: AppColors.ivory.withValues(alpha: 0.92),
-                child: Center(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 32),
-                    child: Text(
-                      'Ton tirage t’attend.',
-                      textAlign: TextAlign.center,
-                      style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                            color: AppColors.deepGreen,
-                            fontWeight: FontWeight.w700,
-                          ),
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ),
-      ],
-    );
+    return _buildChoiceLayout();
   }
 
   Widget _buildChoiceLayout() {
@@ -745,54 +751,43 @@ class _ChoiceQuotaExhausted extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
-    return Stack(
-      children: [
-        Positioned.fill(
-          child: Opacity(
-            opacity: 0.25,
-            child: Image.asset(
-              'assets/tarot/backgrounds/question_reading_bg.webp',
-              fit: BoxFit.cover,
+    // The decorative background is now painted at the parent Scaffold
+    // body level — no need for this widget to draw its own.
+    return Padding(
+      padding: const EdgeInsets.all(24),
+      child: Center(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              'Tu as déjà tiré deux messages $_themePhrase aujourd’hui.',
+              textAlign: TextAlign.center,
+              style: textTheme.titleMedium?.copyWith(
+                color: AppColors.deepGreen,
+                fontWeight: FontWeight.w600,
+              ),
             ),
-          ),
-        ),
-        Padding(
-          padding: const EdgeInsets.all(24),
-          child: Center(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  'Tu as déjà tiré deux messages $_themePhrase aujourd’hui.',
-                  textAlign: TextAlign.center,
-                  style: textTheme.titleMedium?.copyWith(
-                    color: AppColors.deepGreen,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-                const SizedBox(height: 12),
-                Text(
-                  'Laisse ces messages faire leur chemin.\n'
-                  'Reviens demain pour un nouveau souffle.',
-                  textAlign: TextAlign.center,
-                  style: textTheme.bodyMedium?.copyWith(
-                    color: AppColors.charcoal,
-                    height: 1.4,
-                  ),
-                ),
-                const SizedBox(height: 24),
-                OutlinedButton.icon(
-                  onPressed: () => Navigator.of(context).popUntil(
-                    (route) => route.isFirst,
-                  ),
-                  icon: const Icon(Icons.home_outlined),
-                  label: const Text('Revenir à l\'accueil'),
-                ),
-              ],
+            const SizedBox(height: 12),
+            Text(
+              'Laisse ces messages faire leur chemin.\n'
+              'Reviens demain pour un nouveau souffle.',
+              textAlign: TextAlign.center,
+              style: textTheme.bodyMedium?.copyWith(
+                color: AppColors.charcoal,
+                height: 1.4,
+              ),
             ),
-          ),
+            const SizedBox(height: 24),
+            OutlinedButton.icon(
+              onPressed: () => Navigator.of(context).popUntil(
+                (route) => route.isFirst,
+              ),
+              icon: const Icon(Icons.home_outlined),
+              label: const Text('Revenir à l\'accueil'),
+            ),
+          ],
         ),
-      ],
+      ),
     );
   }
 }
