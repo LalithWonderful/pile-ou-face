@@ -12,9 +12,10 @@ import 'reading_screen.dart';
 
 /// Ritual selection screen sitting between the home intent buttons and
 /// the existing 3-card [ReadingScreen]. The user picks 3 face-down cards
-/// out of a shuffled candidate pool; the picks are then forwarded to the
-/// reading screen as a pre-built draw, so the validated reveal layout is
-/// reused verbatim.
+/// out of the full 22-card Major Arcana deck (or whatever the asset
+/// holds — `min(poolSize, deck.length)` keeps small fixtures viable in
+/// tests). The picks are then forwarded to the reading screen as a
+/// pre-built draw, so the validated reveal layout is reused verbatim.
 ///
 /// Quota is consumed on the very first pick (one quota per ritual), to
 /// mirror the previous "Révéler le tirage" commit point while preventing
@@ -32,9 +33,10 @@ class ThreeCardChoiceScreen extends StatefulWidget {
   /// pool and per-card orientation are reproducible.
   final math.Random? random;
 
-  /// Number of face-down cards rendered in the candidate fan. Kept small
-  /// so the fan fits on a 320 px viewport without overflowing.
-  static const int poolSize = 7;
+  /// Upper bound on the candidate pool size. The bundled Major Arcana
+  /// deck has 22 cards; tests sometimes feed a smaller fixture, in
+  /// which case the pool is clamped to `min(poolSize, deck.length)`.
+  static const int poolSize = 22;
 
   /// How long the initial shuffle/fan-out animation runs.
   static const Duration shuffleDuration = Duration(milliseconds: 900);
@@ -70,6 +72,7 @@ class _ThreeCardChoiceScreenState extends State<ThreeCardChoiceScreen>
     with SingleTickerProviderStateMixin {
   late final math.Random _random;
   late final AnimationController _shuffleController;
+  final ScrollController _poolScrollController = ScrollController();
 
   List<_PoolEntry> _pool = const <_PoolEntry>[];
   final List<DrawnCard> _picked = <DrawnCard>[];
@@ -94,6 +97,7 @@ class _ThreeCardChoiceScreenState extends State<ThreeCardChoiceScreen>
   @override
   void dispose() {
     _shuffleController.dispose();
+    _poolScrollController.dispose();
     super.dispose();
   }
 
@@ -135,7 +139,17 @@ class _ThreeCardChoiceScreenState extends State<ThreeCardChoiceScreen>
         ];
         _loading = false;
       });
-      _shuffleController.forward();
+      // Centre the horizontal scroll on the strip BEFORE starting the
+      // spread animation, so the initial deck stack sits in the middle
+      // of the viewport instead of off the left edge.
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!mounted) return;
+        if (_poolScrollController.hasClients) {
+          final max = _poolScrollController.position.maxScrollExtent;
+          _poolScrollController.jumpTo(max / 2);
+        }
+        _shuffleController.forward();
+      });
     } catch (e) {
       if (!mounted) return;
       setState(() {
@@ -267,51 +281,67 @@ class _ThreeCardChoiceScreenState extends State<ThreeCardChoiceScreen>
       builder: (context, constraints) {
         final isNarrow = constraints.maxWidth < 360;
         final slotWidth = isNarrow ? 78.0 : 92.0;
-        final poolCardWidth = isNarrow ? 62.0 : 74.0;
+        final poolCardWidth = isNarrow ? 64.0 : 76.0;
         return SingleChildScrollView(
-          padding: const EdgeInsets.fromLTRB(20, 12, 20, 24),
+          padding: const EdgeInsets.fromLTRB(0, 12, 0, 24),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Text(
-                'Choisis tes 3 cartes',
-                textAlign: TextAlign.center,
-                style: textTheme.titleLarge?.copyWith(
-                  color: AppColors.deepGreen,
-                  fontWeight: FontWeight.w700,
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: Text(
+                  'Choisis tes 3 cartes',
+                  textAlign: TextAlign.center,
+                  style: textTheme.titleLarge?.copyWith(
+                    color: AppColors.deepGreen,
+                    fontWeight: FontWeight.w700,
+                  ),
                 ),
               ),
               const SizedBox(height: 6),
-              Text(
-                'La bonne carte est celle qui t’appelle.',
-                textAlign: TextAlign.center,
-                style: textTheme.bodyMedium?.copyWith(
-                  color: AppColors.charcoal,
-                  height: 1.4,
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: Text(
+                  'La bonne carte est celle qui t’appelle.',
+                  textAlign: TextAlign.center,
+                  style: textTheme.bodyMedium?.copyWith(
+                    color: AppColors.charcoal,
+                    height: 1.4,
+                  ),
                 ),
               ),
               const SizedBox(height: 18),
-              _SlotsRow(
-                positions: ThreeCardChoiceScreen.kPositions,
-                filled: _picked.length,
-                slotWidth: slotWidth,
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: _SlotsRow(
+                  positions: ThreeCardChoiceScreen.kPositions,
+                  filled: _picked.length,
+                  slotWidth: slotWidth,
+                ),
               ),
               const SizedBox(height: 12),
-              Text(
-                _picked.length < 3
-                    ? 'Carte ${_picked.length + 1} sur 3'
-                    : 'Ton tirage est prêt.',
-                textAlign: TextAlign.center,
-                style: textTheme.labelSmall?.copyWith(
-                  color: AppColors.softGold,
-                  fontWeight: FontWeight.w700,
-                  letterSpacing: 1.0,
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: Text(
+                  _picked.length < 3
+                      ? 'Carte ${_picked.length + 1} sur 3'
+                      : 'Ton tirage est prêt.',
+                  textAlign: TextAlign.center,
+                  style: textTheme.labelSmall?.copyWith(
+                    color: AppColors.softGold,
+                    fontWeight: FontWeight.w700,
+                    letterSpacing: 1.0,
+                  ),
                 ),
               ),
               const SizedBox(height: 16),
+              // The pool itself does NOT inherit the horizontal padding —
+              // it owns its own scrollable strip so the fan can extend
+              // edge-to-edge and feel like a real spread deck.
               _PoolFan(
                 pool: _pool,
                 shuffleAnim: _shuffleController,
+                scrollController: _poolScrollController,
                 cardWidth: poolCardWidth,
                 onTap: _onCardTap,
               ),
@@ -419,35 +449,68 @@ class _Slot extends StatelessWidget {
   }
 }
 
+/// Horizontal fan of face-down cards. The fan can be wider than the
+/// viewport — the user swipes left/right to browse the full Major
+/// Arcana — and is centred on first paint so the spread animation
+/// happens in front of the eyes instead of off-screen.
+///
+/// To keep card taps unambiguous when cards heavily overlap, the widget
+/// uses a two-layer Stack: the visual cards sit in a lower IgnorePointer
+/// layer, and a top layer of small `Positioned` gesture surfaces covers
+/// only the visible "peek" strip of each card. A test that taps the
+/// stable [ThreeCardChoiceScreen.poolCardKey] therefore hits exactly the
+/// intended index, even when 22 cards are packed onto a 320 px viewport.
 class _PoolFan extends StatelessWidget {
   const _PoolFan({
     required this.pool,
     required this.shuffleAnim,
+    required this.scrollController,
     required this.cardWidth,
     required this.onTap,
   });
 
   final List<_PoolEntry> pool;
   final Animation<double> shuffleAnim;
+  final ScrollController scrollController;
   final double cardWidth;
   final void Function(int index) onTap;
 
   static const double _aspect = 1 / 1.6;
+
+  /// Fraction of [cardWidth] that each successive card moves to the
+  /// right. 0.42 keeps the per-card hit strip wide enough to tap
+  /// comfortably (~28 px on narrow phones) while still squeezing 22
+  /// cards into a strip that is roughly two viewports wide on a 320 px
+  /// screen.
+  static const double _peekFraction = 0.42;
+
+  /// Maximum fan angle (in degrees) applied at the extreme outer cards.
+  static const double _maxRotationDeg = 9;
+
+  /// Vertical drop applied to the outermost cards, in logical pixels.
+  /// Inner cards stay near the top so the fan arc reads naturally.
+  static const double _arcDepth = 12;
 
   @override
   Widget build(BuildContext context) {
     final n = pool.length;
     if (n == 0) return const SizedBox.shrink();
     final cardHeight = cardWidth / _aspect;
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        final width = constraints.maxWidth;
-        // Overlap so the whole fan fits on a 320 px viewport.
-        final spacing = n > 1 ? (width - cardWidth) / (n - 1) : 0.0;
-        final maxAngle = 14 * math.pi / 180;
-        return SizedBox(
-          width: width,
-          height: cardHeight + 28,
+    final peek = cardWidth * _peekFraction;
+    final stripWidth = cardWidth + peek * (n - 1);
+    final fanHeight = cardHeight + _arcDepth + 16;
+    final maxAngle = _maxRotationDeg * math.pi / 180;
+
+    return SizedBox(
+      height: fanHeight,
+      child: SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        controller: scrollController,
+        physics: const ClampingScrollPhysics(),
+        padding: const EdgeInsets.symmetric(horizontal: 16),
+        child: SizedBox(
+          width: stripWidth,
+          height: fanHeight,
           child: AnimatedBuilder(
             animation: shuffleAnim,
             builder: (context, _) {
@@ -455,36 +518,49 @@ class _PoolFan extends StatelessWidget {
               return Stack(
                 clipBehavior: Clip.none,
                 children: <Widget>[
+                  // Visual layer — hit-transparent so overlapping cards
+                  // never steal a tap meant for the card whose peek the
+                  // user sees.
                   for (var i = 0; i < n; i++)
-                    _buildPositioned(
+                    _buildVisualCard(
                       index: i,
                       total: n,
-                      spacing: spacing,
+                      peek: peek,
                       maxAngle: maxAngle,
-                      cardHeight: cardHeight,
-                      width: width,
+                      stripWidth: stripWidth,
                       t: t,
                     ),
+                  // Hit layer — only over the visible peek strip of
+                  // each card (full card width for the rightmost one).
+                  for (var i = 0; i < n; i++)
+                    if (!pool[i].picked)
+                      _buildHitRegion(
+                        index: i,
+                        total: n,
+                        peek: peek,
+                        cardHeight: cardHeight,
+                      ),
                 ],
               );
             },
           ),
-        );
-      },
+        ),
+      ),
     );
   }
 
-  Widget _buildPositioned({
+  Widget _buildVisualCard({
     required int index,
     required int total,
-    required double spacing,
+    required double peek,
     required double maxAngle,
-    required double cardHeight,
-    required double width,
+    required double stripWidth,
     required double t,
   }) {
-    final fanLeft = index * spacing;
-    final stackedLeft = (width - cardWidth) / 2;
+    final fanLeft = index * peek;
+    // Stack centred on the strip so the spread reads as a radial
+    // explosion rather than a slide-out from the left edge.
+    final stackedLeft = (stripWidth - cardWidth) / 2;
     final left = stackedLeft + (fanLeft - stackedLeft) * t;
 
     final fanAngle = total > 1
@@ -493,8 +569,11 @@ class _PoolFan extends StatelessWidget {
     final stackedAngle = (index.isEven ? -1 : 1) * 0.05;
     final angle = stackedAngle + (fanAngle - stackedAngle) * t;
 
-    // Outer cards drop a few pixels so the fan curves slightly.
-    final fanTop = fanAngle.abs() * 18;
+    // Outer cards drop a few pixels so the fan curves like an arc.
+    final centerIndex = (total - 1) / 2;
+    final distance =
+        centerIndex > 0 ? (index - centerIndex).abs() / centerIndex : 0.0;
+    final fanTop = distance * _arcDepth;
     const stackedTop = 4.0;
     final top = stackedTop + (fanTop - stackedTop) * t;
 
@@ -503,18 +582,15 @@ class _PoolFan extends StatelessWidget {
     return Positioned(
       left: left,
       top: top,
-      child: AnimatedOpacity(
-        duration: const Duration(milliseconds: 250),
-        opacity: entry.picked ? 0 : 1,
-        child: AnimatedScale(
+      child: IgnorePointer(
+        child: AnimatedOpacity(
           duration: const Duration(milliseconds: 250),
-          scale: entry.picked ? 0.85 : 1.0,
-          child: Transform.rotate(
-            angle: angle,
-            child: GestureDetector(
-              key: ThreeCardChoiceScreen.poolCardKey(index),
-              behavior: HitTestBehavior.opaque,
-              onTap: entry.picked ? null : () => onTap(index),
+          opacity: entry.picked ? 0 : 1,
+          child: AnimatedScale(
+            duration: const Duration(milliseconds: 250),
+            scale: entry.picked ? 0.85 : 1.0,
+            child: Transform.rotate(
+              angle: angle,
               child: CardArtPlaceholder(
                 variant: CardArtVariant.faceDown,
                 width: cardWidth,
@@ -522,6 +598,30 @@ class _PoolFan extends StatelessWidget {
             ),
           ),
         ),
+      ),
+    );
+  }
+
+  Widget _buildHitRegion({
+    required int index,
+    required int total,
+    required double peek,
+    required double cardHeight,
+  }) {
+    // Every card except the last shows only its left "peek" strip —
+    // that is the natural tap target. The last card has no neighbour
+    // to its right, so its whole width is hittable.
+    final hitLeft = index * peek;
+    final hitWidth = (index == total - 1) ? cardWidth : peek;
+    return Positioned(
+      left: hitLeft,
+      top: 4,
+      width: hitWidth,
+      height: cardHeight,
+      child: GestureDetector(
+        key: ThreeCardChoiceScreen.poolCardKey(index),
+        behavior: HitTestBehavior.opaque,
+        onTap: () => onTap(index),
       ),
     );
   }

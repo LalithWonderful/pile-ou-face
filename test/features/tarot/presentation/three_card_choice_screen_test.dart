@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
@@ -11,6 +12,39 @@ import 'package:pile_ou_face/features/tarot/services/daily_quota_service.dart';
 import 'package:pile_ou_face/features/tarot/services/daily_reading_service.dart';
 import 'package:pile_ou_face/features/tarot/services/tarot_draw_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+/// Synthesises a fixture matching the production deck size (22 cards),
+/// without dragging the full editorial asset into the test. Every card
+/// is unique and gets the minimum schema a [TarotCard.fromJson] expects.
+String _buildArcanaFixture(int count) {
+  final cards = <Map<String, dynamic>>[
+    for (var i = 0; i < count; i++)
+      <String, dynamic>{
+        'id': 'card_$i',
+        'number': i,
+        'name': 'Carte $i',
+        'image_path': null,
+        'keywords_upright': <String>['k$i'],
+        'keywords_reversed': <String>['k${i}r'],
+        'meaning_upright': 'Sens droit $i.',
+        'meaning_reversed': 'Sens inversé $i.',
+        'love': 'Amour $i.',
+        'work': 'Travail $i.',
+        'money': 'Argent $i.',
+        'advice': 'Conseil $i.',
+        'warning': 'Avertissement $i.',
+        'short_message': 'Court $i.',
+        'share_message': 'Partage $i.',
+        'spread_meanings': <String, String>{
+          'where_you_are': 'Position 1 de la carte $i.',
+          'current_energy': 'Position 2 de la carte $i.',
+          'advice': 'Position 3 de la carte $i.',
+        },
+        'tags': <String>['tag$i'],
+      },
+  ];
+  return jsonEncode(cards);
+}
 
 const _threeCardsFixture = '''
 [
@@ -239,6 +273,69 @@ void main() {
         findsOneWidget,
       );
       expect(find.text('Revenir à l\'accueil'), findsOneWidget);
+    });
+
+    testWidgets(
+        'with a 22-card deck, the pool exposes 22 tappable candidate slots',
+        (tester) async {
+      // Wider canvas so the full fan (≈ 750 px on standard sizing) is
+      // laid out without forcing the test to drive the horizontal
+      // scroll just to assert key existence.
+      await tester.binding.setSurfaceSize(const Size(1100, 800));
+      addTearDown(() => tester.binding.setSurfaceSize(null));
+
+      final repo = TarotRepository(loader: (_) async => _buildArcanaFixture(22));
+      final drawService = TarotDrawService(repository: repo);
+      final dailyService = DailyReadingService(repository: repo);
+
+      await tester.pumpWidget(_wrap(
+        child: ThreeCardChoiceScreen(
+          intent: ReadingIntent.general,
+          random: Random(0),
+        ),
+        repository: repo,
+        drawService: drawService,
+        dailyService: dailyService,
+      ));
+      await tester.pumpAndSettle();
+
+      // 22 unique pool keys exist, and exactly 22 of them — there is
+      // no key 22 (off-by-one guard).
+      for (var i = 0; i < ThreeCardChoiceScreen.poolSize; i++) {
+        expect(
+          find.byKey(ThreeCardChoiceScreen.poolCardKey(i)),
+          findsOneWidget,
+          reason: 'pool card $i should be present',
+        );
+      }
+      expect(
+        find.byKey(ThreeCardChoiceScreen.poolCardKey(22)),
+        findsNothing,
+      );
+    });
+
+    testWidgets(
+        'small deck of 3 cards clamps the pool to min(poolSize, deck.length)',
+        (tester) async {
+      final repo = TarotRepository(loader: (_) async => _threeCardsFixture);
+      final drawService = TarotDrawService(repository: repo);
+      final dailyService = DailyReadingService(repository: repo);
+
+      await tester.pumpWidget(_wrap(
+        child: ThreeCardChoiceScreen(
+          intent: ReadingIntent.love,
+          random: Random(0),
+        ),
+        repository: repo,
+        drawService: drawService,
+        dailyService: dailyService,
+      ));
+      await tester.pumpAndSettle();
+
+      expect(find.byKey(ThreeCardChoiceScreen.poolCardKey(0)), findsOneWidget);
+      expect(find.byKey(ThreeCardChoiceScreen.poolCardKey(1)), findsOneWidget);
+      expect(find.byKey(ThreeCardChoiceScreen.poolCardKey(2)), findsOneWidget);
+      expect(find.byKey(ThreeCardChoiceScreen.poolCardKey(3)), findsNothing);
     });
 
     testWidgets('renders without overflow on a 320x568 viewport',
