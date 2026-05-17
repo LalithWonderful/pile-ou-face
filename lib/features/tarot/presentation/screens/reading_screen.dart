@@ -483,11 +483,21 @@ class _MultiCardPager extends StatefulWidget {
 }
 
 class _MultiCardPagerState extends State<_MultiCardPager> {
+  final ScrollController _scrollController = ScrollController();
   int _currentIndex = 0;
 
   void _goTo(int index) {
     if (index < 0 || index >= widget.drawn.length) return;
     setState(() => _currentIndex = index);
+    if (_scrollController.hasClients) {
+      _scrollController.jumpTo(0);
+    }
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
   }
 
   @override
@@ -504,6 +514,7 @@ class _MultiCardPagerState extends State<_MultiCardPager> {
         : 'Suivante';
 
     return SingleChildScrollView(
+      controller: _scrollController,
       padding: const EdgeInsets.fromLTRB(0, 16, 0, 28),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,

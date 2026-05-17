@@ -507,6 +507,86 @@ void main() {
       expect(find.text('Là où tu en es'), findsOneWidget);
     });
 
+    testWidgets('three-card navigation resets scroll to the top',
+        (tester) async {
+      await tester.binding.setSurfaceSize(const Size(320, 568));
+      addTearDown(() => tester.binding.setSurfaceSize(null));
+
+      final repo =
+          TarotRepository(loader: (_) async => _threeCardsFixture);
+      final drawService =
+          TarotDrawService(repository: repo, random: Random(0));
+      final dailyService = DailyReadingService(repository: repo);
+
+      await tester.pumpWidget(_wrap(
+        child: const ReadingScreen(spread: TarotSpread.threeCards),
+        repository: repo,
+        drawService: drawService,
+        dailyService: dailyService,
+      ));
+      await tester.pumpAndSettle();
+
+      await tester.scrollUntilVisible(
+        find.text('Révéler le tirage'),
+        100,
+        scrollable: find.byType(Scrollable).first,
+      );
+      await tester.tap(find.text('Révéler le tirage'));
+      await tester.pumpAndSettle();
+
+      final scrollable = find.byType(Scrollable).first;
+
+      await tester.scrollUntilVisible(
+        find.text('L’énergie du moment'),
+        200,
+        scrollable: scrollable,
+      );
+      expect(
+        tester.state<ScrollableState>(scrollable).position.pixels,
+        greaterThan(0),
+      );
+      await tester.tap(find.text('L’énergie du moment'));
+      await tester.pumpAndSettle();
+      expect(
+        tester.state<ScrollableState>(scrollable).position.pixels,
+        0,
+      );
+
+      await tester.scrollUntilVisible(
+        find.text('Le conseil'),
+        200,
+        scrollable: scrollable,
+      );
+      expect(
+        tester.state<ScrollableState>(scrollable).position.pixels,
+        greaterThan(0),
+      );
+      await tester.tap(find.text('Le conseil'));
+      await tester.pumpAndSettle();
+      expect(
+        tester.state<ScrollableState>(scrollable).position.pixels,
+        0,
+      );
+
+      await tester.scrollUntilVisible(
+        find.text('L’énergie du moment'),
+        200,
+        scrollable: scrollable,
+      );
+      expect(
+        tester.state<ScrollableState>(scrollable).position.pixels,
+        greaterThan(0),
+      );
+      await tester.tap(find.text('L’énergie du moment'));
+      await tester.pumpAndSettle();
+      expect(
+        tester.state<ScrollableState>(scrollable).position.pixels,
+        0,
+      );
+
+      expect(tester.takeException(), isNull);
+    });
+
     testWidgets('daily mode renders at 1.4x text scaling', (tester) async {
       final repo =
           TarotRepository(loader: (_) async => _singleCardFixture);
