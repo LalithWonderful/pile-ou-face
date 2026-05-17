@@ -1,7 +1,7 @@
-import 'dart:async';
 import 'dart:math' as math;
 
 import 'package:flutter/foundation.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../app/app_theme.dart';
@@ -212,16 +212,19 @@ class _HomeTitle extends StatefulWidget {
   /// regular long-press cannot fire it.
   static const Duration debugHoldDuration = Duration(seconds: 5);
 
-  /// Pixel height of the rendered home logo. Tuned so the screen stays
-  /// balanced on large iPhones while remaining usable on a 320x568 viewport.
-  static const double logoSize = 64;
+  /// Pixel height of the rendered home logo. Sits inline with the title
+  /// at displaySmall size, so a value in the 36–40 range looks balanced.
+  static const double logoSize = 38;
 
   /// Edge of the invisible square touch target that hosts the debug
-  /// sustained-press gesture. Significantly larger than [logoSize] so a
-  /// small finger jitter while holding never falls outside the Listener
-  /// — important on iOS, where micro-movements during a sustained press
-  /// could otherwise cancel the gesture.
-  static const double debugTouchTargetSize = 110;
+  /// long-press gesture. Larger than [logoSize] so the user can hold
+  /// the logo without falling outside the gesture surface; on iOS the
+  /// extra margin also absorbs the micro-jitter that cancelled the
+  /// previous raw-pointer implementation.
+  static const double debugTouchTargetSize = 64;
+
+  /// Horizontal gap between the logo touch target and the title text.
+  static const double logoTitleGap = 12;
 
   final TextStyle? titleStyle;
 
@@ -235,29 +238,6 @@ class _HomeTitle extends StatefulWidget {
 }
 
 class _HomeTitleState extends State<_HomeTitle> {
-  Timer? _holdTimer;
-
-  void _onPointerDown(PointerDownEvent _) {
-    final callback = widget.onDebugSustainedPress;
-    if (callback == null) return;
-    _holdTimer?.cancel();
-    _holdTimer = Timer(_HomeTitle.debugHoldDuration, () {
-      _holdTimer = null;
-      callback();
-    });
-  }
-
-  void _cancelHold() {
-    _holdTimer?.cancel();
-    _holdTimer = null;
-  }
-
-  @override
-  void dispose() {
-    _cancelHold();
-    super.dispose();
-  }
-
   @override
   Widget build(BuildContext context) {
     // NOTE on the asset: pile_ou_face_logo.png is currently a PNG without
@@ -273,9 +253,9 @@ class _HomeTitleState extends State<_HomeTitle> {
       fit: BoxFit.contain,
     );
 
-    // The rendered logo stays small (56 px) for visual balance, but the
-    // touch target is enlarged so a finger that drifts a few pixels
-    // during the 5-second hold stays inside the Listener.
+    // The visible logo stays small (~38 px) for an inline header look,
+    // but the touch target is enlarged so the user can comfortably hold
+    // the logo for the full 5 seconds without falling off its bounds.
     Widget touchSurface = SizedBox(
       key: homeLogoDebugPressTargetKey,
       width: _HomeTitle.debugTouchTargetSize,
@@ -285,32 +265,52 @@ class _HomeTitleState extends State<_HomeTitle> {
 
     if (widget.onDebugSustainedPress != null) {
       // The debug gesture lives on the logo touch target only, never on
-      // the title text. HitTestBehavior.opaque ensures the full 96x96
-      // square absorbs pointer events, including the padded margin
-      // around the visible 56 px logo.
-      touchSurface = Listener(
+      // the title text. Driving it through a real Flutter gesture
+      // (LongPressGestureRecognizer with a 5-second duration) instead of
+      // raw pointer events: the previous Listener-based version was
+      // cancelled on iOS simulator by the ancestor Scrollable resolving
+      // the arena on tiny finger jitter. Going through the arena makes
+      // the gesture tolerant to the same jitter and fires exactly once
+      // when the duration is reached, so no anti-double guard is needed.
+      touchSurface = RawGestureDetector(
         behavior: HitTestBehavior.opaque,
-        onPointerDown: _onPointerDown,
-        onPointerUp: (_) => _cancelHold(),
-        onPointerCancel: (_) => _cancelHold(),
+        gestures: <Type, GestureRecognizerFactory<GestureRecognizer>>{
+          LongPressGestureRecognizer:
+              GestureRecognizerFactoryWithHandlers<LongPressGestureRecognizer>(
+            () => LongPressGestureRecognizer(
+              duration: _HomeTitle.debugHoldDuration,
+              debugOwner: this,
+            ),
+            (instance) {
+              instance.onLongPress = widget.onDebugSustainedPress;
+            },
+          ),
+        },
         child: touchSurface,
       );
     }
 
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        // No explicit spacer below: the 110 px touch target already
-        // provides ~23 px of vertical padding under the 64 px logo, so
-        // the title sits naturally close enough to feel part of the
-        // same block instead of floating below the logo.
-        touchSurface,
-        Text(
-          'Pile ou Face',
-          textAlign: TextAlign.center,
-          style: widget.titleStyle,
-        ),
-      ],
+    // FittedBox.scaleDown keeps the inline header at full size on regular
+    // iPhones and gracefully shrinks the whole logo+title row on narrow
+    // viewports (e.g. 320 px) instead of overflowing. Gesture hit-testing
+    // follows the scaled bounds, which is still well above the user's
+    // finger size.
+    return FittedBox(
+      fit: BoxFit.scaleDown,
+      alignment: Alignment.center,
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          touchSurface,
+          const SizedBox(width: _HomeTitle.logoTitleGap),
+          Text(
+            'Pile ou Face',
+            textAlign: TextAlign.center,
+            style: widget.titleStyle,
+          ),
+        ],
+      ),
     );
   }
 }
