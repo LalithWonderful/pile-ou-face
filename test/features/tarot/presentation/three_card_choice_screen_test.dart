@@ -10,6 +10,7 @@ import 'package:pile_ou_face/features/tarot/presentation/screens/three_card_choi
 import 'package:pile_ou_face/features/tarot/services/app_data_reset_service.dart';
 import 'package:pile_ou_face/features/tarot/services/daily_quota_service.dart';
 import 'package:pile_ou_face/features/tarot/services/daily_reading_service.dart';
+import 'package:pile_ou_face/features/tarot/services/last_reading_service.dart';
 import 'package:pile_ou_face/features/tarot/services/tarot_draw_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -127,6 +128,7 @@ Widget _wrap({
   required DailyReadingService dailyService,
   DailyQuotaService? quotaService,
   AppDataResetService? resetService,
+  LastReadingService? lastReadingService,
 }) {
   // Mirror production layering — TarotScope sits ABOVE MaterialApp so
   // pushed routes (e.g. the ReadingScreen launched after the third pick)
@@ -138,6 +140,8 @@ Widget _wrap({
     dailyService: dailyService,
     quotaService: quotaService ?? DailyQuotaService(),
     resetService: resetService ?? AppDataResetService(),
+    lastReadingService:
+        lastReadingService ?? LastReadingService(repository: repository),
     child: MaterialApp(home: child),
   );
 }
@@ -239,6 +243,14 @@ void main() {
       // Quota is still at 1 — the reading screen did not double-consume
       // because it received a prepared draw.
       expect(await quotaService.remaining(ReadingIntent.love), 1);
+
+      // The completed reading was persisted before navigating so the
+      // home screen can offer "Revoir mon dernier tirage" later.
+      final lastReading = LastReadingService(repository: repo);
+      final snapshot = await lastReading.load();
+      expect(snapshot, isNotNull);
+      expect(snapshot!.intent, ReadingIntent.love);
+      expect(snapshot.cards, hasLength(3));
     });
 
     testWidgets(

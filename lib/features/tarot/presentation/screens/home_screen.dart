@@ -19,10 +19,41 @@ import 'three_card_choice_screen.dart';
 @visibleForTesting
 const Key homeLogoDebugPressTargetKey = ValueKey('homeLogoDebugPressTarget');
 
-class HomeScreen extends StatelessWidget {
+/// Key on the "Revoir mon dernier tirage" CTA. Used by widget tests to
+/// assert visibility / tap behaviour without depending on the literal
+/// label text.
+@visibleForTesting
+const Key homeReopenLastReadingKey = ValueKey('homeReopenLastReading');
+
+class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  /// Tracks whether a saved 3-card reading exists in local storage.
+  /// Re-checked on screen mount AND on return from the choice flow.
+  bool _hasLastReading = false;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) => _refreshLastReading());
+  }
+
+  Future<void> _refreshLastReading() async {
+    if (!mounted) return;
+    final has = await TarotScope.of(context).lastReadingService.hasSavedReading();
+    if (!mounted) return;
+    if (has != _hasLastReading) {
+      setState(() => _hasLastReading = has);
+    }
+  }
+
   void _openDailyMessage(BuildContext context) {
+    // Daily reading is independent of the 3-card history — no refresh.
     Navigator.of(context).push(
       MaterialPageRoute<void>(
         builder: (_) => const ReadingScreen(isDaily: true),
@@ -30,12 +61,33 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  void _openIntent(BuildContext context, ReadingIntent intent) {
-    Navigator.of(context).push(
+  Future<void> _openIntent(
+      BuildContext context, ReadingIntent intent) async {
+    await Navigator.of(context).push(
       MaterialPageRoute<void>(
         builder: (_) => ThreeCardChoiceScreen(intent: intent),
       ),
     );
+    // The choice screen pushReplacements ReadingScreen, so this future
+    // resolves once the whole flow has popped back to HomeScreen.
+    // Re-check storage to surface "Revoir mon dernier tirage" if the
+    // user completed (or even accidentally exited) the tirage.
+    await _refreshLastReading();
+  }
+
+  Future<void> _reopenLastReading() async {
+    final scope = TarotScope.of(context);
+    final snapshot = await scope.lastReadingService.load();
+    if (!mounted || snapshot == null) return;
+    await Navigator.of(context).push(
+      MaterialPageRoute<void>(
+        builder: (_) => ReadingScreen(
+          intent: snapshot.intent,
+          preparedDraw: snapshot.cards,
+        ),
+      ),
+    );
+    // No quota mutation, no storage mutation — nothing to refresh.
   }
 
   void _openLibrary(BuildContext context) {
@@ -146,6 +198,36 @@ class HomeScreen extends StatelessWidget {
                       ),
                       const SizedBox(height: 14),
                       _IntentButtonsGrid(onTap: (i) => _openIntent(context, i)),
+                      if (_hasLastReading) ...[
+                        const SizedBox(height: 18),
+                        Center(
+                          child: TextButton.icon(
+                            key: homeReopenLastReadingKey,
+                            onPressed: _reopenLastReading,
+                            icon: const Icon(
+                              Icons.history,
+                              size: 16,
+                            ),
+                            label: const Text('Revoir mon dernier tirage'),
+                            style: TextButton.styleFrom(
+                              foregroundColor: AppColors.deepGreen
+                                  .withValues(alpha: 0.85),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 14,
+                                vertical: 6,
+                              ),
+                              minimumSize: const Size(0, 32),
+                              tapTargetSize:
+                                  MaterialTapTargetSize.shrinkWrap,
+                              textStyle: const TextStyle(
+                                fontSize: 13,
+                                fontWeight: FontWeight.w500,
+                                letterSpacing: 0.2,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
                       const Spacer(flex: 3),
                       Text(
                         'À toi d’interpréter.',

@@ -177,13 +177,25 @@ class _ThreeCardChoiceScreenState extends State<ThreeCardChoiceScreen>
 
     if (_picked.length == 3) {
       setState(() => _committed = true);
+      final prepared = List<DrawnCard>.unmodifiable(_picked);
+      // Persist the completed reading BEFORE navigating so the home
+      // screen can offer "Revoir mon dernier tirage" if the user
+      // accidentally backs out of ReadingScreen. The save is fire-and-
+      // forget — a transient SharedPreferences failure must not block
+      // the navigation the user is waiting for.
+      unawaited(
+        TarotScope.of(context).lastReadingService.save(
+              intent: widget.intent,
+              cards: prepared,
+            ),
+      );
       await Future<void>.delayed(ThreeCardChoiceScreen.transitionDelay);
       if (!mounted) return;
       Navigator.of(context).pushReplacement(
         MaterialPageRoute<void>(
           builder: (_) => ReadingScreen(
             intent: widget.intent,
-            preparedDraw: List<DrawnCard>.unmodifiable(_picked),
+            preparedDraw: prepared,
           ),
         ),
       );

@@ -6,6 +6,7 @@ import 'package:pile_ou_face/features/tarot/presentation/screens/settings_screen
 import 'package:pile_ou_face/features/tarot/services/app_data_reset_service.dart';
 import 'package:pile_ou_face/features/tarot/services/daily_quota_service.dart';
 import 'package:pile_ou_face/features/tarot/services/daily_reading_service.dart';
+import 'package:pile_ou_face/features/tarot/services/last_reading_service.dart';
 import 'package:pile_ou_face/features/tarot/services/tarot_draw_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -20,6 +21,7 @@ Widget _wrapSettings() {
       dailyService: DailyReadingService(repository: repo),
       quotaService: DailyQuotaService(),
       resetService: AppDataResetService(),
+      lastReadingService: LastReadingService(repository: repo),
       child: const SettingsScreen(),
     ),
   );

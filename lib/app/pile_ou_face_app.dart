@@ -5,6 +5,7 @@ import '../features/tarot/presentation/screens/home_screen.dart';
 import '../features/tarot/services/app_data_reset_service.dart';
 import '../features/tarot/services/daily_quota_service.dart';
 import '../features/tarot/services/daily_reading_service.dart';
+import '../features/tarot/services/last_reading_service.dart';
 import '../features/tarot/services/tarot_draw_service.dart';
 import 'app_theme.dart';
 import 'tarot_scope.dart';
@@ -31,6 +32,7 @@ class _PileOuFaceAppState extends State<PileOuFaceApp> {
   late final DailyReadingService _dailyService;
   late final DailyQuotaService _quotaService;
   late final AppDataResetService _resetService;
+  late final LastReadingService _lastReadingService;
 
   @override
   void initState() {
@@ -42,6 +44,7 @@ class _PileOuFaceAppState extends State<PileOuFaceApp> {
         widget.dailyService ?? DailyReadingService(repository: _repository);
     _quotaService = DailyQuotaService();
     _resetService = AppDataResetService();
+    _lastReadingService = LastReadingService(repository: _repository);
   }
 
   @override
@@ -52,6 +55,7 @@ class _PileOuFaceAppState extends State<PileOuFaceApp> {
       dailyService: _dailyService,
       quotaService: _quotaService,
       resetService: _resetService,
+      lastReadingService: _lastReadingService,
       child: MaterialApp(
         title: 'Pile ou Face',
         debugShowCheckedModeBanner: false,

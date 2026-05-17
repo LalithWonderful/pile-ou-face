@@ -8,6 +8,7 @@ import 'package:pile_ou_face/features/tarot/presentation/screens/cards_library_s
 import 'package:pile_ou_face/features/tarot/services/app_data_reset_service.dart';
 import 'package:pile_ou_face/features/tarot/services/daily_quota_service.dart';
 import 'package:pile_ou_face/features/tarot/services/daily_reading_service.dart';
+import 'package:pile_ou_face/features/tarot/services/last_reading_service.dart';
 import 'package:pile_ou_face/features/tarot/services/tarot_draw_service.dart';
 
 const _libraryFixture = '''
@@ -78,6 +79,7 @@ Widget _wrapLibrary(TarotRepository repo) {
       dailyService: DailyReadingService(repository: repo),
       quotaService: DailyQuotaService(),
       resetService: AppDataResetService(),
+      lastReadingService: LastReadingService(repository: repo),
       child: const CardsLibraryScreen(),
     ),
   );

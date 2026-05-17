@@ -9,4 +9,5 @@ class LocalStorageKeys {
   static const String dailyReadingCardId = 'daily_reading.card_id';
   static const String dailyReadingReversed = 'daily_reading.reversed';
   static const String dailyIntentCounters = 'quota.daily_intent_counters';
+  static const String lastThreeCardReading = 'last_reading.three_card';
 }

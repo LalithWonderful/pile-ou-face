@@ -19,6 +19,7 @@ class AppDataResetService {
     await prefs.remove(LocalStorageKeys.dailyReadingDate);
     await prefs.remove(LocalStorageKeys.dailyReadingCardId);
     await prefs.remove(LocalStorageKeys.dailyReadingReversed);
+    await prefs.remove(LocalStorageKeys.lastThreeCardReading);
     // dailyIntentCounters is deliberately NOT removed here: clearing it
     // would let users reset their 2-per-intent daily quota at will.
   }

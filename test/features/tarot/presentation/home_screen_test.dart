@@ -6,6 +6,7 @@ import 'package:pile_ou_face/features/tarot/models/reading_intent.dart';
 import 'package:pile_ou_face/features/tarot/presentation/screens/home_screen.dart';
 import 'package:pile_ou_face/features/tarot/services/daily_quota_service.dart';
 import 'package:pile_ou_face/features/tarot/services/daily_reading_service.dart';
+import 'package:pile_ou_face/features/tarot/services/local_storage_keys.dart';
 import 'package:pile_ou_face/features/tarot/services/tarot_draw_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -309,6 +310,78 @@ void main() {
 
       expect(find.text('Paramètres'), findsOneWidget);
       expect(find.text('Politique de confidentialité'), findsOneWidget);
+    });
+  });
+
+  group('HomeScreen "Revoir mon dernier tirage"', () {
+    /// Pre-populates SharedPreferences with a synthetic saved reading
+    /// whose card ids match `card_0`, `card_1`, `card_2` — those are
+    /// present in `_threeCardsFixture`, so `LastReadingService.load`
+    /// will resolve them via the repository.
+    void seedSavedReading() {
+      SharedPreferences.setMockInitialValues(<String, Object>{
+        LocalStorageKeys.lastThreeCardReading:
+            '{"intent":"love","createdAt":"2026-05-17T10:30:00.000",'
+            '"cards":[{"id":"carte_a","reversed":false},'
+            '{"id":"carte_b","reversed":true},'
+            '{"id":"carte_c","reversed":false}]}',
+      });
+    }
+
+    testWidgets(
+        'hides the CTA when no reading has been saved',
+        (tester) async {
+      await tester.pumpWidget(_buildApp(fixture: _threeCardsFixture));
+      await tester.pumpAndSettle();
+
+      expect(find.byKey(homeReopenLastReadingKey), findsNothing);
+      expect(find.text('Revoir mon dernier tirage'), findsNothing);
+    });
+
+    testWidgets(
+        'shows the CTA on mount when a saved reading exists',
+        (tester) async {
+      seedSavedReading();
+
+      await tester.pumpWidget(_buildApp(fixture: _threeCardsFixture));
+      await tester.pumpAndSettle();
+
+      expect(find.byKey(homeReopenLastReadingKey), findsOneWidget);
+      expect(find.text('Revoir mon dernier tirage'), findsOneWidget);
+    });
+
+    testWidgets(
+        'tap reopens ReadingScreen with the saved cards and does NOT '
+        'consume quota', (tester) async {
+      seedSavedReading();
+
+      await tester.pumpWidget(_buildApp(fixture: _threeCardsFixture));
+      await tester.pumpAndSettle();
+
+      // Quota service reads from the same SharedPreferences as set up
+      // in seedSavedReading — both counters are at zero so we have
+      // the full 2 draws available on the love intent.
+      final quota = DailyQuotaService();
+      expect(await quota.remaining(ReadingIntent.love), 2);
+
+      await tester.tap(find.byKey(homeReopenLastReadingKey));
+      await tester.pumpAndSettle();
+
+      // Lands on the reading screen with the love intent title and
+      // the first 3-card position rendered straight away.
+      expect(find.text('Question d’amour'), findsOneWidget);
+      expect(find.text('Là où tu en es'), findsAtLeastNWidgets(1));
+
+      // No idle CTA — the screen received a prepared draw and skipped
+      // the reveal flow.
+      expect(find.text('Révéler le tirage'), findsNothing);
+
+      // The first position renders the first saved card — name
+      // matches the seed payload ("carte_a" → "Carte A").
+      expect(find.text('Carte A'), findsOneWidget);
+
+      // Quota untouched.
+      expect(await quota.remaining(ReadingIntent.love), 2);
     });
   });
 
