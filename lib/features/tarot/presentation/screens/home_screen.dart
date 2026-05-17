@@ -1,7 +1,7 @@
+import 'dart:async';
 import 'dart:math' as math;
 
 import 'package:flutter/foundation.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../app/app_theme.dart';
@@ -109,7 +109,7 @@ class HomeScreen extends StatelessWidget {
                       ),
                       const Spacer(flex: 2),
                       _HomeTitle(
-                        onDebugSustainedPress: kDebugMode
+                        onDebugReset: kDebugMode
                             ? () => _resetQuotasForDebug(context)
                             : null,
                         titleStyle: textTheme.displaySmall?.copyWith(
@@ -204,40 +204,63 @@ class HomeScreen extends StatelessWidget {
 class _HomeTitle extends StatefulWidget {
   const _HomeTitle({
     required this.titleStyle,
-    required this.onDebugSustainedPress,
+    required this.onDebugReset,
   });
 
-  /// How long the user must keep their finger down on the logo to trigger
-  /// the hidden debug reset. Kept long enough that an accidental tap or a
-  /// regular long-press cannot fire it.
-  static const Duration debugHoldDuration = Duration(seconds: 5);
+  /// Number of taps required on the logo (within [tapWindow]) to fire
+  /// the hidden debug reset.
+  static const int debugTapsRequired = 5;
+
+  /// Sliding window that the user must complete the tap sequence in.
+  /// A pause longer than this resets the counter, so a single stray tap
+  /// will not accumulate over a real session.
+  static const Duration tapWindow = Duration(seconds: 3);
 
   /// Pixel height of the rendered home logo. Sits inline with the title
-  /// at displaySmall size, so a value in the 36–40 range looks balanced.
-  static const double logoSize = 38;
+  /// at displaySmall size, so a value in the 34–36 range looks balanced.
+  static const double logoSize = 36;
 
-  /// Edge of the invisible square touch target that hosts the debug
-  /// long-press gesture. Larger than [logoSize] so the user can hold
-  /// the logo without falling outside the gesture surface; on iOS the
-  /// extra margin also absorbs the micro-jitter that cancelled the
-  /// previous raw-pointer implementation.
-  static const double debugTouchTargetSize = 64;
-
-  /// Horizontal gap between the logo touch target and the title text.
-  static const double logoTitleGap = 12;
+  /// Horizontal gap between the logo and the title text.
+  static const double logoTitleGap = 6;
 
   final TextStyle? titleStyle;
 
-  /// Fired when the user keeps a single pointer pressed on the logo for
-  /// [debugHoldDuration]. `null` (and therefore the gesture surface) in
+  /// Fired when the user has tapped the logo [debugTapsRequired] times
+  /// inside [tapWindow]. `null` (and therefore the gesture surface) in
   /// release builds. The title text never participates in this gesture.
-  final VoidCallback? onDebugSustainedPress;
+  final VoidCallback? onDebugReset;
 
   @override
   State<_HomeTitle> createState() => _HomeTitleState();
 }
 
 class _HomeTitleState extends State<_HomeTitle> {
+  int _tapCount = 0;
+  Timer? _windowTimer;
+
+  void _handleLogoTap() {
+    final callback = widget.onDebugReset;
+    if (callback == null) return;
+    _windowTimer?.cancel();
+    _tapCount++;
+    if (_tapCount >= _HomeTitle.debugTapsRequired) {
+      _tapCount = 0;
+      _windowTimer = null;
+      callback();
+      return;
+    }
+    _windowTimer = Timer(_HomeTitle.tapWindow, () {
+      _tapCount = 0;
+      _windowTimer = null;
+    });
+  }
+
+  @override
+  void dispose() {
+    _windowTimer?.cancel();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     // NOTE on the asset: pile_ou_face_logo.png is currently a PNG without
@@ -253,48 +276,32 @@ class _HomeTitleState extends State<_HomeTitle> {
       fit: BoxFit.contain,
     );
 
-    // The visible logo stays small (~38 px) for an inline header look,
-    // but the touch target is enlarged so the user can comfortably hold
-    // the logo for the full 5 seconds without falling off its bounds.
+    // The tap target is the visible logo itself — no invisible padding
+    // around it, so the Row's visual gap to the title is exactly
+    // [_HomeTitle.logoTitleGap] without a hidden buffer inflating it.
     Widget touchSurface = SizedBox(
       key: homeLogoDebugPressTargetKey,
-      width: _HomeTitle.debugTouchTargetSize,
-      height: _HomeTitle.debugTouchTargetSize,
-      child: Center(child: logoImage),
+      width: _HomeTitle.logoSize,
+      height: _HomeTitle.logoSize,
+      child: logoImage,
     );
 
-    if (widget.onDebugSustainedPress != null) {
-      // The debug gesture lives on the logo touch target only, never on
-      // the title text. Driving it through a real Flutter gesture
-      // (LongPressGestureRecognizer with a 5-second duration) instead of
-      // raw pointer events: the previous Listener-based version was
-      // cancelled on iOS simulator by the ancestor Scrollable resolving
-      // the arena on tiny finger jitter. Going through the arena makes
-      // the gesture tolerant to the same jitter and fires exactly once
-      // when the duration is reached, so no anti-double guard is needed.
-      touchSurface = RawGestureDetector(
+    if (widget.onDebugReset != null) {
+      // Tap-based reset (5 taps inside a 3-second window) is far more
+      // reliable on iOS simulator than a sustained press, which the
+      // ancestor Scrollable could cancel on the slightest finger jitter.
+      // The gesture surface is only installed in debug builds, so a
+      // release build has no debug behaviour on the logo whatsoever.
+      touchSurface = GestureDetector(
         behavior: HitTestBehavior.opaque,
-        gestures: <Type, GestureRecognizerFactory<GestureRecognizer>>{
-          LongPressGestureRecognizer:
-              GestureRecognizerFactoryWithHandlers<LongPressGestureRecognizer>(
-            () => LongPressGestureRecognizer(
-              duration: _HomeTitle.debugHoldDuration,
-              debugOwner: this,
-            ),
-            (instance) {
-              instance.onLongPress = widget.onDebugSustainedPress;
-            },
-          ),
-        },
+        onTap: _handleLogoTap,
         child: touchSurface,
       );
     }
 
     // FittedBox.scaleDown keeps the inline header at full size on regular
     // iPhones and gracefully shrinks the whole logo+title row on narrow
-    // viewports (e.g. 320 px) instead of overflowing. Gesture hit-testing
-    // follows the scaled bounds, which is still well above the user's
-    // finger size.
+    // viewports (e.g. 320 px) instead of overflowing.
     return FittedBox(
       fit: BoxFit.scaleDown,
       alignment: Alignment.center,

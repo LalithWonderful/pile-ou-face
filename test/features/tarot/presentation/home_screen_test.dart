@@ -186,7 +186,7 @@ void main() {
     });
 
     testWidgets(
-        'a 5-second sustained press on the logo resets quotas in debug mode',
+        '5 taps on the logo reset quotas in debug mode',
         (tester) async {
       // Pre-seed the quota counters as if the user already hit the
       // 2-per-intent daily limit on the "general" intent.
@@ -201,13 +201,10 @@ void main() {
       await tester.pumpWidget(_buildApp(fixture: _emptyFixture));
       await tester.pumpAndSettle();
 
-      final gesture =
-          await tester.startGesture(tester.getCenter(_logoTouchTargetFinder));
-      // Hold for the full debug-reset duration. The Timer fires inside
-      // this pump window.
-      await tester.pump(const Duration(seconds: 5));
-      await gesture.up();
-      await tester.pump(); // surface the SnackBar
+      for (var i = 0; i < 5; i++) {
+        await tester.tap(_logoTouchTargetFinder);
+        await tester.pump();
+      }
       await tester.pump(const Duration(milliseconds: 100));
 
       expect(find.text('Quotas de test réinitialisés.'), findsOneWidget);
@@ -215,7 +212,7 @@ void main() {
     });
 
     testWidgets(
-        'releasing the logo before 5 seconds does not reset quotas',
+        '4 taps on the logo do not reset quotas',
         (tester) async {
       SharedPreferences.setMockInitialValues(<String, Object>{
         DailyQuotaService.prefsKey:
@@ -228,13 +225,10 @@ void main() {
       await tester.pumpWidget(_buildApp(fixture: _emptyFixture));
       await tester.pumpAndSettle();
 
-      final gesture =
-          await tester.startGesture(tester.getCenter(_logoTouchTargetFinder));
-      // Release well before the 5-second threshold (covers both an
-      // accidental tap and a regular long-press around 500 ms).
-      await tester.pump(const Duration(seconds: 2));
-      await gesture.up();
-      await tester.pump();
+      for (var i = 0; i < 4; i++) {
+        await tester.tap(_logoTouchTargetFinder);
+        await tester.pump();
+      }
       await tester.pump(const Duration(milliseconds: 100));
 
       expect(find.text('Quotas de test réinitialisés.'), findsNothing);
@@ -242,7 +236,7 @@ void main() {
     });
 
     testWidgets(
-        'holding the title text does not reset quotas (gesture is logo-only)',
+        '5 taps on the title text do not reset quotas (gesture is logo-only)',
         (tester) async {
       SharedPreferences.setMockInitialValues(<String, Object>{
         DailyQuotaService.prefsKey:
@@ -255,15 +249,45 @@ void main() {
       await tester.pumpWidget(_buildApp(fixture: _emptyFixture));
       await tester.pumpAndSettle();
 
-      final gesture = await tester
-          .startGesture(tester.getCenter(find.text('Pile ou Face')));
-      // Even a full 5-second hold on the title must not trigger the
-      // reset, because the Listener now only covers the logo.
-      await tester.pump(const Duration(seconds: 5));
-      await gesture.up();
-      await tester.pump();
+      for (var i = 0; i < 5; i++) {
+        await tester.tap(find.text('Pile ou Face'));
+        await tester.pump();
+      }
       await tester.pump(const Duration(milliseconds: 100));
 
+      expect(find.text('Quotas de test réinitialisés.'), findsNothing);
+      expect(await quotaService.remaining(ReadingIntent.general), 0);
+    });
+
+    testWidgets(
+        'tap counter resets after the 3-second window so partial runs cannot accumulate',
+        (tester) async {
+      SharedPreferences.setMockInitialValues(<String, Object>{
+        DailyQuotaService.prefsKey:
+            '{"date":"${_todayKey()}","counters":{"general":2}}',
+      });
+
+      final quotaService = DailyQuotaService();
+      expect(await quotaService.remaining(ReadingIntent.general), 0);
+
+      await tester.pumpWidget(_buildApp(fixture: _emptyFixture));
+      await tester.pumpAndSettle();
+
+      // Tap 4 times — one short of the threshold.
+      for (var i = 0; i < 4; i++) {
+        await tester.tap(_logoTouchTargetFinder);
+        await tester.pump();
+      }
+      // Let the 3-second window expire, then tap 4 more times.
+      await tester.pump(const Duration(seconds: 4));
+      for (var i = 0; i < 4; i++) {
+        await tester.tap(_logoTouchTargetFinder);
+        await tester.pump();
+      }
+      await tester.pump(const Duration(milliseconds: 100));
+
+      // 8 taps total but the counter reset at second 3, so we are at 4
+      // taps in the current window — no reset.
       expect(find.text('Quotas de test réinitialisés.'), findsNothing);
       expect(await quotaService.remaining(ReadingIntent.general), 0);
     });
