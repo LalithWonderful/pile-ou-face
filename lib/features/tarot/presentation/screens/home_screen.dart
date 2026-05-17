@@ -200,20 +200,20 @@ class _HomeTitle extends StatefulWidget {
     required this.onDebugSustainedPress,
   });
 
-  /// How long the user must keep their finger down on the title to trigger
+  /// How long the user must keep their finger down on the logo to trigger
   /// the hidden debug reset. Kept long enough that an accidental tap or a
   /// regular long-press cannot fire it.
   static const Duration debugHoldDuration = Duration(seconds: 5);
 
   /// Pixel height of the home logo. Tuned so the screen stays balanced on
   /// large iPhones while remaining usable on a 320x568 viewport.
-  static const double logoSize = 80;
+  static const double logoSize = 56;
 
   final TextStyle? titleStyle;
 
-  /// Fired when the user keeps a single pointer pressed on the
-  /// logo/title area for [debugHoldDuration]. `null` (and therefore the
-  /// gesture surface) in release builds.
+  /// Fired when the user keeps a single pointer pressed on the logo for
+  /// [debugHoldDuration]. `null` (and therefore the gesture surface) in
+  /// release builds. The title text never participates in this gesture.
   final VoidCallback? onDebugSustainedPress;
 
   @override
@@ -246,33 +246,35 @@ class _HomeTitleState extends State<_HomeTitle> {
 
   @override
   Widget build(BuildContext context) {
-    final logoAndTitle = Column(
+    Widget logo = Image.asset(
+      'assets/tarot/branding/pile_ou_face_logo.png',
+      height: _HomeTitle.logoSize,
+      width: _HomeTitle.logoSize,
+      fit: BoxFit.contain,
+    );
+
+    if (widget.onDebugSustainedPress != null) {
+      // The debug gesture lives on the logo only, not on the title text.
+      logo = Listener(
+        behavior: HitTestBehavior.opaque,
+        onPointerDown: _onPointerDown,
+        onPointerUp: (_) => _cancelHold(),
+        onPointerCancel: (_) => _cancelHold(),
+        child: logo,
+      );
+    }
+
+    return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Image.asset(
-          'assets/tarot/branding/pile_ou_face_logo.png',
-          height: _HomeTitle.logoSize,
-          width: _HomeTitle.logoSize,
-          fit: BoxFit.contain,
-        ),
-        const SizedBox(height: 10),
+        logo,
+        const SizedBox(height: 8),
         Text(
           'Pile ou Face',
           textAlign: TextAlign.center,
           style: widget.titleStyle,
         ),
       ],
-    );
-
-    if (widget.onDebugSustainedPress == null) {
-      return logoAndTitle;
-    }
-    return Listener(
-      behavior: HitTestBehavior.opaque,
-      onPointerDown: _onPointerDown,
-      onPointerUp: (_) => _cancelHold(),
-      onPointerCancel: (_) => _cancelHold(),
-      child: logoAndTitle,
     );
   }
 }
