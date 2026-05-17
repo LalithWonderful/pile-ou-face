@@ -11,7 +11,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
   const PrivacyPolicyScreen({super.key});
 
   /// Bumped manually whenever the wording below is updated.
-  static const String _lastUpdated = '16 mai 2026';
+  static const String _lastUpdated = '17 mai 2026';
 
   @override
   Widget build(BuildContext context) {
@@ -102,12 +102,9 @@ class PrivacyPolicyScreen extends StatelessWidget {
               const _Section(
                 title: 'Suppression des données',
                 body:
-                    'À tout moment, depuis l’écran Paramètres, tu peux '
-                    'utiliser l’action « Effacer mes données » pour '
-                    'supprimer les données enregistrées localement par '
-                    'Pile ou Face.\n\n'
-                    'Tu peux aussi désinstaller l’application : cela '
-                    'supprime également les données locales associées.',
+                    'Pour supprimer les données enregistrées localement '
+                    'par Pile ou Face, tu peux désinstaller l’application : '
+                    'cela supprime également les données locales associées.',
               ),
               const _Section(
                 title: 'Contact',

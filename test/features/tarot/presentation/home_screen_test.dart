@@ -212,7 +212,7 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.text('Paramètres'), findsOneWidget);
-      expect(find.text('Effacer mes données'), findsOneWidget);
+      expect(find.text('Politique de confidentialité'), findsOneWidget);
     });
   });
 

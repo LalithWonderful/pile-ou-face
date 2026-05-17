@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 import '../../../../app/app_theme.dart';
-import '../../../../app/tarot_scope.dart';
 import 'privacy_policy_screen.dart';
 
 class SettingsScreen extends StatelessWidget {
@@ -17,44 +16,6 @@ class SettingsScreen extends StatelessWidget {
         builder: (_) => const PrivacyPolicyScreen(),
       ),
     );
-  }
-
-  Future<void> _confirmClearData(BuildContext context) async {
-    final confirmed = await showDialog<bool>(
-      context: context,
-      builder: (dialogContext) => AlertDialog(
-        title: const Text('Effacer mes données ?'),
-        content: const Text(
-          'Cela supprimera ton tirage du jour et tes préférences locales. '
-          'Tes quotas journaliers sont conservés pour préserver les limites '
-          'de l’application. Cette action ne peut pas être annulée.',
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(dialogContext).pop(false),
-            child: const Text('Annuler'),
-          ),
-          TextButton(
-            onPressed: () => Navigator.of(dialogContext).pop(true),
-            style: TextButton.styleFrom(
-              foregroundColor: Theme.of(dialogContext).colorScheme.error,
-            ),
-            child: const Text('Effacer'),
-          ),
-        ],
-      ),
-    );
-
-    if (confirmed == true && context.mounted) {
-      final scope = TarotScope.of(context);
-      await scope.resetService.clearAll();
-
-      if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Données effacées.')),
-        );
-      }
-    }
   }
 
   @override
@@ -77,20 +38,11 @@ class SettingsScreen extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 24),
               child: Text(
-                'Tes tirages et préférences sont enregistrés uniquement sur cet appareil.',
+                'Tes tirages sont enregistrés uniquement sur cet appareil.',
                 style: textTheme.bodyMedium?.copyWith(
                   color: AppColors.charcoal,
                   height: 1.4,
                 ),
-              ),
-            ),
-            const SizedBox(height: 12),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: OutlinedButton.icon(
-                onPressed: () => _confirmClearData(context),
-                icon: const Icon(Icons.delete_outline),
-                label: const Text('Effacer mes données'),
               ),
             ),
             const SizedBox(height: 32),
