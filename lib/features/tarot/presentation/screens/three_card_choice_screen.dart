@@ -72,7 +72,6 @@ class _ThreeCardChoiceScreenState extends State<ThreeCardChoiceScreen>
     with SingleTickerProviderStateMixin {
   late final math.Random _random;
   late final AnimationController _shuffleController;
-  final ScrollController _poolScrollController = ScrollController();
 
   List<_PoolEntry> _pool = const <_PoolEntry>[];
   final List<DrawnCard> _picked = <DrawnCard>[];
@@ -97,7 +96,6 @@ class _ThreeCardChoiceScreenState extends State<ThreeCardChoiceScreen>
   @override
   void dispose() {
     _shuffleController.dispose();
-    _poolScrollController.dispose();
     super.dispose();
   }
 
@@ -139,17 +137,10 @@ class _ThreeCardChoiceScreenState extends State<ThreeCardChoiceScreen>
         ];
         _loading = false;
       });
-      // Centre the horizontal scroll on the strip BEFORE starting the
-      // spread animation, so the initial deck stack sits in the middle
-      // of the viewport instead of off the left edge.
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (!mounted) return;
-        if (_poolScrollController.hasClients) {
-          final max = _poolScrollController.position.maxScrollExtent;
-          _poolScrollController.jumpTo(max / 2);
-        }
-        _shuffleController.forward();
-      });
+      // The fan is contained — all 22 cards live in the same Stack, no
+      // horizontal scroll to centre, so the spread animation can start
+      // straight away.
+      _shuffleController.forward();
     } catch (e) {
       if (!mounted) return;
       setState(() {
@@ -281,14 +272,13 @@ class _ThreeCardChoiceScreenState extends State<ThreeCardChoiceScreen>
       builder: (context, constraints) {
         final isNarrow = constraints.maxWidth < 360;
         final slotWidth = isNarrow ? 78.0 : 92.0;
-        // Slim cards so the deeper arc + stronger rotation never
-        // crash into the slot row above.
-        final poolCardWidth = isNarrow ? 54.0 : 66.0;
-        // Outer container padding keeps the fan visually contained —
-        // cards never reach the screen edges, even at the scroll
-        // extremes, so the deck reads as an object on the page rather
-        // than a full-bleed strip.
-        final fanContainerPadding = isNarrow ? 26.0 : 30.0;
+        // Slim cards so the deeper arc + stronger end-card rotation
+        // never crash into the slot row above.
+        final poolCardWidth = isNarrow ? 46.0 : 54.0;
+        // Container margin so the fan sits like an object on the page —
+        // even the outermost card always breathes against an empty
+        // strip of background.
+        final fanContainerPadding = isNarrow ? 28.0 : 32.0;
         return SingleChildScrollView(
           padding: const EdgeInsets.fromLTRB(0, 12, 0, 24),
           child: Column(
@@ -341,25 +331,13 @@ class _ThreeCardChoiceScreenState extends State<ThreeCardChoiceScreen>
                   ),
                 ),
               ),
-              const SizedBox(height: 6),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: Text(
-                  'Fais glisser le paquet.',
-                  textAlign: TextAlign.center,
-                  style: textTheme.bodySmall?.copyWith(
-                    color: AppColors.subtle,
-                    fontStyle: FontStyle.italic,
-                    fontSize: 11,
-                  ),
-                ),
-              ),
-              const SizedBox(height: 12),
-              // The fan sits in a centred, inset container — never
-              // edge-to-edge. The scrollable strip inside can still be
-              // wider than that container so the user swipes through
-              // 22 cards, but at any scroll position the visible deck
-              // breathes against [fanContainerPadding] of empty page.
+              const SizedBox(height: 14),
+              // The fan is its own contained object. All 22 cards live
+              // inside a fixed-width Stack — no horizontal scroll, no
+              // strip — and the surrounding padding ensures the
+              // outermost card always sits well away from the screen
+              // edges. The cream/foliage background continues
+              // unimpeded behind and below the fan.
               Padding(
                 padding: EdgeInsets.symmetric(
                   horizontal: fanContainerPadding,
@@ -367,7 +345,6 @@ class _ThreeCardChoiceScreenState extends State<ThreeCardChoiceScreen>
                 child: _PoolFan(
                   pool: _pool,
                   shuffleAnim: _shuffleController,
-                  scrollController: _poolScrollController,
                   cardWidth: poolCardWidth,
                   onTap: _onCardTap,
                 ),
@@ -476,62 +453,71 @@ class _Slot extends StatelessWidget {
   }
 }
 
-/// Horizontal fan of face-down cards rendered as an arc-of-circle
-/// (frown shape: centre cards sit highest, outer cards drop down).
-/// The widget lives inside a padded container in the parent, so the
-/// fan is visually contained and never touches the screen edges; the
-/// scrollable strip inside this widget can still be wider than the
-/// container, letting the user swipe through the full 22-card pool.
+/// Contained, fixed-width arc of face-down cards. The widget is no
+/// longer a horizontal strip — all 22 candidates live inside a single
+/// `Stack` sized to the parent's bounded width, so the deck reads as
+/// an object on the page rather than a frieze that crosses the screen.
+/// No horizontal scroll is needed: the polar formula spreads the cards
+/// across the available `fanWidth`, with a quadratic vertical curve
+/// that gives the centre card visual prominence and lets the outer
+/// cards drop into a real arc.
+///
+/// Geometry for card `i` (with `centerIndex = (total - 1) / 2`):
+///   normalized = (i - centerIndex) / centerIndex     // ∈ [-1, +1]
+///   cardCenterX = fanWidth / 2 + normalized * centerSpan / 2
+///   cardTop    = topBuffer + |normalized|² * arcDepth
+///   cardAngle  = normalized * maxRotationDeg (radians)
 ///
 /// To keep card taps unambiguous when cards heavily overlap, the
-/// widget uses a two-layer Stack: the visual cards sit in a lower
-/// IgnorePointer layer, while a top layer of small `Positioned`
-/// gesture surfaces covers only the visible "peek" strip of each
-/// card. The interactive layer also tracks press state, so the
-/// touched card lifts slightly to acknowledge the finger — and lifts
-/// a touch more on actual selection, just before it fades out.
+/// widget renders a two-layer Stack: the visual cards sit in a lower
+/// `IgnorePointer` layer, while a top layer of `Positioned`
+/// gesture surfaces covers each card's visible peek strip. The
+/// interactive layer also tracks press state so the touched card
+/// lifts slightly to acknowledge the finger — and lifts a touch more
+/// on actual selection, just before it fades out. The pressed (or
+/// picked-and-fading) card is also reordered to draw on top of its
+/// neighbours so the lift is actually seen.
 class _PoolFan extends StatefulWidget {
   const _PoolFan({
     required this.pool,
     required this.shuffleAnim,
-    required this.scrollController,
     required this.cardWidth,
     required this.onTap,
   });
 
   final List<_PoolEntry> pool;
   final Animation<double> shuffleAnim;
-  final ScrollController scrollController;
   final double cardWidth;
   final void Function(int index) onTap;
 
   static const double _aspect = 1 / 1.6;
 
-  /// Fraction of [cardWidth] that each successive card shifts to the
-  /// right. 0.5 leaves a comfortable peek strip (~27 px narrow / 33 px
-  /// regular) while squeezing 22 cards onto roughly two viewports.
-  static const double _peekFraction = 0.5;
-
-  /// Maximum fan angle (in degrees) at the extreme outer cards.
-  static const double _maxRotationDeg = 18;
+  /// Maximum fan angle (in degrees) at the extreme outer cards. 32°
+  /// gives a clearly readable arc without spinning the edges flat.
+  static const double _maxRotationDeg = 32;
 
   /// How far the outer cards drop below the centre, in logical
-  /// pixels — controls how rounded the fan reads.
-  static const double _arcDepth = 40;
+  /// pixels. Combined with the quadratic distance term this produces
+  /// the rounded curve.
+  static const double _arcDepth = 60;
 
   /// Vertical lift applied on touch-down so the pressed card visibly
   /// acknowledges the finger.
-  static const double _pressLift = 12;
+  static const double _pressLift = 14;
 
   /// Slightly larger lift applied at the moment a card is selected,
-  /// before it fades out — gives the pick its little "ceremonial"
-  /// rise that an instant fade would miss.
-  static const double _pickLift = 20;
+  /// before it fades out — the little ceremonial rise that an instant
+  /// fade would miss.
+  static const double _pickLift = 22;
 
-  /// Inner padding added by the horizontal scroll so the first/last
-  /// card is not glued to the container's left/right edge when the
-  /// strip is scrolled to its extreme.
-  static const double _innerScrollPadding = 8;
+  /// Vertical breathing room reserved at the top of the fan so a
+  /// pressed or selected centre card has room to lift without
+  /// overflowing the SizedBox.
+  static const double _topBuffer = 28;
+
+  /// Vertical breathing room reserved at the bottom of the fan so the
+  /// rotated bounding box of an outer card doesn't get clipped.
+  static const double _bottomBuffer = 22;
 
   static const Duration _pressAnimation = Duration(milliseconds: 160);
   static const Duration _fadeAnimation = Duration(milliseconds: 260);
@@ -542,8 +528,7 @@ class _PoolFan extends StatefulWidget {
 
 class _PoolFanState extends State<_PoolFan> {
   /// Index of the card currently being pressed (touch is down on its
-  /// hit region and not yet cancelled by the horizontal scroll arena).
-  /// `null` means no card is pressed.
+  /// hit region and not yet cancelled). `null` means no press.
   int? _pressedIndex;
 
   void _setPressed(int? index) {
@@ -553,65 +538,78 @@ class _PoolFanState extends State<_PoolFan> {
 
   @override
   Widget build(BuildContext context) {
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        return _buildFan(constraints.maxWidth);
+      },
+    );
+  }
+
+  Widget _buildFan(double fanWidth) {
     final pool = widget.pool;
     final n = pool.length;
     if (n == 0) return const SizedBox.shrink();
+
     final cardWidth = widget.cardWidth;
     final cardHeight = cardWidth / _PoolFan._aspect;
-    final peek = cardWidth * _PoolFan._peekFraction;
-    final stripWidth = cardWidth + peek * (n - 1);
-    // Vertical budget: full card height, arc drop below centre, room
-    // for the pick lift, plus a small allowance for the rotation-
-    // expanded bounding box of the outer cards.
-    final fanHeight =
-        cardHeight + _PoolFan._arcDepth + _PoolFan._pickLift + 14;
+    // Span over which card *centres* are distributed: leftmost centre
+    // is at cardWidth / 2, rightmost at fanWidth - cardWidth / 2.
+    final centerSpan = math.max(0.0, fanWidth - cardWidth);
     final maxAngle = _PoolFan._maxRotationDeg * math.pi / 180;
+    final fanHeight = _PoolFan._topBuffer +
+        _PoolFan._arcDepth +
+        cardHeight +
+        _PoolFan._bottomBuffer;
+
+    // Reorder visual cards so the pressed one (and any picked card
+    // mid-fade) draws on top of its neighbours — without this, a lift
+    // would be hidden under the cards rendered after it in the Stack.
+    final naturalOrder = <int>[];
+    final highlighted = <int>[];
+    for (var i = 0; i < n; i++) {
+      if (i == _pressedIndex || pool[i].picked) {
+        highlighted.add(i);
+      } else {
+        naturalOrder.add(i);
+      }
+    }
+    final drawOrder = <int>[...naturalOrder, ...highlighted];
 
     return SizedBox(
+      width: fanWidth,
       height: fanHeight,
-      child: SingleChildScrollView(
-        scrollDirection: Axis.horizontal,
-        controller: widget.scrollController,
-        physics: const ClampingScrollPhysics(),
-        padding: const EdgeInsets.symmetric(
-          horizontal: _PoolFan._innerScrollPadding,
-        ),
-        child: SizedBox(
-          width: stripWidth,
-          height: fanHeight,
-          child: AnimatedBuilder(
-            animation: widget.shuffleAnim,
-            builder: (context, _) {
-              final t = Curves.easeOutCubic.transform(
-                widget.shuffleAnim.value,
-              );
-              return Stack(
-                clipBehavior: Clip.none,
-                children: <Widget>[
-                  for (var i = 0; i < n; i++)
-                    _buildVisualCard(
-                      index: i,
-                      total: n,
-                      peek: peek,
-                      maxAngle: maxAngle,
-                      stripWidth: stripWidth,
-                      cardWidth: cardWidth,
-                      t: t,
-                    ),
-                  for (var i = 0; i < n; i++)
-                    if (!pool[i].picked)
-                      _buildHitRegion(
-                        index: i,
-                        total: n,
-                        peek: peek,
-                        cardWidth: cardWidth,
-                        fanHeight: fanHeight,
-                      ),
-                ],
-              );
-            },
-          ),
-        ),
+      child: AnimatedBuilder(
+        animation: widget.shuffleAnim,
+        builder: (context, _) {
+          final t =
+              Curves.easeOutCubic.transform(widget.shuffleAnim.value);
+          return Stack(
+            clipBehavior: Clip.none,
+            children: <Widget>[
+              for (final i in drawOrder)
+                _buildVisualCard(
+                  index: i,
+                  total: n,
+                  cardWidth: cardWidth,
+                  cardHeight: cardHeight,
+                  centerSpan: centerSpan,
+                  fanWidth: fanWidth,
+                  maxAngle: maxAngle,
+                  t: t,
+                ),
+              for (var i = 0; i < n; i++)
+                if (!pool[i].picked)
+                  _buildHitRegion(
+                    index: i,
+                    total: n,
+                    cardWidth: cardWidth,
+                    centerSpan: centerSpan,
+                    fanWidth: fanWidth,
+                    fanHeight: fanHeight,
+                  ),
+            ],
+          );
+        },
       ),
     );
   }
@@ -619,34 +617,35 @@ class _PoolFanState extends State<_PoolFan> {
   Widget _buildVisualCard({
     required int index,
     required int total,
-    required double peek,
-    required double maxAngle,
-    required double stripWidth,
     required double cardWidth,
+    required double cardHeight,
+    required double centerSpan,
+    required double fanWidth,
+    required double maxAngle,
     required double t,
   }) {
-    final fanLeft = index * peek;
-    // Stack centred on the strip so the spread reads radially.
-    final stackedLeft = (stripWidth - cardWidth) / 2;
-    final left = stackedLeft + (fanLeft - stackedLeft) * t;
-
-    // Frown arc: centre cards rise to the top of the fan, outer ones
-    // drop by up to [_arcDepth] pixels. Anchoring the stacked vertical
-    // position on the centre's final value (top = 0) keeps the centre
-    // card still during the spread — only the outer cards visibly
-    // drop into place, which reads like a real reader laying the
-    // deck out.
     final centerIndex = (total - 1) / 2;
-    final distance =
-        centerIndex > 0 ? (index - centerIndex).abs() / centerIndex : 0.0;
-    final fanTop = distance * _PoolFan._arcDepth;
-    const stackedTop = 0.0;
-    final top = stackedTop + (fanTop - stackedTop) * t;
+    final normalized =
+        centerIndex > 0 ? (index - centerIndex) / centerIndex : 0.0;
 
-    final fanAngle = total > 1
-        ? -maxAngle + (2 * maxAngle) * (index / (total - 1))
-        : 0.0;
+    // Final fan position via the polar/quadratic formula.
+    final fanCardCenterX = fanWidth / 2 + normalized * centerSpan / 2;
+    final fanLeft = fanCardCenterX - cardWidth / 2;
+    final arcDrop =
+        math.pow(normalized.abs(), 2).toDouble() * _PoolFan._arcDepth;
+    final fanTop = _PoolFan._topBuffer + arcDrop;
+    final fanAngle = normalized * maxAngle;
+
+    // Initial stacked position: all cards centred horizontally in the
+    // fan area, anchored at the centre card's final vertical position
+    // so during the spread the centre stays put and the outer cards
+    // visibly rotate and drop into place.
+    final stackedLeft = (fanWidth - cardWidth) / 2;
+    final stackedTop = _PoolFan._topBuffer;
     final stackedAngle = (index.isEven ? -1 : 1) * 0.05;
+
+    final left = stackedLeft + (fanLeft - stackedLeft) * t;
+    final top = stackedTop + (fanTop - stackedTop) * t;
     final angle = stackedAngle + (fanAngle - stackedAngle) * t;
 
     final entry = widget.pool[index];
@@ -688,29 +687,32 @@ class _PoolFanState extends State<_PoolFan> {
   Widget _buildHitRegion({
     required int index,
     required int total,
-    required double peek,
     required double cardWidth,
+    required double centerSpan,
+    required double fanWidth,
     required double fanHeight,
   }) {
-    // Each card shows only its left "peek" strip — that strip is the
-    // natural tap target. The rightmost card has no neighbour, so its
-    // whole width is hittable. The vertical span covers the full fan
-    // height: under the deep arc, outer cards sit much lower than
-    // centre cards, so a shorter hit rectangle would strand part of
-    // every card.
-    final hitLeft = index * peek;
-    final hitWidth = (index == total - 1) ? cardWidth : peek;
+    // Each card's hit region matches its visible peek strip: width =
+    // step between adjacent card left-edges, except for the rightmost
+    // card which has no neighbour to its right and is therefore fully
+    // visible. Vertical span covers the full fan height so the deep
+    // arc never strands a tappable area.
+    final centerIndex = (total - 1) / 2;
+    final normalized =
+        centerIndex > 0 ? (index - centerIndex) / centerIndex : 0.0;
+    final fanCardCenterX = fanWidth / 2 + normalized * centerSpan / 2;
+    final fanLeft = fanCardCenterX - cardWidth / 2;
+    final step = total > 1 ? centerSpan / (total - 1) : cardWidth;
+    final hitWidth = (index == total - 1) ? cardWidth : step;
+
     return Positioned(
-      left: hitLeft,
+      left: fanLeft,
       top: 0,
       width: hitWidth,
       height: fanHeight,
       child: GestureDetector(
         key: ThreeCardChoiceScreen.poolCardKey(index),
         behavior: HitTestBehavior.opaque,
-        // The horizontal-scroll gesture arena will steal the tap as
-        // soon as the user starts dragging, so `onTapCancel` clears
-        // the press state and the visual returns to neutral.
         onTapDown: (_) => _setPressed(index),
         onTapUp: (_) => _setPressed(null),
         onTapCancel: () => _setPressed(null),
