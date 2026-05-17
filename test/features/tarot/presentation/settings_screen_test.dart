@@ -2,14 +2,24 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:pile_ou_face/app/tarot_scope.dart';
 import 'package:pile_ou_face/features/tarot/data/tarot_repository.dart';
+import 'package:pile_ou_face/features/tarot/models/reading_intent.dart';
 import 'package:pile_ou_face/features/tarot/presentation/screens/settings_screen.dart';
 import 'package:pile_ou_face/features/tarot/services/app_data_reset_service.dart';
 import 'package:pile_ou_face/features/tarot/services/daily_quota_service.dart';
 import 'package:pile_ou_face/features/tarot/services/daily_reading_service.dart';
+import 'package:pile_ou_face/features/tarot/services/local_storage_keys.dart';
 import 'package:pile_ou_face/features/tarot/services/tarot_draw_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 const _emptyFixture = '[]';
+
+String _todayKey() {
+  final d = DateTime.now();
+  final y = d.year.toString().padLeft(4, '0');
+  final m = d.month.toString().padLeft(2, '0');
+  final day = d.day.toString().padLeft(2, '0');
+  return '$y-$m-$day';
+}
 
 Widget _wrapSettings() {
   final repo = TarotRepository(loader: (_) async => _emptyFixture);
@@ -71,14 +81,16 @@ void main() {
       expect(find.text('Paramètres'), findsOneWidget);
     });
 
-    testWidgets('confirming dialog clears local data and shows snackbar',
+    testWidgets(
+        'confirming dialog clears the daily reading but preserves quotas',
         (tester) async {
-      // Seed some data.
+      // Seed today's daily reading and a partially consumed quota.
       SharedPreferences.setMockInitialValues(<String, Object>{
-        'daily_reading.date': '2026-05-15',
-        'daily_reading.card_id': 'le_mat',
-        'daily_reading.reversed': false,
-        DailyQuotaService.prefsKey: '{"date":"2026-05-15","counters":{"general":1}}',
+        LocalStorageKeys.dailyReadingDate: '2026-05-15',
+        LocalStorageKeys.dailyReadingCardId: 'le_mat',
+        LocalStorageKeys.dailyReadingReversed: false,
+        DailyQuotaService.prefsKey:
+            '{"date":"2026-05-15","counters":{"general":1}}',
       });
 
       await tester.pumpWidget(_wrapSettings());
@@ -93,9 +105,44 @@ void main() {
       // Snackbar confirmation.
       expect(find.text('Données effacées.'), findsOneWidget);
 
-      // Verify keys are gone.
       final prefs = await SharedPreferences.getInstance();
-      expect(prefs.getKeys(), isEmpty);
+      // Daily reading keys are wiped.
+      expect(prefs.getKeys(), isNot(contains(LocalStorageKeys.dailyReadingDate)));
+      expect(prefs.getKeys(),
+          isNot(contains(LocalStorageKeys.dailyReadingCardId)));
+      expect(prefs.getKeys(),
+          isNot(contains(LocalStorageKeys.dailyReadingReversed)));
+      // The daily quota key MUST survive the public clear-data flow.
+      expect(prefs.getKeys(), contains(DailyQuotaService.prefsKey));
+    });
+
+    testWidgets(
+        'public clear-data cannot bypass an exhausted daily quota',
+        (tester) async {
+      // Seed an exhausted quota for "general" (2/2).
+      SharedPreferences.setMockInitialValues(<String, Object>{
+        DailyQuotaService.prefsKey:
+            '{"date":"${_todayKey()}","counters":{"general":2}}',
+      });
+
+      final quota = DailyQuotaService();
+      expect(await quota.remaining(ReadingIntent.general), 0);
+
+      await tester.pumpWidget(_wrapSettings());
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.text('Effacer mes données'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Effacer'));
+      await tester.pumpAndSettle();
+
+      // After clearing, the user is still blocked.
+      expect(await quota.remaining(ReadingIntent.general), 0);
+      expect(await quota.tryConsume(ReadingIntent.general), isFalse);
+
+      // The debug-only path still works (tests run in debug mode).
+      await quota.resetDailyQuotaForDebug();
+      expect(await quota.remaining(ReadingIntent.general), 2);
     });
 
     testWidgets('displays privacy policy link', (tester) async {

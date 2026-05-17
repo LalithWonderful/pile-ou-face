@@ -25,9 +25,9 @@ class SettingsScreen extends StatelessWidget {
       builder: (dialogContext) => AlertDialog(
         title: const Text('Effacer mes données ?'),
         content: const Text(
-          'Cela supprimera les données enregistrées sur cet appareil : '
-          'tirages locaux, quotas et préférences. '
-          'Cette action ne peut pas être annulée.',
+          'Cela supprimera ton tirage du jour et tes préférences locales. '
+          'Tes quotas journaliers sont conservés pour préserver les limites '
+          'de l’application. Cette action ne peut pas être annulée.',
         ),
         actions: [
           TextButton(
