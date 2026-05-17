@@ -200,12 +200,18 @@ class _ThreeCardChoiceScreenState extends State<ThreeCardChoiceScreen>
           onPressed: () => Navigator.of(context).pop(),
         ),
       ),
-      // The decorative background and the "Ton tirage t'attend"
-      // overlay both sit outside SafeArea so they cover the entire
-      // body — including the bottom home-indicator strip — and the
-      // page no longer breaks into a flat cream block below the fan.
-      // Only the page CONTENT is inset by SafeArea.
+      // Both the decorative background AND the page content sit
+      // inside Positioned.fill children of a StackFit.expand Stack —
+      // this forces every layer to fill the full Scaffold body,
+      // including the bottom home-indicator strip. The previous
+      // attempt failed because `SafeArea(child: _buildBody())` was a
+      // *non-positioned* child of a default-loose Stack: the inner
+      // SingleChildScrollView shrunk to its content height, the
+      // Stack reported that shorter size to the Scaffold, and the
+      // area below the content fell back to the Scaffold's plain
+      // ivory background.
       body: Stack(
+        fit: StackFit.expand,
         children: [
           Positioned.fill(
             child: Opacity(
@@ -213,10 +219,13 @@ class _ThreeCardChoiceScreenState extends State<ThreeCardChoiceScreen>
               child: Image.asset(
                 'assets/tarot/backgrounds/question_reading_bg.webp',
                 fit: BoxFit.cover,
+                alignment: Alignment.center,
               ),
             ),
           ),
-          SafeArea(child: _buildBody()),
+          Positioned.fill(
+            child: SafeArea(child: _buildBody()),
+          ),
           if (_committed)
             Positioned.fill(
               child: IgnorePointer(
