@@ -272,9 +272,10 @@ class _ThreeCardChoiceScreenState extends State<ThreeCardChoiceScreen>
       builder: (context, constraints) {
         final isNarrow = constraints.maxWidth < 360;
         final slotWidth = isNarrow ? 78.0 : 92.0;
-        // Slim cards so the deeper arc + stronger end-card rotation
-        // never crash into the slot row above.
-        final poolCardWidth = isNarrow ? 46.0 : 54.0;
+        // A touch larger than the previous pass so the deck has more
+        // presence, while still leaving the container-padding margin
+        // intact so the fan never becomes a strip.
+        final poolCardWidth = isNarrow ? 50.0 : 58.0;
         // Container margin so the fan sits like an object on the page —
         // even the outermost card always breathes against an empty
         // strip of background.
@@ -331,13 +332,17 @@ class _ThreeCardChoiceScreenState extends State<ThreeCardChoiceScreen>
                   ),
                 ),
               ),
-              const SizedBox(height: 14),
+              const SizedBox(height: 4),
               // The fan is its own contained object. All 22 cards live
               // inside a fixed-width Stack — no horizontal scroll, no
               // strip — and the surrounding padding ensures the
               // outermost card always sits well away from the screen
               // edges. The cream/foliage background continues
-              // unimpeded behind and below the fan.
+              // unimpeded behind and below the fan. The pre-fan gap
+              // stays small (combined with a slimmer `_topBuffer`
+              // inside the fan) so the deck reads as anchored to the
+              // counter above rather than floating in an empty cream
+              // block.
               Padding(
                 padding: EdgeInsets.symmetric(
                   horizontal: fanContainerPadding,
@@ -492,9 +497,10 @@ class _PoolFan extends StatefulWidget {
 
   static const double _aspect = 1 / 1.6;
 
-  /// Maximum fan angle (in degrees) at the extreme outer cards. 32°
-  /// gives a clearly readable arc without spinning the edges flat.
-  static const double _maxRotationDeg = 32;
+  /// Maximum fan angle (in degrees) at the extreme outer cards. 30°
+  /// keeps the arc clearly readable while the slightly bigger cards
+  /// don't make the outer sides look too open.
+  static const double _maxRotationDeg = 30;
 
   /// How far the outer cards drop below the centre, in logical
   /// pixels. Combined with the quadratic distance term this produces
@@ -512,8 +518,10 @@ class _PoolFan extends StatefulWidget {
 
   /// Vertical breathing room reserved at the top of the fan so a
   /// pressed or selected centre card has room to lift without
-  /// overflowing the SizedBox.
-  static const double _topBuffer = 28;
+  /// overflowing the SizedBox. Trimmed to match `_pickLift` so the
+  /// fan as a whole sits closer to the counter above — the deck no
+  /// longer floats in a wide empty cream block.
+  static const double _topBuffer = 18;
 
   /// Vertical breathing room reserved at the bottom of the fan so the
   /// rotated bounding box of an outer card doesn't get clipped.
