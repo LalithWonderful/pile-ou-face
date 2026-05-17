@@ -281,7 +281,10 @@ class _ThreeCardChoiceScreenState extends State<ThreeCardChoiceScreen>
       builder: (context, constraints) {
         final isNarrow = constraints.maxWidth < 360;
         final slotWidth = isNarrow ? 78.0 : 92.0;
-        final poolCardWidth = isNarrow ? 64.0 : 76.0;
+        // Cards are slimmed down compared to the flat strip so the
+        // deeper arc and the stronger end-card rotation do not push
+        // the fan into the slot row above.
+        final poolCardWidth = isNarrow ? 56.0 : 68.0;
         return SingleChildScrollView(
           padding: const EdgeInsets.fromLTRB(0, 12, 0, 24),
           child: Column(
@@ -334,7 +337,20 @@ class _ThreeCardChoiceScreenState extends State<ThreeCardChoiceScreen>
                   ),
                 ),
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: 6),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: Text(
+                  'Fais glisser le paquet.',
+                  textAlign: TextAlign.center,
+                  style: textTheme.bodySmall?.copyWith(
+                    color: AppColors.subtle,
+                    fontStyle: FontStyle.italic,
+                    fontSize: 11,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 12),
               // The pool itself does NOT inherit the horizontal padding —
               // it owns its own scrollable strip so the fan can extend
               // edge-to-edge and feel like a real spread deck.
@@ -478,18 +494,21 @@ class _PoolFan extends StatelessWidget {
   static const double _aspect = 1 / 1.6;
 
   /// Fraction of [cardWidth] that each successive card moves to the
-  /// right. 0.42 keeps the per-card hit strip wide enough to tap
-  /// comfortably (~28 px on narrow phones) while still squeezing 22
-  /// cards into a strip that is roughly two viewports wide on a 320 px
-  /// screen.
-  static const double _peekFraction = 0.42;
+  /// right. 0.48 widens the per-card peek strip (~27 px on narrow
+  /// phones, ~33 px on regular phones) so each card visibly invites a
+  /// tap, while still squeezing 22 cards into a strip that is roughly
+  /// two viewports wide on a 320 px screen.
+  static const double _peekFraction = 0.48;
 
-  /// Maximum fan angle (in degrees) applied at the extreme outer cards.
-  static const double _maxRotationDeg = 9;
+  /// Maximum fan angle (in degrees) at the extreme outer cards. 15° is
+  /// the sweet spot where the deck reads as a held-in-hand fan without
+  /// the outer cards spinning enough to disturb hit testing.
+  static const double _maxRotationDeg = 15;
 
-  /// Vertical drop applied to the outermost cards, in logical pixels.
-  /// Inner cards stay near the top so the fan arc reads naturally.
-  static const double _arcDepth = 12;
+  /// Vertical lift applied to the outermost cards relative to the
+  /// centre, in logical pixels. The arc is a smile: centre cards sit
+  /// at the bottom of the curve and the outer ones rise.
+  static const double _arcDepth = 30;
 
   @override
   Widget build(BuildContext context) {
@@ -498,7 +517,9 @@ class _PoolFan extends StatelessWidget {
     final cardHeight = cardWidth / _aspect;
     final peek = cardWidth * _peekFraction;
     final stripWidth = cardWidth + peek * (n - 1);
-    final fanHeight = cardHeight + _arcDepth + 16;
+    // Strip needs to host the arc depth on top + the full card height,
+    // plus a small allowance for the rotation-expanded bounding box.
+    final fanHeight = _arcDepth + cardHeight + 20;
     final maxAngle = _maxRotationDeg * math.pi / 180;
 
     return SizedBox(
@@ -538,7 +559,7 @@ class _PoolFan extends StatelessWidget {
                         index: i,
                         total: n,
                         peek: peek,
-                        cardHeight: cardHeight,
+                        fanHeight: fanHeight,
                       ),
                 ],
               );
@@ -569,12 +590,16 @@ class _PoolFan extends StatelessWidget {
     final stackedAngle = (index.isEven ? -1 : 1) * 0.05;
     final angle = stackedAngle + (fanAngle - stackedAngle) * t;
 
-    // Outer cards drop a few pixels so the fan curves like an arc.
+    // Smile arc: centre cards sit at the bottom of the curve, outer
+    // cards "remontent" by up to [_arcDepth] pixels. The stack starts
+    // anchored on the centre's final vertical position so that during
+    // the spread the centre stays put and only the edges rise — which
+    // reads as the deck unfolding into a fan.
     final centerIndex = (total - 1) / 2;
     final distance =
         centerIndex > 0 ? (index - centerIndex).abs() / centerIndex : 0.0;
-    final fanTop = distance * _arcDepth;
-    const stackedTop = 4.0;
+    final fanTop = (1 - distance) * _arcDepth;
+    final stackedTop = _arcDepth;
     final top = stackedTop + (fanTop - stackedTop) * t;
 
     final entry = pool[index];
@@ -606,18 +631,21 @@ class _PoolFan extends StatelessWidget {
     required int index,
     required int total,
     required double peek,
-    required double cardHeight,
+    required double fanHeight,
   }) {
     // Every card except the last shows only its left "peek" strip —
     // that is the natural tap target. The last card has no neighbour
-    // to its right, so its whole width is hittable.
+    // to its right, so its whole width is hittable. The vertical span
+    // covers the full fan height: with the smile arc, outer cards sit
+    // at the top of the strip and centre cards near the bottom, so a
+    // shorter hit rectangle would strand part of every card.
     final hitLeft = index * peek;
     final hitWidth = (index == total - 1) ? cardWidth : peek;
     return Positioned(
       left: hitLeft,
-      top: 4,
+      top: 0,
       width: hitWidth,
-      height: cardHeight,
+      height: fanHeight,
       child: GestureDetector(
         key: ThreeCardChoiceScreen.poolCardKey(index),
         behavior: HitTestBehavior.opaque,
