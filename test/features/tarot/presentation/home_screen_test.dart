@@ -179,7 +179,7 @@ void main() {
     });
 
     testWidgets(
-        'long-press on the title resets daily quotas in debug mode',
+        'a 5-second sustained press on the title resets quotas in debug mode',
         (tester) async {
       // Pre-seed the quota counters as if the user already hit the
       // 2-per-intent daily limit on the "general" intent.
@@ -194,12 +194,44 @@ void main() {
       await tester.pumpWidget(_buildApp(fixture: _emptyFixture));
       await tester.pumpAndSettle();
 
-      await tester.longPress(find.text('Pile ou Face'));
+      final gesture =
+          await tester.startGesture(tester.getCenter(find.text('Pile ou Face')));
+      // Hold for the full debug-reset duration. The Timer fires inside
+      // this pump window.
+      await tester.pump(const Duration(seconds: 5));
+      await gesture.up();
       await tester.pump(); // surface the SnackBar
       await tester.pump(const Duration(milliseconds: 100));
 
       expect(find.text('Quotas de test réinitialisés.'), findsOneWidget);
       expect(await quotaService.remaining(ReadingIntent.general), 2);
+    });
+
+    testWidgets(
+        'releasing the title before 5 seconds does not reset quotas',
+        (tester) async {
+      SharedPreferences.setMockInitialValues(<String, Object>{
+        DailyQuotaService.prefsKey:
+            '{"date":"${_todayKey()}","counters":{"general":2}}',
+      });
+
+      final quotaService = DailyQuotaService();
+      expect(await quotaService.remaining(ReadingIntent.general), 0);
+
+      await tester.pumpWidget(_buildApp(fixture: _emptyFixture));
+      await tester.pumpAndSettle();
+
+      final gesture =
+          await tester.startGesture(tester.getCenter(find.text('Pile ou Face')));
+      // Release well before the 5-second threshold (covers both an
+      // accidental tap and a regular long-press around 500 ms).
+      await tester.pump(const Duration(seconds: 2));
+      await gesture.up();
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 100));
+
+      expect(find.text('Quotas de test réinitialisés.'), findsNothing);
+      expect(await quotaService.remaining(ReadingIntent.general), 0);
     });
 
     testWidgets('settings icon opens the settings screen', (tester) async {

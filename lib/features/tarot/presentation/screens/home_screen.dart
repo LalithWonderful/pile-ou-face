@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:math' as math;
 
 import 'package:flutter/foundation.dart';
@@ -101,10 +102,10 @@ class HomeScreen extends StatelessWidget {
                       ),
                       const Spacer(flex: 2),
                       _HomeTitle(
-                        onDebugLongPress: kDebugMode
+                        onDebugSustainedPress: kDebugMode
                             ? () => _resetQuotasForDebug(context)
                             : null,
-                        style: textTheme.displaySmall?.copyWith(
+                        titleStyle: textTheme.displaySmall?.copyWith(
                           color: AppColors.deepGreen,
                           fontWeight: FontWeight.w700,
                           letterSpacing: 1.2,
@@ -193,29 +194,85 @@ class HomeScreen extends StatelessWidget {
   }
 }
 
-class _HomeTitle extends StatelessWidget {
+class _HomeTitle extends StatefulWidget {
   const _HomeTitle({
-    required this.style,
-    required this.onDebugLongPress,
+    required this.titleStyle,
+    required this.onDebugSustainedPress,
   });
 
-  final TextStyle? style;
-  final VoidCallback? onDebugLongPress;
+  /// How long the user must keep their finger down on the title to trigger
+  /// the hidden debug reset. Kept long enough that an accidental tap or a
+  /// regular long-press cannot fire it.
+  static const Duration debugHoldDuration = Duration(seconds: 5);
+
+  /// Pixel height of the home logo. Tuned so the screen stays balanced on
+  /// large iPhones while remaining usable on a 320x568 viewport.
+  static const double logoSize = 80;
+
+  final TextStyle? titleStyle;
+
+  /// Fired when the user keeps a single pointer pressed on the
+  /// logo/title area for [debugHoldDuration]. `null` (and therefore the
+  /// gesture surface) in release builds.
+  final VoidCallback? onDebugSustainedPress;
+
+  @override
+  State<_HomeTitle> createState() => _HomeTitleState();
+}
+
+class _HomeTitleState extends State<_HomeTitle> {
+  Timer? _holdTimer;
+
+  void _onPointerDown(PointerDownEvent _) {
+    final callback = widget.onDebugSustainedPress;
+    if (callback == null) return;
+    _holdTimer?.cancel();
+    _holdTimer = Timer(_HomeTitle.debugHoldDuration, () {
+      _holdTimer = null;
+      callback();
+    });
+  }
+
+  void _cancelHold() {
+    _holdTimer?.cancel();
+    _holdTimer = null;
+  }
+
+  @override
+  void dispose() {
+    _cancelHold();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    final title = Text(
-      'Pile ou Face',
-      textAlign: TextAlign.center,
-      style: style,
+    final logoAndTitle = Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Image.asset(
+          'assets/tarot/branding/pile_ou_face_logo.png',
+          height: _HomeTitle.logoSize,
+          width: _HomeTitle.logoSize,
+          fit: BoxFit.contain,
+        ),
+        const SizedBox(height: 10),
+        Text(
+          'Pile ou Face',
+          textAlign: TextAlign.center,
+          style: widget.titleStyle,
+        ),
+      ],
     );
-    if (onDebugLongPress == null) {
-      return title;
+
+    if (widget.onDebugSustainedPress == null) {
+      return logoAndTitle;
     }
-    return GestureDetector(
+    return Listener(
       behavior: HitTestBehavior.opaque,
-      onLongPress: onDebugLongPress,
-      child: title,
+      onPointerDown: _onPointerDown,
+      onPointerUp: (_) => _cancelHold(),
+      onPointerCancel: (_) => _cancelHold(),
+      child: logoAndTitle,
     );
   }
 }
