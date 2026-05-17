@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../app/app_theme.dart';
+import '../../../../app/tarot_scope.dart';
 import '../../models/reading_intent.dart';
 import 'cards_library_screen.dart';
 import 'reading_screen.dart';
@@ -40,6 +41,19 @@ class HomeScreen extends StatelessWidget {
     Navigator.of(context).push(
       MaterialPageRoute<void>(
         builder: (_) => const SettingsScreen(),
+      ),
+    );
+  }
+
+  Future<void> _resetQuotasForDebug(BuildContext context) async {
+    final messenger = ScaffoldMessenger.of(context);
+    final scope = TarotScope.of(context);
+    await scope.quotaService.resetDailyQuotaForDebug();
+    if (!context.mounted) return;
+    messenger.showSnackBar(
+      const SnackBar(
+        content: Text('Quotas de test réinitialisés.'),
+        duration: Duration(seconds: 2),
       ),
     );
   }
@@ -86,9 +100,10 @@ class HomeScreen extends StatelessWidget {
                         ],
                       ),
                       const Spacer(flex: 2),
-                      Text(
-                        'Pile ou Face',
-                        textAlign: TextAlign.center,
+                      _HomeTitle(
+                        onDebugLongPress: kDebugMode
+                            ? () => _resetQuotasForDebug(context)
+                            : null,
                         style: textTheme.displaySmall?.copyWith(
                           color: AppColors.deepGreen,
                           fontWeight: FontWeight.w700,
@@ -174,6 +189,33 @@ class HomeScreen extends StatelessWidget {
       ),
       ],
     ),
+    );
+  }
+}
+
+class _HomeTitle extends StatelessWidget {
+  const _HomeTitle({
+    required this.style,
+    required this.onDebugLongPress,
+  });
+
+  final TextStyle? style;
+  final VoidCallback? onDebugLongPress;
+
+  @override
+  Widget build(BuildContext context) {
+    final title = Text(
+      'Pile ou Face',
+      textAlign: TextAlign.center,
+      style: style,
+    );
+    if (onDebugLongPress == null) {
+      return title;
+    }
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onLongPress: onDebugLongPress,
+      child: title,
     );
   }
 }

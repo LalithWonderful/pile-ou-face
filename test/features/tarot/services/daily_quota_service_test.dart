@@ -88,5 +88,24 @@ void main() {
       await service.tryConsume(ReadingIntent.money); // false, no increment
       expect(await service.remaining(ReadingIntent.money), 0);
     });
+
+    test('resetDailyQuotaForDebug restores full quota in debug builds',
+        () async {
+      // Tests run in debug mode (kDebugMode == true), so the reset path
+      // is exercised here. In release builds the method is a no-op and
+      // production quotas remain enforced.
+      await service.tryConsume(ReadingIntent.general);
+      await service.tryConsume(ReadingIntent.general);
+      await service.tryConsume(ReadingIntent.love);
+      expect(await service.remaining(ReadingIntent.general), 0);
+      expect(await service.remaining(ReadingIntent.love), 1);
+
+      await service.resetDailyQuotaForDebug();
+
+      for (final intent in ReadingIntent.values) {
+        expect(await service.remaining(intent), 2);
+      }
+      expect(await service.tryConsume(ReadingIntent.general), isTrue);
+    });
   });
 }

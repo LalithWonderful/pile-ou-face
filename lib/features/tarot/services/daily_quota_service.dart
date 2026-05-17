@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../models/daily_quota_snapshot.dart';
@@ -99,5 +100,14 @@ class DailyQuotaService {
   /// Exposes the current snapshot (useful for tests / debug).
   Future<DailyQuotaSnapshot> currentSnapshot() async {
     return _loadSnapshot();
+  }
+
+  /// Debug-only: clears today's per-intent counters so manual QA can keep
+  /// drawing past the daily limit. No-op in release builds — production
+  /// behaviour and the [_quota] limit are intentionally untouched.
+  Future<void> resetDailyQuotaForDebug() async {
+    if (!kDebugMode) return;
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove(prefsKey);
   }
 }

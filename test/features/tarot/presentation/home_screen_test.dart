@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:pile_ou_face/app/pile_ou_face_app.dart';
 import 'package:pile_ou_face/features/tarot/data/tarot_repository.dart';
+import 'package:pile_ou_face/features/tarot/models/reading_intent.dart';
+import 'package:pile_ou_face/features/tarot/services/daily_quota_service.dart';
 import 'package:pile_ou_face/features/tarot/services/daily_reading_service.dart';
 import 'package:pile_ou_face/features/tarot/services/tarot_draw_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -66,6 +68,14 @@ const _threeCardsFixture = '''
   }
 ]
 ''';
+
+String _todayKey() {
+  final d = DateTime.now();
+  final y = d.year.toString().padLeft(4, '0');
+  final m = d.month.toString().padLeft(2, '0');
+  final day = d.day.toString().padLeft(2, '0');
+  return '$y-$m-$day';
+}
 
 PileOuFaceApp _buildApp({required String fixture}) {
   final repo = TarotRepository(loader: (_) async => fixture);
@@ -166,6 +176,30 @@ void main() {
 
       expect(find.text('Bibliothèque des cartes'), findsOneWidget);
       expect(find.text('Carte A'), findsOneWidget);
+    });
+
+    testWidgets(
+        'long-press on the title resets daily quotas in debug mode',
+        (tester) async {
+      // Pre-seed the quota counters as if the user already hit the
+      // 2-per-intent daily limit on the "general" intent.
+      SharedPreferences.setMockInitialValues(<String, Object>{
+        DailyQuotaService.prefsKey:
+            '{"date":"${_todayKey()}","counters":{"general":2}}',
+      });
+
+      final quotaService = DailyQuotaService();
+      expect(await quotaService.remaining(ReadingIntent.general), 0);
+
+      await tester.pumpWidget(_buildApp(fixture: _emptyFixture));
+      await tester.pumpAndSettle();
+
+      await tester.longPress(find.text('Pile ou Face'));
+      await tester.pump(); // surface the SnackBar
+      await tester.pump(const Duration(milliseconds: 100));
+
+      expect(find.text('Quotas de test réinitialisés.'), findsOneWidget);
+      expect(await quotaService.remaining(ReadingIntent.general), 2);
     });
 
     testWidgets('settings icon opens the settings screen', (tester) async {
