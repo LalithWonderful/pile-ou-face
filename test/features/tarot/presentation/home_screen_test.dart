@@ -78,11 +78,11 @@ String _todayKey() {
   return '$y-$m-$day';
 }
 
-/// The invisible 96x96 square that wraps the home logo and hosts the
+/// The invisible 110x110 square that wraps the home logo and hosts the
 /// debug-only sustained-press Listener. Tests target this surface rather
 /// than the inner Image so the assertions match the user's tappable
 /// region exactly.
-final Finder _logoTouchTargetFinder = find.byKey(homeLogoTouchTargetKey);
+final Finder _logoTouchTargetFinder = find.byKey(homeLogoDebugPressTargetKey);
 
 PileOuFaceApp _buildApp({required String fixture}) {
   final repo = TarotRepository(loader: (_) async => fixture);

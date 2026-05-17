@@ -14,9 +14,9 @@ import 'settings_screen.dart';
 /// Key on the invisible touch surface that wraps the home logo and hosts
 /// the debug-only sustained-press reset gesture. Exposed at file scope so
 /// widget tests can target it directly instead of guessing the rendered
-/// Image bounds (which can be smaller than the touch target on purpose).
+/// Image bounds (which are smaller than the touch target on purpose).
 @visibleForTesting
-const Key homeLogoTouchTargetKey = ValueKey('home-logo-touch-target');
+const Key homeLogoDebugPressTargetKey = ValueKey('homeLogoDebugPressTarget');
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -214,12 +214,14 @@ class _HomeTitle extends StatefulWidget {
 
   /// Pixel height of the rendered home logo. Tuned so the screen stays
   /// balanced on large iPhones while remaining usable on a 320x568 viewport.
-  static const double logoSize = 56;
+  static const double logoSize = 64;
 
   /// Edge of the invisible square touch target that hosts the debug
-  /// sustained-press gesture. Larger than [logoSize] so a small finger
-  /// jitter while holding never falls outside the Listener.
-  static const double debugTouchTargetSize = 96;
+  /// sustained-press gesture. Significantly larger than [logoSize] so a
+  /// small finger jitter while holding never falls outside the Listener
+  /// — important on iOS, where micro-movements during a sustained press
+  /// could otherwise cancel the gesture.
+  static const double debugTouchTargetSize = 110;
 
   final TextStyle? titleStyle;
 
@@ -275,7 +277,7 @@ class _HomeTitleState extends State<_HomeTitle> {
     // touch target is enlarged so a finger that drifts a few pixels
     // during the 5-second hold stays inside the Listener.
     Widget touchSurface = SizedBox(
-      key: homeLogoTouchTargetKey,
+      key: homeLogoDebugPressTargetKey,
       width: _HomeTitle.debugTouchTargetSize,
       height: _HomeTitle.debugTouchTargetSize,
       child: Center(child: logoImage),
@@ -298,8 +300,11 @@ class _HomeTitleState extends State<_HomeTitle> {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
+        // No explicit spacer below: the 110 px touch target already
+        // provides ~23 px of vertical padding under the 64 px logo, so
+        // the title sits naturally close enough to feel part of the
+        // same block instead of floating below the logo.
         touchSurface,
-        const SizedBox(height: 8),
         Text(
           'Pile ou Face',
           textAlign: TextAlign.center,
