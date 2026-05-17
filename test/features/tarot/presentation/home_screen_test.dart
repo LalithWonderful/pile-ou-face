@@ -3,6 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:pile_ou_face/app/pile_ou_face_app.dart';
 import 'package:pile_ou_face/features/tarot/data/tarot_repository.dart';
 import 'package:pile_ou_face/features/tarot/models/reading_intent.dart';
+import 'package:pile_ou_face/features/tarot/presentation/screens/home_screen.dart';
 import 'package:pile_ou_face/features/tarot/services/daily_quota_service.dart';
 import 'package:pile_ou_face/features/tarot/services/daily_reading_service.dart';
 import 'package:pile_ou_face/features/tarot/services/tarot_draw_service.dart';
@@ -77,13 +78,11 @@ String _todayKey() {
   return '$y-$m-$day';
 }
 
-final Finder _logoFinder = find.byWidgetPredicate(
-  (widget) =>
-      widget is Image &&
-      widget.image is AssetImage &&
-      (widget.image as AssetImage).assetName ==
-          'assets/tarot/branding/pile_ou_face_logo.png',
-);
+/// The invisible 96x96 square that wraps the home logo and hosts the
+/// debug-only sustained-press Listener. Tests target this surface rather
+/// than the inner Image so the assertions match the user's tappable
+/// region exactly.
+final Finder _logoTouchTargetFinder = find.byKey(homeLogoTouchTargetKey);
 
 PileOuFaceApp _buildApp({required String fixture}) {
   final repo = TarotRepository(loader: (_) async => fixture);
@@ -203,7 +202,7 @@ void main() {
       await tester.pumpAndSettle();
 
       final gesture =
-          await tester.startGesture(tester.getCenter(_logoFinder));
+          await tester.startGesture(tester.getCenter(_logoTouchTargetFinder));
       // Hold for the full debug-reset duration. The Timer fires inside
       // this pump window.
       await tester.pump(const Duration(seconds: 5));
@@ -230,7 +229,7 @@ void main() {
       await tester.pumpAndSettle();
 
       final gesture =
-          await tester.startGesture(tester.getCenter(_logoFinder));
+          await tester.startGesture(tester.getCenter(_logoTouchTargetFinder));
       // Release well before the 5-second threshold (covers both an
       // accidental tap and a regular long-press around 500 ms).
       await tester.pump(const Duration(seconds: 2));

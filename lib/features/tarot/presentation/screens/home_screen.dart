@@ -11,6 +11,13 @@ import 'cards_library_screen.dart';
 import 'reading_screen.dart';
 import 'settings_screen.dart';
 
+/// Key on the invisible touch surface that wraps the home logo and hosts
+/// the debug-only sustained-press reset gesture. Exposed at file scope so
+/// widget tests can target it directly instead of guessing the rendered
+/// Image bounds (which can be smaller than the touch target on purpose).
+@visibleForTesting
+const Key homeLogoTouchTargetKey = ValueKey('home-logo-touch-target');
+
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
@@ -205,9 +212,14 @@ class _HomeTitle extends StatefulWidget {
   /// regular long-press cannot fire it.
   static const Duration debugHoldDuration = Duration(seconds: 5);
 
-  /// Pixel height of the home logo. Tuned so the screen stays balanced on
-  /// large iPhones while remaining usable on a 320x568 viewport.
+  /// Pixel height of the rendered home logo. Tuned so the screen stays
+  /// balanced on large iPhones while remaining usable on a 320x568 viewport.
   static const double logoSize = 56;
+
+  /// Edge of the invisible square touch target that hosts the debug
+  /// sustained-press gesture. Larger than [logoSize] so a small finger
+  /// jitter while holding never falls outside the Listener.
+  static const double debugTouchTargetSize = 96;
 
   final TextStyle? titleStyle;
 
@@ -246,28 +258,47 @@ class _HomeTitleState extends State<_HomeTitle> {
 
   @override
   Widget build(BuildContext context) {
-    Widget logo = Image.asset(
+    // NOTE on the asset: pile_ou_face_logo.png is currently a PNG without
+    // an alpha channel, so a textured beige square is visible behind the
+    // mark on this screen. The fix is an asset replacement (re-export the
+    // logo with a transparent background) — NOT a Container colour or
+    // any other Flutter-side overlay, which would tint the logo edges or
+    // mask part of the design.
+    final logoImage = Image.asset(
       'assets/tarot/branding/pile_ou_face_logo.png',
       height: _HomeTitle.logoSize,
       width: _HomeTitle.logoSize,
       fit: BoxFit.contain,
     );
 
+    // The rendered logo stays small (56 px) for visual balance, but the
+    // touch target is enlarged so a finger that drifts a few pixels
+    // during the 5-second hold stays inside the Listener.
+    Widget touchSurface = SizedBox(
+      key: homeLogoTouchTargetKey,
+      width: _HomeTitle.debugTouchTargetSize,
+      height: _HomeTitle.debugTouchTargetSize,
+      child: Center(child: logoImage),
+    );
+
     if (widget.onDebugSustainedPress != null) {
-      // The debug gesture lives on the logo only, not on the title text.
-      logo = Listener(
+      // The debug gesture lives on the logo touch target only, never on
+      // the title text. HitTestBehavior.opaque ensures the full 96x96
+      // square absorbs pointer events, including the padded margin
+      // around the visible 56 px logo.
+      touchSurface = Listener(
         behavior: HitTestBehavior.opaque,
         onPointerDown: _onPointerDown,
         onPointerUp: (_) => _cancelHold(),
         onPointerCancel: (_) => _cancelHold(),
-        child: logo,
+        child: touchSurface,
       );
     }
 
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        logo,
+        touchSurface,
         const SizedBox(height: 8),
         Text(
           'Pile ou Face',
