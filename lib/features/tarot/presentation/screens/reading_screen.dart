@@ -24,6 +24,7 @@ class ReadingScreen extends StatefulWidget {
     this.isDaily = false,
     this.intent,
     this.shareInvoker,
+    this.preparedDraw,
   });
 
   final TarotSpread spread;
@@ -39,6 +40,12 @@ class ReadingScreen extends StatefulWidget {
   /// In production the platform implementation is used.
   final DailyShareInvoker? shareInvoker;
 
+  /// Pre-resolved draw fed by the 3-card choice flow. When set, the
+  /// screen skips its own idle/CTA and quota consumption — the upstream
+  /// choice screen has already consumed the daily quota for [intent] and
+  /// committed to these specific cards.
+  final List<DrawnCard>? preparedDraw;
+
   @override
   State<ReadingScreen> createState() => _ReadingScreenState();
 }
@@ -52,6 +59,13 @@ class _ReadingScreenState extends State<ReadingScreen> {
   @override
   void initState() {
     super.initState();
+    if (widget.preparedDraw != null) {
+      // The choice flow handed us the exact cards (and already burned
+      // the quota). Render the revealed state straight away and skip
+      // both the idle CTA and the in-screen tryConsume.
+      _result = widget.preparedDraw;
+      return;
+    }
     if (widget.intent != null) {
       WidgetsBinding.instance.addPostFrameCallback((_) => _checkQuota());
     }

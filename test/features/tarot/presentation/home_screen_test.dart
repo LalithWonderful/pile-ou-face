@@ -114,7 +114,7 @@ void main() {
     });
 
     testWidgets(
-        '"Une situation" opens the general intent reading screen',
+        '"Une situation" routes into the 3-card choice flow',
         (tester) async {
       await tester.pumpWidget(_buildApp(fixture: _threeCardsFixture));
 
@@ -126,14 +126,17 @@ void main() {
       await tester.tap(find.text('Une situation'));
       await tester.pumpAndSettle();
 
-      // AppBar uses the intent title.
+      // AppBar uses the intent title, and the choice screen sits in
+      // front of the existing reading screen — no "Révéler le tirage"
+      // CTA on the new step.
       expect(find.text('Je me pose une question'),
           findsAtLeastNWidgets(1));
-      expect(find.text('Révéler le tirage'), findsOneWidget);
+      expect(find.text('Choisis tes 3 cartes'), findsOneWidget);
+      expect(find.text('Révéler le tirage'), findsNothing);
     });
 
     testWidgets(
-        '"L’amour" opens the love intent screen',
+        '"L’amour" routes into the 3-card choice flow',
         (tester) async {
       await tester.pumpWidget(_buildApp(fixture: _threeCardsFixture));
 
@@ -141,11 +144,12 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.text('Question d’amour'), findsOneWidget);
-      expect(find.text('Révéler le tirage'), findsOneWidget);
+      expect(find.text('Choisis tes 3 cartes'), findsOneWidget);
+      expect(find.text('Révéler le tirage'), findsNothing);
     });
 
     testWidgets(
-        '"Le travail" opens the work intent screen',
+        '"Le travail" routes into the 3-card choice flow',
         (tester) async {
       await tester.pumpWidget(_buildApp(fixture: _threeCardsFixture));
 
@@ -153,11 +157,12 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.text('Question de travail'), findsOneWidget);
-      expect(find.text('Révéler le tirage'), findsOneWidget);
+      expect(find.text('Choisis tes 3 cartes'), findsOneWidget);
+      expect(find.text('Révéler le tirage'), findsNothing);
     });
 
     testWidgets(
-        '"L’argent" opens the money intent screen',
+        '"L’argent" routes into the 3-card choice flow',
         (tester) async {
       await tester.pumpWidget(_buildApp(fixture: _threeCardsFixture));
 
@@ -165,7 +170,8 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.text('Question d’argent'), findsOneWidget);
-      expect(find.text('Révéler le tirage'), findsOneWidget);
+      expect(find.text('Choisis tes 3 cartes'), findsOneWidget);
+      expect(find.text('Révéler le tirage'), findsNothing);
     });
 
     testWidgets(

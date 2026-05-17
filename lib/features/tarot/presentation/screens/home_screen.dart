@@ -10,6 +10,7 @@ import '../../models/reading_intent.dart';
 import 'cards_library_screen.dart';
 import 'reading_screen.dart';
 import 'settings_screen.dart';
+import 'three_card_choice_screen.dart';
 
 /// Key on the invisible touch surface that wraps the home logo and hosts
 /// the debug-only sustained-press reset gesture. Exposed at file scope so
@@ -32,7 +33,7 @@ class HomeScreen extends StatelessWidget {
   void _openIntent(BuildContext context, ReadingIntent intent) {
     Navigator.of(context).push(
       MaterialPageRoute<void>(
-        builder: (_) => ReadingScreen(intent: intent),
+        builder: (_) => ThreeCardChoiceScreen(intent: intent),
       ),
     );
   }
